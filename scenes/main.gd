@@ -1,10 +1,11 @@
 extends Node2D
 
-const ORIGIN: Vector2 = Vector2(120, 150)
-const CELL: Vector2 = Vector2(96, 78)
+var projection: BoardProjection = BoardProjection.new()
+var art: ArtCatalog = ArtCatalog.new()
+var presentation_time: float = 0.0
+var panel_style: StyleBoxFlat
 var run: RunController = RunController.new()
 var selected: String = ""
-var tile_styles: Array[StyleBoxFlat] = []
 var pointer: Vector2 = Vector2(-1,-1)
 var move_from: Vector2i = Vector2i(-1, -1)
 var shovel: bool = false
@@ -25,10 +26,11 @@ var debug_enabled: bool = false
 var old_phase: String = ""
 var old_pantry: int = 10
 var old_units: int = 0
-var colors: Dictionary = {"bun": Color("f4d8a5"), "toast": Color("d99954"), "pudding": Color("f4b558"), "tea": Color("85dbe9"), "pepper": Color("ef776b"), "popcorn": Color("f8e6a4"), "noodles": Color("deb3ef"), "garlic": Color("b1d987")}
 
 func _ready() -> void:
-	tile_styles = [tile_style(Color("2e4050")),tile_style(Color("283948"))]
+	panel_style = tile_style(Color("132524ed"))
+	panel_style.border_color = Color("a47a49")
+	panel_style.set_border_width_all(1)
 	run.persistence = true
 	debug_enabled = OS.is_debug_build() and "--dev" in OS.get_cmdline_user_args()
 	if "--qa" in OS.get_cmdline_user_args() or "--qa-test" in OS.get_cmdline_user_args():
@@ -37,7 +39,7 @@ func _ready() -> void:
 	sound = SoundService.new()
 	add_child(sound)
 	RenderingServer.set_default_clear_color(Color("151e2c"))
-	header = label(Vector2(30, 20), 24)
+	header = label(Vector2(30, 20), 22)
 	notice = label(Vector2(30, 105), 18)
 	button("开始鼠潮", Vector2(920, 25), func() -> void: run.start(); rebuild())
 	button("暂停 / 继续", Vector2(1040, 25), func() -> void:
@@ -110,7 +112,8 @@ func rebuild() -> void:
 	panel.add_child(title)
 	if run.state.phase == "recipe":
 		for id: String in run.state.choices:
-			panel_button(run.data.recipes[id].title,func() -> void: report(run.choose_recipe(id)),run.data.recipes[id].stats.description)
+			var choice: Button = panel_button(run.data.recipes[id].title,func() -> void: report(run.choose_recipe(id)),run.data.recipes[id].stats.description)
+			decorate_button(choice, art.recipe(id), 42)
 		if run.state.choices.is_empty(): panel_button("食谱已收集完 · 继续",func() -> void: run.skip_recipe())
 	elif run.state.phase == "prepare":
 		for index: int in range(run.state.offers.size()):
@@ -118,6 +121,7 @@ func rebuild() -> void:
 			var sold: bool = offer.id.is_empty() or offer.bought or run.state.cards.get(offer.id,0) >= 6
 			var item: Button = panel_button("售罄" if sold else "%s · %d 金" % [run.data.foods[offer.id].title,run.data.foods[offer.id].stats.price],func() -> void: report(run.shop.buy(index)))
 			item.disabled = sold
+			if not sold: decorate_button(item, art.food(offer.id), 38)
 		panel_button("刷新 · 2 金（%d/2）" % run.state.refreshes,func() -> void: report(run.shop.refresh()))
 	if run.state.phase in ["won","lost"]:
 		var summary: Label = Label.new()
@@ -132,13 +136,17 @@ func rebuild() -> void:
 		var node: Button = Button.new()
 		var stats: Dictionary = run.data.foods[id].stats
 		node.text = "%s ★%d\n热量 %d · %d/6" % [run.data.foods[id].title, run.state.star(id), stats.cost, run.state.cards[id]]
-		node.custom_minimum_size = Vector2(142, 80)
+		node.custom_minimum_size = Vector2(142, 90)
+		node.add_theme_font_size_override("font_size", 14)
+		decorate_button(node, art.food(id), 40)
+		node.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 		node.tooltip_text = "生命 %.0f · 伤害 %.0f\n间隔 %.2f 秒 · 射程 %.1f 格\n放置冷却 %.0f 秒" % [run.board.max_hp(id), stats.damage * run.data.rules.star_hp[run.state.star(id) - 1], stats.interval, run.recipes.reach(id), stats.cooldown]
 		node.pressed.connect(func() -> void: selected = id; shovel = false; move_from = Vector2i(-1,-1))
 		cards.add_child(node)
 
 func _process(delta: float) -> void:
 	run.advance(delta)
+	if not run.paused and run.state.phase == "battle": presentation_time += delta * run.speed
 	header.text = "深夜食堂   |   第 %d 关   粮仓 %d/10   金币 %d   热量 %d/350   %s %s" % [run.state.wave, run.state.pantry, run.state.coins, run.state.heat, "暂停" if run.paused else {"prepare":"准备","battle":"战斗","recipe":"选谱","won":"胜利","lost":"失败"}.get(run.state.phase,run.state.phase), "%.0f×" % run.speed]
 	notice.text = run.message
 	if run.state.phase != old_phase and run.state.phase in ["recipe","won"]: sound.cue("clear")
@@ -167,9 +175,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		move_from = Vector2i(-1,-1)
 	if debug_enabled and event.is_action_pressed("debug_panel"): debug_window.popup_centered()
 	if event.is_action_pressed("board_select"):
-		var local: Vector2 = event.position - ORIGIN
-		var col: int = floori(local.x / CELL.x)
-		var row: int = floori(local.y / CELL.y)
+		var cell: Vector2i = projection.cell_at(event.position)
+		var col: int = cell.x
+		var row: int = cell.y
 		if col < 0 or col >= 8 or row < 0 or row >= 5: return
 		if shovel:
 			if run.state.phase == "battle" and not run.paused:
@@ -188,63 +196,107 @@ func text_at(position_value: Vector2, title: String, color: Color = Color.WHITE,
 
 func _draw() -> void:
 	if run.state == null: return
-	for row: int in range(5):
-		text_at(ORIGIN + Vector2(-75, row * CELL.y + 45), "粮仓 ◀", Color("c6d2df"))
-		for col: int in range(8):
-			var rect: Rect2 = Rect2(ORIGIN + Vector2(col,row) * CELL, CELL - Vector2(3,3))
-			draw_style_box(tile_styles[(row + col) % 2], rect)
-			if move_from == Vector2i(col,row): draw_rect(rect, Color("f8d482"),false,3)
+	draw_texture_rect(ArtCatalog.BACKGROUND, Rect2(0, 0, 1280, 720), false)
+	draw_board()
 	var hovered: Dictionary = hovered_unit()
 	if not hovered.is_empty():
-		var range_start: Vector2 = ORIGIN + Vector2(hovered.col*96+48,hovered.row*78)
-		draw_rect(Rect2(range_start,Vector2(minf(run.recipes.reach(hovered.id)*96,768-hovered.col*96-48),75)),Color(0.5,0.85,0.9,0.12))
-	for unit: Dictionary in run.state.units:
-		var pos: Vector2 = ORIGIN + Vector2(unit.col * CELL.x + 48, unit.row * CELL.y + 39)
-		var color: Color = colors.get(unit.id,Color("81c9af"))
-		draw_circle(pos, 25, Color.WHITE if unit.flash > 0 else color)
-		match unit.id:
-			"toast": draw_rect(Rect2(pos-Vector2(24,22),Vector2(48,44)),color)
-			"tea":
-				draw_rect(Rect2(pos-Vector2(17,25),Vector2(34,49)),color)
-				draw_line(pos+Vector2(8,-18),pos+Vector2(15,-35),Color("effaff"),3)
-			"popcorn":
-				for offset: Vector2 in [Vector2(-16,-18),Vector2(0,-25),Vector2(16,-18)]: draw_circle(pos+offset,11,Color("fff2c2"))
-			"noodles": draw_arc(pos+Vector2(0,-8),23,0,PI,16,Color("fff1cc"),5)
-			"pepper": draw_line(pos+Vector2(3,-22),pos+Vector2(13,-34),Color("a8d77e"),5)
-		draw_circle(pos + Vector2(-8,-3), 2,Color("302e34"))
-		draw_circle(pos + Vector2(8,-3), 2,Color("302e34"))
-		text_at(pos + Vector2(-28,8), run.data.foods[unit.id].title, Color("302e34"),13)
-		draw_rect(Rect2(pos + Vector2(-30,29),Vector2(60,5)),Color("633f46"))
-		draw_rect(Rect2(pos + Vector2(-30,29),Vector2(60 * unit.hp / run.board.max_hp(unit.id),5)),Color("ff817d") if unit.hp / run.board.max_hp(unit.id) < 0.25 else Color("7fd29b"))
-	for enemy: Dictionary in run.combat.enemies:
-		var pos: Vector2 = ORIGIN + Vector2(enemy.x,enemy.row * CELL.y + 39)
-		draw_circle(pos + Vector2(-12,-17),10,Color("acacbb"))
-		draw_circle(pos + Vector2(12,-17),10,Color("acacbb"))
-		draw_circle(pos,32 if enemy.id == "boss" else (27 if enemy.id == "elite" else 20),Color.WHITE if enemy.flash > 0 else Color("8d91a3"))
-		match enemy.id:
-			"lid", "elite": draw_arc(pos+Vector2(0,-16),23,PI,TAU,16,Color("d4e3df"),8)
-			"boss":
-				draw_rect(Rect2(pos+Vector2(-24,-39),Vector2(48,18)),Color("faf4df"))
-				for dx: int in [-16,0,16]: draw_circle(pos+Vector2(dx,-41),12,Color("faf4df"))
-			"drummer": draw_circle(pos+Vector2(0,15),13,Color("db9c76"))
-			"flour": draw_rect(Rect2(pos+Vector2(-13,5),Vector2(26,20)),Color("e3dbc7"))
-			"gnawer": draw_line(pos+Vector2(-17,13),pos+Vector2(17,13),Color("eee3cc"),5)
-			"runner": draw_line(pos+Vector2(8,19),pos+Vector2(29,22),Color("edb068"),5)
-		if enemy.slow_time > 0: text_at(pos + Vector2(-22,-28),"❄",Color("83e4f5"))
-		if enemy.burn_time > 0: text_at(pos + Vector2(7,-28),"♨",Color("ffab69"))
-		text_at(pos + Vector2(-19,5),run.data.enemies[enemy.id].title,Color("202431"),12)
-		draw_rect(Rect2(pos + Vector2(-23,24),Vector2(46 * enemy.hp / enemy.max_hp,4)),Color("ed8796"))
-	for shot: Dictionary in run.combat.projectiles:
-		draw_circle(ORIGIN + Vector2(shot.x,shot.row * CELL.y + 39),5,Color("fff1b5"))
+		var start_x: float = hovered.col * 96 + 48
+		var reach: float = minf(run.recipes.reach(hovered.id) * 96, 768 - start_x)
+		draw_colored_polygon(projection.polygon(Rect2(start_x, hovered.row * 78, reach, 78)), Color(0.5, 0.85, 0.9, 0.14))
+	# Draw each lane back to front; all objects share the same projected ground.
+	for row: int in range(5):
+		for unit: Dictionary in run.state.units:
+			if unit.row == row: draw_food(unit)
+		for enemy: Dictionary in run.combat.enemies:
+			if enemy.row == row: draw_mouse(enemy)
+		for shot: Dictionary in run.combat.projectiles:
+			if shot.row == row:
+				var pos: Vector2 = projection.foot(shot.x, row) - Vector2(0, 27 * projection.depth_scale(row))
+				draw_circle(pos, 5 * projection.depth_scale(row), Color("fff1b5"))
 	if run.state.phase == "battle":
 		for i: int in range(run.director.cursor,mini(run.director.cursor + 3,run.director.events.size())):
 			var event: Dictionary = run.director.events[i]
 			if event.time - run.director.elapsed <= 5:
-				text_at(ORIGIN + Vector2(775,event.row * CELL.y + 40),"◀ 来袭",Color("ffbe75"))
+				text_at(projection.foot(775, event.row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
+	draw_style_box(panel_style, Rect2(18, 12, 1244, 82))
+	draw_style_box(panel_style, Rect2(18, 100, 886, 36))
+	draw_style_box(panel_style, Rect2(926, 140, 340, 398))
+	draw_style_box(panel_style, Rect2(18, 540, 1244, 180))
 	text_at(Vector2(30,555),"选中：%s   %s   鼠潮 %d/%d · 场上 %d" % [run.data.foods[selected].title if selected != "" else "无", "铲除模式" if shovel else "右键 / Esc 取消", run.director.cursor,run.director.events.size(),run.combat.enemies.size()])
 	for i: int in range(run.state.cards.size()):
 		var id: String = run.state.cards.keys()[i]
 		text_at(Vector2(35 + i * 150,682),"冷却 %.1f 秒" % run.state.cooldowns.get(id,0.0),Color("a9bac9"),14)
+
+func outline(points: PackedVector2Array, color: Color, width: float = 1.0) -> void:
+	var closed: PackedVector2Array = points.duplicate()
+	closed.append(points[0])
+	draw_polyline(closed, color, width, true)
+
+func draw_board() -> void:
+	var edge: PackedVector2Array = projection.polygon(Rect2(Vector2.ZERO, BoardProjection.LOGICAL_SIZE))
+	var front: PackedVector2Array = PackedVector2Array([edge[3], edge[2], edge[2] + Vector2(0, 8), edge[3] + Vector2(0, 8)])
+	draw_colored_polygon(front, Color("102a29"))
+	draw_colored_polygon(edge, Color("173f3c30"))
+	outline(edge, Color("c5a56b85"), 1.5)
+	var hover_cell: Vector2i = projection.cell_at(pointer)
+	for row: int in range(5):
+		var exit_pos: Vector2 = projection.foot(-46, row)
+		text_at(exit_pos + Vector2(-22, 0), "◀", Color("d6c6a0"), 18)
+		for col: int in range(8):
+			var tile: PackedVector2Array = projection.tiles[row * 8 + col]
+			draw_colored_polygon(tile, Color("54807822") if (row + col) % 2 == 0 else Color("17363118"))
+			outline(tile, Color("a2b8a335"))
+			if move_from == Vector2i(col, row):
+				draw_colored_polygon(tile, Color("e7c07630"))
+				outline(tile, Color("f8d482"), 2.0)
+			elif hover_cell == Vector2i(col, row):
+				draw_colored_polygon(tile, Color("9cdbc328"))
+				outline(tile, Color("b4ded2"), 1.5)
+
+func draw_food(unit: Dictionary) -> void:
+	var scale_value: float = projection.depth_scale(unit.row)
+	var foot: Vector2 = projection.foot(unit.col * 96 + 48, unit.row)
+	var bob: float = sin(presentation_time * 2.5 + unit.col) * 1.2
+	draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.flash > 0, bob)
+	var fraction: float = unit.hp / run.board.max_hp(unit.id)
+	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56, 4) * scale_value), Color("633f46"))
+	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56 * fraction, 4) * scale_value), Color("ff817d") if fraction < 0.25 else Color("7fd29b"))
+
+func draw_mouse(enemy: Dictionary) -> void:
+	var scale_value: float = projection.depth_scale(enemy.row)
+	var foot: Vector2 = projection.foot(enemy.x, enemy.row)
+	var size: Vector2 = Vector2(58, 72)
+	if enemy.id == "elite": size = Vector2(68, 82)
+	if enemy.id == "boss": size = Vector2(82, 98)
+	var bob: float = sin(presentation_time * 7.0 + enemy.x * 0.1) * 1.5
+	draw_actor(art.mouse(enemy.id), foot, size * scale_value, enemy.flash > 0, bob)
+	var status_pos: Vector2 = foot - Vector2(22, size.y * 0.8) * scale_value
+	if enemy.slow_time > 0: text_at(status_pos,"❄",Color("83e4f5"))
+	if enemy.burn_time > 0: text_at(status_pos + Vector2(29, 0),"♨",Color("ffab69"))
+	if enemy.id in ["boss", "elite"]: text_at(status_pos + Vector2(0, -14),run.data.enemies[enemy.id].title,Color("ffe1a1"),12)
+	draw_rect(Rect2(foot + Vector2(-23, 4) * scale_value,Vector2(46 * enemy.hp / enemy.max_hp, 4) * scale_value),Color("ed8796"))
+
+func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, hit: bool, bob: float) -> void:
+	if texture == null: return
+	draw_set_transform(foot + Vector2(4, 0), -0.04, Vector2(1, 0.25))
+	draw_circle(Vector2.ZERO, size.x * 0.34, Color(0, 0, 0, 0.28))
+	draw_set_transform(Vector2.ZERO)
+	var center: Vector2 = foot - Vector2(0, size.y * 0.36 - bob)
+	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false, Color(1.7, 1.7, 1.7) if hit else Color.WHITE)
+
+func decorate_button(node: Button, texture: Texture2D, width: int) -> void:
+	node.icon = texture
+	node.expand_icon = true
+	node.add_theme_constant_override("icon_max_width", width)
+	var normal: StyleBoxFlat = tile_style(Color("29413e"))
+	normal.border_color = Color("a88652")
+	normal.set_border_width_all(1)
+	normal.content_margin_left = 8
+	normal.content_margin_right = 8
+	node.add_theme_stylebox_override("normal", normal)
+	var hover: StyleBoxFlat = normal.duplicate()
+	hover.bg_color = Color("42615a")
+	node.add_theme_stylebox_override("hover", hover)
 
 func tile_style(color: Color) -> StyleBoxFlat:
 	var style: StyleBoxFlat = StyleBoxFlat.new()
@@ -262,9 +314,9 @@ func panel_button(title: String, action: Callable, tip: String = "") -> Button:
 	return node
 
 func hovered_unit() -> Dictionary:
-	var local: Vector2 = pointer-ORIGIN
-	if local.x < 0 or local.y < 0 or local.x >= 768 or local.y >= 390: return {}
-	return run.board.at(floori(local.y/78),floori(local.x/96))
+	var cell: Vector2i = projection.cell_at(pointer)
+	if cell.x < 0: return {}
+	return run.board.at(cell.y, cell.x)
 
 func update_inspector() -> void:
 	var unit: Dictionary = hovered_unit()

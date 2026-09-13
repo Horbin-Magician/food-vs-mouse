@@ -12,7 +12,11 @@
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
-| [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 基础表现已实现 |
+| [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
+| [art/perspective.md](art/perspective.md) | 台面透视、深度表现与鼠标命中 | 已接入并验证 |
+| [art/asset_pack.md](art/asset_pack.md) | 29 项美术内容、规格、映射与接入 | 已生成并接入 |
+| [art/generation_prompts.md](art/generation_prompts.md) | 四类资源的完整生成提示词 | 已记录 |
+| [testing/art_pack.md](testing/art_pack.md) | 美术导入、窗口及性能验收 | 见实际记录 |
 | [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |
 
 | [testing/balance.md](testing/balance.md) | 压力测试、自动策略和真人验收缺口 | 初测完成，真人待验收 |

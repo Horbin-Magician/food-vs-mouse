@@ -10,13 +10,15 @@
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
 
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
+| [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |
+| [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 回归及窗口拾取通过，缩放限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
-| [art/ui.md](art/ui.md) | 全局 UI 主题、信息层级、控件状态与弹窗规范 | 已接入，验证见专页 |
+| [art/ui.md](art/ui.md) | 全局 UI 主题、热量图标、卡牌拖放与整卡冷却、小铺横排弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
 | [art/animation.md](art/animation.md) | 全单位待机、放置、攻击与移动动画规则及验收 | 已实现，鼠标复验待完成 |
-| [art/perspective.md](art/perspective.md) | 正交棋盘、顶部操作栏与鼠标命中 | 布局更新，验证见专页 |
+| [art/perspective.md](art/perspective.md) | 正交棋盘、顶部卡牌、底部操作栏与鼠标命中 | 紧凑顶栏与棋盘再次扩展已实现，验证见专页 |
 | [art/asset_pack.md](art/asset_pack.md) | 29 项美术内容、规格、映射与接入 | 已生成并接入 |
 | [art/generation_prompts.md](art/generation_prompts.md) | 四类资源的完整生成提示词 | 已记录 |
 | [testing/art_pack.md](testing/art_pack.md) | 美术导入、窗口及性能验收 | 见实际记录 |

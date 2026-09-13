@@ -39,6 +39,9 @@ func evaluate() -> void:
 			for entry: Array in plan:
 				if run.state.cards.has(entry[0]) and run.board.at(entry[1],entry[2]).is_empty():
 					run.board.place(entry[0],entry[1],entry[2],false)
+			# Simulate clicking available flames; credit still waits for the normal flight.
+			for pickup: Dictionary in run.combat.heat_pickups:
+				if pickup.flight < 0.0: run.collect_heat(pickup.uid)
 			run.advance(0.25)
 			steps += 1
 		print("AUTOPLAY ",JSON.stringify({"build":build,"seed":42,"phase":run.state.phase,"wave":run.state.wave,"seconds":run.state.elapsed,"pantry":run.state.pantry,"metrics":run.state.metrics,"cards":run.state.cards,"recipes":run.state.recipes}))

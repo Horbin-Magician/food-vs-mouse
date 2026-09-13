@@ -41,9 +41,9 @@ func _init() -> void:
 	run.state.heat = 0
 	for unit: Dictionary in run.state.units: unit.timer = 0.0
 	for i: int in range(599): run.combat.step(1.0/60.0)
-	assert(run.state.heat < 51.0,"production waits full cycle")
+	assert(run.state.heat < 20.0 and run.combat.heat_pickups.is_empty(),"production waits full cycle")
 	for i: int in range(2): run.combat.step(1.0/60.0)
-	assert(run.state.heat > 124.0,"all producers share game clock")
+	assert(run.state.heat < 21.0 and run.combat.heat_pickups.size() == 5,"production creates pickups without direct credit")
 	run.new_run(2)
 	run.start()
 	for i: int in range(4):

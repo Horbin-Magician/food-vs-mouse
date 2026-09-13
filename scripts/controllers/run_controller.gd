@@ -54,6 +54,12 @@ func start() -> void:
 	message = "鼠潮来袭！左键选卡再点格子，右键取消。"
 	changed.emit()
 
+func collect_heat(uid: int) -> String:
+	if state.phase != "battle": return "仅战斗中可收取火苗"
+	if paused: return "暂停时不能收取火苗"
+	combat.collect_heat(uid)
+	return ""
+
 func advance(delta: float) -> void:
 	if state.phase != "battle" or paused: return
 	accumulator += minf(delta, 0.25) * speed
@@ -76,6 +82,7 @@ func advance(delta: float) -> void:
 
 func finish_wave() -> void:
 	if state.phase != "battle": return
+	combat.heat_pickups.clear()
 	state.metrics.passed = state.wave
 	board.heal(recipes.value("reheat","heal",data.rules.heal))
 	if state.wave == data.waves.size():

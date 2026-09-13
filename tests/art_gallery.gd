@@ -20,7 +20,6 @@ func _ready() -> void:
 	run.combat.enemies[0].slow_time = 10
 	run.combat.enemies[1].burn_time = 10
 	run.message = "美术验收：8 美食 / 8 鼠群；按 R 查看食谱，P 查看小铺"
-	tutorial_step = 3
 	rebuild()
 
 func _input(event: InputEvent) -> void:

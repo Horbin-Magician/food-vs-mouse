@@ -20,7 +20,7 @@ func at(row: int, col: int) -> Dictionary:
 func max_hp(id: String) -> float:
 	return data.foods[id].stats.hp * data.rules.star_hp[state.star(id) - 1]
 
-func place(id: String, row: int, col: int, paused: bool) -> String:
+func placement_error(id: String, row: int, col: int, paused: bool) -> String:
 	if state.phase != "battle" or paused: return "仅可在未暂停的战斗中放置"
 	if not state.cards.has(id) or row < 0 or row >= RunState.ROWS or col < 0 or col >= RunState.COLS: return "请选择持有卡与有效格子"
 	if not at(row, col).is_empty(): return "格子已占用"
@@ -32,6 +32,12 @@ func place(id: String, row: int, col: int, paused: bool) -> String:
 		for unit: Dictionary in state.units:
 			if unit.id == id: count += 1
 		if count >= data.rules.pudding_cap: return "布丁最多同时存在 5 个"
+	return ""
+
+func place(id: String, row: int, col: int, paused: bool) -> String:
+	var error: String = placement_error(id, row, col, paused)
+	if not error.is_empty(): return error
+	var definition: Dictionary = data.foods[id].stats
 	state.heat -= definition.cost
 	state.cooldowns[id] = float(definition.cooldown)
 	state.units.append({"uid": state.uid(), "id": id, "row": row, "col": col, "hp": max_hp(id), "timer": 0.0, "attacks": 0, "flour": 0.0, "flash": 0.0})

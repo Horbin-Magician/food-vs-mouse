@@ -36,15 +36,35 @@ func run_test() -> void:
 	assert(scene.animator.time - frozen > 0.18)
 	# Shovel requires confirmation during battle, and cancel retains the unit.
 	scene.shovel_button.pressed.emit()
+	assert(scene.shovel and scene.shovel_cursor_active and scene.selected.is_empty())
+	scene.run.paused = true
+	scene.update_controls()
+	assert(not scene.shovel_cursor_active)
+	scene._unhandled_input(event)
+	assert(scene.run.state.units.size() == 1 and not scene.confirm.visible)
+	scene.run.paused = false
+	scene.update_controls()
+	assert(scene.shovel_cursor_active)
+	scene.shovel_button.pressed.emit()
+	assert(not scene.shovel and not scene.shovel_cursor_active)
+	scene.shovel_button.pressed.emit()
+	scene.cards.get_child(0).gui_input.emit(event)
+	var release: InputEventMouseButton = event.duplicate()
+	release.pressed = false
+	scene._input(release)
+	assert(not scene.shovel and not scene.shovel_cursor_active)
+	scene.shovel_button.pressed.emit()
 	event.position = scene.projection.project(Vector2(48,195))
 	scene._unhandled_input(event)
 	assert(scene.confirm.visible and scene.run.state.units.size() == 1)
+	assert(not scene.shovel_cursor_active)
 	scene.confirm.hide()
+	assert(scene.shovel_cursor_active)
 	var cancel: InputEventAction = InputEventAction.new()
 	cancel.action = "cancel_selection"
 	cancel.pressed = true
 	scene._unhandled_input(cancel)
-	assert(not scene.shovel and scene.selected.is_empty())
+	assert(not scene.shovel and scene.selected.is_empty() and not scene.shovel_cursor_active)
 	scene.shovel_button.pressed.emit()
 	scene._unhandled_input(event)
 	scene.confirm.confirmed.emit()
@@ -57,7 +77,7 @@ func run_test() -> void:
 	assert(scene.cards.get_child_count() == 8)
 	assert(scene.cards.position.x >= 190)
 	assert(scene.cards.get_global_rect().end.x < scene.shovel_button.position.x)
-	assert(scene.cards.get_global_rect().end.y < 112)
+	assert(scene.cards.get_global_rect().end.y <= 66)
 	# A visible overlay consumes its entire rectangle, including blank areas.
 	scene.run.state.phase = "prepare"
 	scene.rebuild()
@@ -97,7 +117,7 @@ func run_test() -> void:
 	await process_frame
 	assert(not scene.start_button.disabled and scene.pause_button.disabled)
 	assert(scene.repair_button.disabled)
-	assert(scene.card_status("bun") == "开战后放置")
+	assert("准备阶段" in scene.card_status("bun"))
 	assert(not scene.cards.get_child(0).get_node("Cooldown").visible)
 	for child: Node in scene.panel.get_children():
 		if child is Button: assert(child.disabled)
@@ -109,7 +129,23 @@ func run_test() -> void:
 	assert(scene.card_status("bun") == "已暂停")
 	assert(scene.start_button.disabled and not scene.pause_button.disabled)
 	assert(scene.pause_button.text == "继续")
-	assert(scene.cards.get_child(0).get_node("Cooldown").size.y <= 2)
+	var mask: ColorRect = scene.cards.get_child(0).get_node("Cooldown")
+	assert(mask.size == scene.cards.get_child(0).size and mask.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	var frozen_ratio: float = mask.material.get_shader_parameter("remaining_ratio")
+	scene._process(0.25)
+	assert(is_equal_approx(mask.material.get_shader_parameter("remaining_ratio"), frozen_ratio))
+	assert(scene.shovel_button.text.is_empty())
+	assert(not scene.cards.get_child(0).has_node("Status"))
+	scene.run.state.cooldowns["bun"] = 3.5
+	scene.update_controls()
+	assert(is_equal_approx(mask.material.get_shader_parameter("remaining_ratio"), 0.5))
+	assert(mask.material != scene.cards.get_child(1).get_node("Cooldown").material)
+	scene.run.state.cooldowns["bun"] = 7.0
+	scene.update_controls()
+	assert(is_equal_approx(mask.material.get_shader_parameter("remaining_ratio"), 1.0))
+	scene.run.state.cooldowns["bun"] = 0.0
+	scene.update_controls()
+	assert(not mask.visible)
 	scene.run.paused = false
 	scene.run.state.cooldowns.clear()
 	scene.run.state.heat = 0
@@ -137,7 +173,78 @@ func run_test() -> void:
 					assert(content.position.x + content.size.x <= child.size.x)
 					assert(content.position.y + content.size.y <= child.size.y)
 	assert(scene.PANEL_RECT.position.x > scene.projection.ORIGIN.x + scene.projection.CANVAS_SIZE.x)
-	print("PASS UI: placement, pause, animation time, shovel confirmation, cancel, eight-card bounds, overlay input")
+	# Shop modal: transaction rebuilding, horizontal layout, closing and input isolation.
+	scene.run.new_run(25)
+	scene.set_panel_open(true)
+	await process_frame
+	await process_frame
+	assert(scene.shop_overlay.visible and not scene.panel.visible)
+	assert(scene.shop_items.get_child_count() == 3)
+	var last_right: float = 0.0
+	for item: Button in scene.shop_items.get_children():
+		assert(item.position.x >= last_right and item.position.y == 0)
+		assert(scene.SHOP_RECT.encloses(item.get_global_rect()))
+		last_right = item.position.x + item.size.x
+		for content: Control in item.get_children():
+			assert(Rect2(Vector2.ZERO, item.size).encloses(content.get_rect()))
+	event.position = scene.projection.project(Vector2(48, 48))
+	scene._unhandled_input(event)
+	assert(scene.move_from == Vector2i(-1, -1))
+	var offers: Array = scene.run.state.offers.duplicate(true)
+	var rng_state: int = scene.run.rng.state
+	scene._input(cancel)
+	assert(not scene.shop_overlay.visible)
+	scene.toggle_button.pressed.emit()
+	assert(scene.shop_overlay.visible)
+	assert(scene.run.state.offers == offers and scene.run.rng.state == rng_state)
+	var offer_id: String = offers[0].id
+	var coins_before: int = scene.run.state.coins
+	var count_before: int = scene.run.state.cards.get(offer_id, 0)
+	scene.shop_items.get_child(0).pressed.emit()
+	assert(scene.shop_overlay.visible and scene.shop_items.get_child(0).disabled)
+	assert(scene.run.state.coins == coins_before - scene.run.data.foods[offer_id].stats.price)
+	assert(scene.run.state.cards[offer_id] == count_before + 1)
+	scene.shop_items.get_child(0).pressed.emit()
+	assert(scene.run.state.cards[offer_id] == count_before + 1)
+	assert(scene.run.state.coins == coins_before - scene.run.data.foods[offer_id].stats.price)
+	scene.run.state.coins = 10
+	scene.rebuild()
+	scene.shop_refresh.pressed.emit()
+	assert(scene.run.state.coins == 8 and scene.run.state.refreshes == 1)
+	scene.shop_refresh.pressed.emit()
+	assert(scene.run.state.coins == 6 and scene.run.state.refreshes == 2 and scene.shop_refresh.disabled)
+	scene.run.state.coins = 0
+	scene.rebuild()
+	for item: Button in scene.shop_items.get_children(): assert(item.disabled)
+	for id: String in ArtCatalog.FOOD_IDS: scene.run.state.cards[id] = 6
+	scene.run.shop.generate()
+	scene.rebuild()
+	for item: Button in scene.shop_items.get_children():
+		assert(item.disabled and item.text == "已收集全部美食")
+	scene.shop_overlay.gui_input.emit(event)
+	assert(not scene.shop_overlay.visible and scene.move_from == Vector2i(-1, -1))
+	scene.toggle_button.pressed.emit()
+	scene.shop_surface.get_node("Close").pressed.emit()
+	assert(not scene.shop_overlay.visible)
+	scene.restart.confirmed.emit()
+	assert(scene.shop_overlay.visible and scene.run.state.phase == "prepare")
+	scene.run.start()
+	assert(not scene.shop_overlay.visible)
+	scene.shovel_button.pressed.emit()
+	assert(scene.shovel_cursor_active)
+	scene.run.state.phase = "recipe"
+	scene.update_controls()
+	assert(not scene.shovel and not scene.shovel_cursor_active)
+	scene.run.state.phase = "prepare"
+	scene.set_panel_open(false)
+	scene.shovel_button.pressed.emit()
+	assert(scene.shovel_cursor_active)
+	scene.set_panel_open(true)
+	assert(not scene.shovel and not scene.shovel_cursor_active)
+	scene.set_panel_open(false)
+	scene.shovel_button.pressed.emit()
+	assert(scene.shovel_cursor_active)
+	print("PASS UI: placement, pause, animation time, shovel cursor lifecycle and confirmation, cancel, eight-card bounds, overlay input")
 	scene.queue_free()
 	await process_frame
 	quit()

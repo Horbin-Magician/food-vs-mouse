@@ -16,6 +16,7 @@ var rng: RandomNumberGenerator
 var current_wave: Resource
 var enemies: Array = []
 var projectiles: Array = []
+var heat_pickups: Array[Dictionary] = []
 
 func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem, random: RandomNumberGenerator) -> void:
 	state = s
@@ -27,6 +28,7 @@ func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem, random:
 func clear() -> void:
 	enemies.clear()
 	projectiles.clear()
+	heat_pickups.clear()
 	for unit: Dictionary in state.units:
 		unit.timer = 0.0
 		unit.attacks = 0
@@ -45,8 +47,35 @@ func add_heat(amount: float) -> void:
 	state.metrics.overflow += maxf(0.0, state.heat + amount - data.rules.heat_cap)
 	state.heat = minf(data.rules.heat_cap, state.heat + amount)
 
+func produce_heat(unit: Dictionary) -> void:
+	var amount: float = data.rules.production * data.rules.star_production[state.star(unit.id) - 1] + recipes.value("caramel", "heat")
+	for pickup: Dictionary in heat_pickups:
+		if pickup.source_uid == unit.uid and pickup.flight < 0.0:
+			pickup.amount += amount
+			return
+	heat_pickups.append({"uid": state.uid(), "source_uid": unit.uid, "row": unit.row, "col": unit.col, "amount": amount, "age": 0.0, "flight": -1.0})
+
+func collect_heat(uid: int) -> bool:
+	if state.phase != "battle": return false
+	for pickup: Dictionary in heat_pickups:
+		if pickup.uid == uid and pickup.flight < 0.0:
+			pickup.flight = 0.0
+			return true
+	return false
+
+func advance_heat_pickups(delta: float) -> void:
+	for pickup: Dictionary in heat_pickups.duplicate():
+		if pickup.flight < 0.0:
+			pickup.age += delta
+		else:
+			pickup.flight += delta
+			if pickup.flight + 0.000001 >= data.rules.heat_flight_duration:
+				add_heat(pickup.amount)
+				heat_pickups.erase(pickup)
+
 func step(delta: float) -> void:
 	add_heat(data.rules.heat_rate * delta)
+	advance_heat_pickups(delta)
 	for id: String in state.cooldowns:
 		state.cooldowns[id] = maxf(0.0, state.cooldowns[id] - delta)
 	for unit: Dictionary in state.units.duplicate():
@@ -60,7 +89,7 @@ func step(delta: float) -> void:
 		if stats.kind == "producer":
 			unit.timer -= stats.interval
 			acted.emit(unit.uid)
-			add_heat(data.rules.production * data.rules.star_production[state.star(unit.id) - 1] + recipes.value("caramel","heat"))
+			produce_heat(unit)
 			continue
 		var target: Dictionary = nearest(unit.row, unit.col * 96.0 + 48.0, recipes.reach(unit.id) * 96.0)
 		if target.is_empty():

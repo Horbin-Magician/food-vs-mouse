@@ -6,6 +6,8 @@
 
 主场景拥有 RunController；它组合独立 RefCounted 控制器与 RunState，不使用 Autoload。UI 只发送请求，业务层检查阶段、暂停、费用、冷却和占用。BoardController 管理格子，CombatController 统一伤害／状态／弹体，WaveDirector 管理生成表，ShopController 管理交易，RecipeSystem 管理候选与修正，SaveService 管理独立局外与关间文件。
 
+生产火苗作为 CombatController 临时状态，由 RunController.collect_heat(uid) 接收 UI 拾取请求并校验阶段／暂停；固定步长推进飞行，到达后统一结算热量。表现节点 HeatPickupView 只读取火苗状态，坐标命中与绘制共享投影。数据、合并、清理和完整边界的权威说明见 [热量设计](../design/heat.md)。
+
 每帧以同一游戏 delta（真实 delta × 1 或 2）推进，暂停 delta 为零；以 1/60 秒固定步长执行模拟。伤害先处理死亡、后检查漏怪，步末先判粮仓归零，再判生成结束且无存活敌人。死亡和漏怪从集合移除，每个实体只结算一次。弹体不追踪死亡目标，普通弹命中沿路径首个敌人；穿透记录已命中 ID。攻击计时首次等待完整间隔，生产亦然。
 
 定义使用带稳定 ID 的自定义 Resource，stats 存放可调参数；实例加载后只读。运行实体为独立字典，uid 仅局内身份。运行状态保存基础数据，不保存对象引用。跨模块通过显式方法和信号：CombatController.unit_died(food_id)、enemy_leaked(damage)、enemy_killed(enemy_id)；RunController.changed 通知 UI，阶段只由 RunController 切换。
@@ -30,10 +32,15 @@ prepare → battle → recipe → prepare，最终进入 won/lost。开局商店
 
 开发面板仅 `-- --dev` 且调试构建开启，允许指定种子、准备阶段跳到指定关、加资源，显示各路敌人生命总量。发行导出不接受此入口。压力验证独立场景，直接构造 40 个美食和 100 个敌人用于性能测量，不算正常通关。
 
-输入：`cancel_selection` 为 Esc／右键，`board_select` 为左键，`debug_panel` 为 F3；仅查看与速度／暂停控制在暂停时可用。重开有确认；三个首关引导可逐条跳过。当前视觉为程序绘制原创卡通占位，音效由项目内合成器生成；无外部素材依赖。真实美术质量与玩法可读性列入试玩验收。
+输入：`cancel_selection` 为 Esc／右键，`board_select` 为左键，`debug_panel` 为 F3；仅查看与速度／暂停控制在暂停时可用。重开有确认；首关步骤式引导已取消，详情与反馈依据 [UI 规范](../art/ui.md#提示栏与引导移除2026-09-13)。当前视觉为程序绘制原创卡通占位，音效由项目内合成器生成；无外部素材依赖。真实美术质量与玩法可读性列入试玩验收。
 
 性能实现：每个模拟步在弹体伤害结算后收集鼓手来源，移动只查询该集合；已死亡或越界来源立即排除。UI 缓存两种格子 StyleBox，不在每帧创建 40 个 Resource。两项均不改变数值与随机源消费顺序。
 
 ## 棋盘几何扩展（2026-09-13）
 
 当前几何为 7 行 × 9 列，详见 [棋盘布局](../art/perspective.md)。RunState 提供共享行列与宽度常量；业务边界、生成中央行、随机召唤范围、存档格子唯一键和表现映射统一采用新几何。版本 1 存档继续保留原坐标；全盘保存上限改为 63。新旧范围与实际检查见 [布局验证](../testing/layout.md)。
+
+
+## 卡牌拖放接口（2026-09-13）
+
+已实现并通过相关回归：BoardController.placement_error(id, row, col, paused) 提供无副作用的放置合法性查询，返回空字符串或失败原因；place 在写入前复用该查询，保证预览与结算使用同一规则。主场景只持有临时拖动 ID、起点、阶段／暂停快照和阈值状态，不写 RunState。左键按下由卡牌 gui_input 发起，移动和松手由主场景 _input 接收；取消与生命周期清理不触发业务操作。规则见 [UI 规范](../art/ui.md#美食卡拖放2026-09-13)。

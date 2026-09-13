@@ -75,9 +75,19 @@ func run_test() -> void:
 	await process_frame
 	await process_frame
 	assert(scene.cards.get_child_count() == 8)
+	for count: int in [1, 3, 6]:
+		scene.run.state.cards["bun"] = count
+		scene.rebuild()
+		await process_frame
+		var card: Button = scene.cards.get_child(0)
+		assert(card.get_node("UpgradeStar/Level").text == str(scene.run.state.star("bun")))
+		assert(card.get_node("Cost").text == "100")
+		assert(card.get_node("Portrait").get_rect().end.y <= card.get_node("Cost").position.y)
+		assert(card.get_node("UpgradeStar").mouse_filter == Control.MOUSE_FILTER_IGNORE)
+
 	assert(scene.cards.position.x >= 190)
 	assert(scene.cards.get_global_rect().end.x < scene.shovel_button.position.x)
-	assert(scene.cards.get_global_rect().end.y <= 66)
+	assert(scene.cards.get_global_rect().end.y <= 82)
 	# A visible overlay consumes its entire rectangle, including blank areas.
 	scene.run.state.phase = "prepare"
 	scene.rebuild()
@@ -150,6 +160,28 @@ func run_test() -> void:
 	scene.run.state.cooldowns.clear()
 	scene.run.state.heat = 0
 	assert(scene.card_status("bun") == "热量不足")
+	var bun_card: Button = scene.cards.get_child(0)
+	for heat: float in [99.0, 100.0, 99.0, 350.0]:
+		scene.run.state.heat = heat
+		scene.update_controls()
+		assert(bun_card.material.get_shader_parameter("unaffordable") == (heat < 100))
+		assert(not scene.cards.get_child(1).material.get_shader_parameter("unaffordable"))
+	scene.run.state.heat = 99
+	scene.run.state.cooldowns["bun"] = 7
+	scene.run.paused = true
+	scene.update_controls()
+	assert(bun_card.material.get_shader_parameter("unaffordable") and mask.visible)
+	assert(bun_card.get_node("Portrait").material == bun_card.material)
+	assert(bun_card.get_node("UpgradeStar/Level").material == bun_card.material)
+	assert(mask.material != bun_card.material)
+	scene.run.state.heat = 100
+	scene.update_controls()
+	assert(not bun_card.material.get_shader_parameter("unaffordable") and mask.visible)
+	scene.run.state.heat = 99
+	scene.run.state.cooldowns.clear()
+	scene.update_controls()
+	assert(bun_card.material.get_shader_parameter("unaffordable") and not mask.visible)
+	scene.run.paused = false
 	scene.run.state.heat = 350
 	scene.selected = "bun"
 	assert("已选中" in scene.card_status("bun"))

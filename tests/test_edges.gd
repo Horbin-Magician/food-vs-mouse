@@ -10,7 +10,7 @@ func _init() -> void:
 		assert(run.board.place("pudding",row,0,false) == "")
 	run.state.heat = 350
 	run.state.cooldowns.clear()
-	assert(run.board.place("pudding",0,1,false) != "" and run.state.heat == 350)
+	assert(run.board.place("pudding",0,1,false) == "" and run.state.heat == 300)
 	for row: int in range(RunState.ROWS):
 		for col: int in range(RunState.COLS):
 			if not run.board.at(row,col).is_empty(): continue
@@ -43,7 +43,7 @@ func _init() -> void:
 	for i: int in range(599): run.combat.step(1.0/60.0)
 	assert(run.state.heat < 20.0 and run.combat.heat_pickups.is_empty(),"production waits full cycle")
 	for i: int in range(2): run.combat.step(1.0/60.0)
-	assert(run.state.heat < 21.0 and run.combat.heat_pickups.size() == 5,"production creates pickups without direct credit")
+	assert(run.state.heat < 21.0 and run.combat.heat_pickups.size() == 6,"production creates pickups without direct credit")
 	run.new_run(2)
 	run.start()
 	for i: int in range(4):
@@ -87,5 +87,5 @@ func _init() -> void:
 		assert(d1.events == d2.events)
 		for i: int in range(2,d1.events.size()):
 			assert(not (d1.events[i].row == d1.events[i-1].row and d1.events[i].row == d1.events[i-2].row))
-	print("PASS edges: full board, pudding cap, swap identity, production, piercing, area deaths, burn, slow, speed, 100 seeds")
+	print("PASS edges: full board, unlimited pudding, swap identity, production, piercing, area deaths, burn, slow, speed, 100 seeds")
 	quit()

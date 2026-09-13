@@ -33,5 +33,14 @@ func _init() -> void:
 	run.director.cursor = run.director.events.size()
 	run.advance(1.0/60.0)
 	check(run.state.phase == "lost", "pantry zero takes priority over clear")
+	run.new_run(43)
+	run.start()
+	for row: int in range(RunState.ROWS):
+		for col: int in range(RunState.COLS):
+			run.state.heat = 350
+			run.state.cooldowns.clear()
+			check(run.board.place("pudding", row, col, false).is_empty(), "same food fills board")
+	heat = run.state.heat
+	check(not run.board.place("pudding", 0, 0, false).is_empty() and run.state.heat == heat and run.state.units.size() == 63, "full board atomic")
 	print("PASS core ", checks)
 	quit(0)

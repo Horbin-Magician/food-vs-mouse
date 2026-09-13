@@ -102,7 +102,6 @@ func validate(p: Dictionary, data: Catalog) -> bool:
 		if offer.id != "" and not data.foods.has(offer.id): return false
 	seen.clear()
 	var uids: Array = []
-	var pudding_count: int = 0
 	for unit: Variant in p.units:
 		if not unit is Dictionary or not p.cards.has(unit.get("id")): return false
 		if not number(unit.get("row"),0,RunState.ROWS-1,true) or not number(unit.get("col"),0,RunState.COLS-1,true): return false
@@ -114,8 +113,6 @@ func validate(p: Dictionary, data: Catalog) -> bool:
 		if not number(unit.get("hp"),0.00001,data.foods[unit.id].stats.hp*data.rules.star_hp[star]): return false
 		for key: String in ["timer","attacks","flour","flash"]:
 			if not number(unit.get(key),0,1000000): return false
-		if unit.id == "pudding": pudding_count += 1
-	if pudding_count > data.rules.pudding_cap: return false
 	for key: String in ["kills","puddings","passed","leaks","deaths","overflow"]:
 		if not number(p.metrics.get(key),0,100000000): return false
 	if not p.metrics.get("damage") is Dictionary or not p.metrics.get("recipes") is Array: return false

@@ -18,6 +18,10 @@ func _init() -> void:
 	run.start()
 	run.board.place("bun",2,0,false)
 	run.state.units[0].hp = 90.0
+	for col: int in range(6):
+		run.state.heat = 350
+		run.state.cooldowns.clear()
+		assert(run.board.place("pudding", 0, col, false).is_empty())
 	run.finish_wave()
 	assert(run.saves.save_run(run.state,run.rng))
 	snapshot = run.saves.load_run(run.data)

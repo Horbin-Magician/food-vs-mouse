@@ -3,7 +3,7 @@ extends Node2D
 var projection: BoardProjection = BoardProjection.new()
 var art: ArtCatalog = ArtCatalog.new()
 var animator: UnitAnimator = UnitAnimator.new()
-const TOP_RECT := Rect2(12, -16, 1256, 88)
+const TOP_RECT := Rect2(12, -16, 1256, 100)
 const FOOTER_Y := 678.0
 const SHOP_RECT := Rect2(220, 152, 840, 416)
 const PANEL_RECT := Rect2(974, 180, 282, 444)
@@ -119,7 +119,7 @@ func _ready() -> void:
 	button("重新开局", Vector2(836, FOOTER_Y), func() -> void: restart.popup_centered(Vector2i(460, 190)))
 	cards = HBoxContainer.new()
 	cards.position = Vector2(190, 6)
-	cards.add_theme_constant_override("separation", 6)
+	cards.add_theme_constant_override("separation", 8)
 	ui.add_child(cards)
 	panel = VBoxContainer.new()
 	panel.position = PANEL_RECT.position + Vector2(18, 18)
@@ -253,21 +253,48 @@ func rebuild() -> void:
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
 		var stats: Dictionary = run.data.foods[id].stats
-		node.custom_minimum_size = Vector2(110, 60)
+		node.custom_minimum_size = Vector2(72, 76)
+		GameTheme.food_card(node)
+		var affordability := ShaderMaterial.new()
+		affordability.shader = preload("res://scripts/ui/card_affordability.gdshader")
+		node.material = affordability
 		node.toggle_mode = true
 		node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		var portrait: TextureRect = TextureRect.new()
-		portrait.texture = art.food(id)
+		portrait.texture = art.food_portrait(id)
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		portrait.position = Vector2(6,4)
-		portrait.size = Vector2(36,34)
+		portrait.name = "Portrait"
+		portrait.position = Vector2(12,8)
+		portrait.size = Vector2(48,43)
 		portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		node.add_child(portrait)
-		card_label(node, run.data.foods[id].title, Vector2(44,5), Vector2(62,21), 14, GameTheme.TEXT)
-		card_label(node, "★%d" % run.state.star(id), Vector2(44,26), Vector2(62,16), 12, GameTheme.GOLD)
-		var cost: Label = card_label(node, "%d 热 · %d/6" % [stats.cost,run.state.cards[id]], Vector2(8,43), Vector2(98,15), 11, GameTheme.MUTED)
+		var badge := TextureRect.new()
+		badge.name = "UpgradeStar"
+		badge.texture = preload("res://assets/ui/upgrade_star.svg")
+		badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		badge.position = Vector2(48, 0)
+		badge.size = Vector2(24, 24)
+		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		node.add_child(badge)
+		var level := card_label(badge, str(run.state.star(id)), Vector2(0, 5), Vector2(24, 16), 11, Color("#fff7ec"))
+		level.name = "Level"
+		level.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var flame := TextureRect.new()
+		flame.texture = preload("res://assets/ui/flame.svg")
+		flame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		flame.position = Vector2(12, 58)
+		flame.size = Vector2(10, 11)
+		flame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		node.add_child(flame)
+		var cost: Label = card_label(node, str(stats.cost), Vector2(24,55), Vector2(36,18), 14, Color("#304447"))
+		cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cost.name = "Cost"
+		# Share only within this card; cooldown and selection retain their own colors.
+		for content: Control in node.get_children():
+			content.material = affordability
+			for detail: Control in content.get_children():
+				detail.material = affordability
 		var cooldown: ColorRect = ColorRect.new()
 		cooldown.color = Color(0.02, 0.05, 0.06, 0.62)
 		cooldown.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -277,12 +304,21 @@ func rebuild() -> void:
 		cooldown.material = mask_material
 		node.add_child(cooldown)
 		cooldown.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		node.tooltip_text = "%s · %s\n生命 %.0f · 伤害 %.0f\n间隔 %.2f 秒 · 射程 %.1f 格\n放置冷却 %.0f 秒 · 累计 3/6 张升星" % [run.data.foods[id].title, FOOD_ROLES.get(id,"美食"), run.board.max_hp(id), stats.damage * run.data.rules.star_hp[run.state.star(id) - 1], stats.interval, run.recipes.reach(id), stats.cooldown]
+		var selection := Panel.new()
+		selection.name = "Selection"
+		selection.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var selection_style := GameTheme.box(Color.TRANSPARENT, 6, GameTheme.GOLD)
+		selection_style.set_border_width_all(2)
+		selection.add_theme_stylebox_override("panel", selection_style)
+		selection.visible = false
+		node.add_child(selection)
+		selection.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		node.tooltip_text = "%s · %s\n生命 %.0f · 伤害 %.0f\n间隔 %.2f 秒 · 射程 %.1f 格\n放置冷却 %.0f 秒 · 持有 %d/6 张 · 累计 3/6 张升星" % [run.data.foods[id].title, FOOD_ROLES.get(id,"美食"), run.board.max_hp(id), stats.damage * run.data.rules.star_hp[run.state.star(id) - 1], stats.interval, run.recipes.reach(id), stats.cooldown, run.state.cards[id]]
 		node.set_meta("details", node.tooltip_text)
 		node.gui_input.connect(func(event: InputEvent) -> void:
 			if event.is_action_pressed("board_select"): begin_card_drag(id))
 		cards.add_child(node)
-	cards.position.x = 190 + (922 - (run.state.cards.size() * 116 - 6)) * 0.5
+	cards.position.x = 190 + (922 - (run.state.cards.size() * 80 - 8)) * 0.5
 	sync_panel_visibility()
 
 func set_panel_open(value: bool) -> void:
@@ -505,10 +541,10 @@ func update_controls() -> void:
 		var id: String = run.state.cards.keys()[index]
 		var card: Button = cards.get_child(index)
 		card.set_pressed_no_signal(id == selected)
+		card.get_node("Selection").visible = id == selected
 		var remaining: float = run.state.cooldowns.get(id,0.0)
 		card.tooltip_text = "" if drag_active else "%s\n%s\n按住拖到格子放置 · 右键 / Esc 取消" % [card.get_meta("details"), card_status(id)]
-		var cost: Label = card.get_node("Cost")
-		cost.add_theme_color_override("font_color", GameTheme.DANGER if phase == "battle" and run.state.heat < run.data.foods[id].stats.cost else GameTheme.MUTED)
+		card.material.set_shader_parameter("unaffordable", run.state.heat < run.data.foods[id].stats.cost)
 		var cooldown: ColorRect = card.get_node("Cooldown")
 		var duration: float = run.data.foods[id].stats.cooldown
 		var ratio: float = clampf(remaining / duration, 0, 1) if duration > 0 else 0.0

@@ -136,7 +136,7 @@ func run_test() -> void:
 	mouse(cell(8, 6), true)
 	mouse(cell(8, 6), false)
 	assert(scene.run.board.at(6, 8).id == "bun")
-	# The cap is shared by preview and actual placement.
+	# A sixth pudding is legal in both preview and actual placement.
 	for col: int in range(5):
 		scene.run.state.cooldowns.clear()
 		scene.run.state.heat = 350
@@ -144,9 +144,9 @@ func run_test() -> void:
 	scene.run.state.cooldowns.clear()
 	scene.run.state.heat = 350
 	await begin("pudding", cell(5, 2))
-	assert("5" in scene.drag_placement_error())
+	assert(scene.drag_placement_error().is_empty())
 	mouse(cell(5, 2), false)
-	assert(scene.run.state.units.size() == 7 and scene.run.state.heat == 350)
+	assert(scene.run.state.units.size() == 8 and scene.run.state.heat == 300)
 	await begin("bun", cell(1, 0))
 	scene.restart.popup_centered()
 	scene._process(0)

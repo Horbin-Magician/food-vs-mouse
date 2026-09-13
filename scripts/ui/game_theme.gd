@@ -60,3 +60,13 @@ static func primary(node: Button) -> void:
 	node.add_theme_stylebox_override("pressed", box(Color("84c7a5"), 10))
 	for state: String in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
 		node.add_theme_color_override(state, BG)
+
+static func food_card(node: Button) -> void:
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
+		var frame := StyleBoxTexture.new()
+		frame.texture = preload("res://assets/ui/food_card.svg")
+		frame.modulate_color = Color("fff0bc") if state in ["pressed", "hover_pressed"] else (Color("c8fff0") if state == "hover" else Color.WHITE)
+		node.add_theme_stylebox_override(state, frame)
+	var focus := box(Color.TRANSPARENT, 6, GOLD)
+	focus.set_border_width_all(2)
+	node.add_theme_stylebox_override("focus", focus)

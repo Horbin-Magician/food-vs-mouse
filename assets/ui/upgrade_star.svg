@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs><linearGradient id="gem" x2=".3" y2="1"><stop stop-color="#db9ada"/><stop offset=".5" stop-color="#a657b6"/><stop offset="1" stop-color="#653877"/></linearGradient></defs>
+<path d="M16 1.5 20.4 10.5 30.4 12 23.2 19 24.9 29 16 24.3 7.1 29 8.8 19 1.6 12 11.6 10.5Z" fill="url(#gem)" stroke="#442e55" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M16 4 19.6 12 27 13 21.4 18.4 22.8 25.8 16 22.3 9.2 25.8 10.6 18.4 5 13 12.4 12Z" fill="none" stroke="#f4c9ee" stroke-width="1"/>
+<path d="M16 4 19.6 12 27 13 16 15Z" fill="#ffe2f2" opacity=".25"/>
+</svg>

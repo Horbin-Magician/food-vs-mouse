@@ -27,11 +27,6 @@ func placement_error(id: String, row: int, col: int, paused: bool) -> String:
 	var definition: Dictionary = data.foods[id].stats
 	if state.heat < definition.cost: return "热量不足"
 	if state.cooldowns.get(id, 0.0) > 0: return "卡牌冷却中"
-	if id == "pudding":
-		var count: int = 0
-		for unit: Dictionary in state.units:
-			if unit.id == id: count += 1
-		if count >= data.rules.pudding_cap: return "布丁最多同时存在 5 个"
 	return ""
 
 func place(id: String, row: int, col: int, paused: bool) -> String:

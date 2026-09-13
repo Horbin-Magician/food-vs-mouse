@@ -14,7 +14,7 @@
 | [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 回归及窗口拾取通过，缩放限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
-| [art/ui.md](art/ui.md) | 全局 UI 主题、热量图标、卡牌拖放与整卡冷却、小铺横排弹窗规范 | 已接入，验证见专页 |
+| [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
 | [art/animation.md](art/animation.md) | 全单位待机、放置、攻击与移动动画规则及验收 | 已实现，鼠标复验待完成 |

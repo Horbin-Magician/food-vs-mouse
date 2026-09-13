@@ -1,6 +1,9 @@
 class_name BoardController
 extends RefCounted
 
+signal placed(unit: Dictionary)
+signal moved(unit: Dictionary, from_row: int, from_col: int)
+
 var state: RunState
 var data: Catalog
 
@@ -32,6 +35,7 @@ func place(id: String, row: int, col: int, paused: bool) -> String:
 	state.heat -= definition.cost
 	state.cooldowns[id] = float(definition.cooldown)
 	state.units.append({"uid": state.uid(), "id": id, "row": row, "col": col, "hp": max_hp(id), "timer": 0.0, "attacks": 0, "flour": 0.0, "flash": 0.0})
+	placed.emit(state.units[-1])
 	if id == "pudding": state.metrics.puddings += 1
 	return ""
 
@@ -40,12 +44,15 @@ func move(row: int, col: int, target_row: int, target_col: int) -> String:
 	if target_row < 0 or target_row >= 5 or target_col < 0 or target_col >= 8: return "目标超出阵地"
 	var source: Dictionary = at(row, col)
 	if source.is_empty(): return "原格子为空"
+	if row == target_row and col == target_col: return ""
 	var target: Dictionary = at(target_row, target_col)
 	if not target.is_empty():
 		target.row = row
 		target.col = col
+		moved.emit(target, target_row, target_col)
 	source.row = target_row
 	source.col = target_col
+	moved.emit(source, row, col)
 	return ""
 
 func remove(row: int, col: int, paused: bool, confirmed: bool) -> String:

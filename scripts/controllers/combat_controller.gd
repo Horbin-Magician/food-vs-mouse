@@ -1,6 +1,9 @@
 class_name CombatController
 extends RefCounted
 
+signal acted(uid: int)
+signal spawned(unit: Dictionary)
+
 signal unit_died(food_id: String)
 signal enemy_leaked(damage: int)
 signal enemy_killed(enemy_id: String)
@@ -36,6 +39,8 @@ func spawn(id: String, row: int, wave: Resource) -> void:
 	var damage_scale: float = 1.0 if id == "boss" else wave.stats.damage_scale
 	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
 
+	spawned.emit(enemies[-1])
+
 func add_heat(amount: float) -> void:
 	state.metrics.overflow += maxf(0.0, state.heat + amount - data.rules.heat_cap)
 	state.heat = minf(data.rules.heat_cap, state.heat + amount)
@@ -54,6 +59,7 @@ func step(delta: float) -> void:
 		if unit.timer < interval: continue
 		if stats.kind == "producer":
 			unit.timer -= stats.interval
+			acted.emit(unit.uid)
 			add_heat(data.rules.production * data.rules.star_production[state.star(unit.id) - 1] + recipes.value("caramel","heat"))
 			continue
 		var target: Dictionary = nearest(unit.row, unit.col * 96.0 + 48.0, recipes.reach(unit.id) * 96.0)
@@ -62,6 +68,7 @@ func step(delta: float) -> void:
 			continue
 		unit.timer = 0.0
 		unit.attacks += 1
+		acted.emit(unit.uid)
 		if stats.kind == "melee":
 			damage_enemy(target,recipes.damage(unit),unit.id)
 		else:
@@ -107,6 +114,7 @@ func step(delta: float) -> void:
 			enemy.timer += delta
 			if enemy.timer >= 1.0:
 				enemy.timer -= 1.0
+				acted.emit(enemy.uid)
 				damage_unit(blocker, enemy.dps)
 		if enemy.x < 0.0:
 			enemies.erase(enemy)

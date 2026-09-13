@@ -2,7 +2,7 @@ extends Node2D
 
 var projection: BoardProjection = BoardProjection.new()
 var art: ArtCatalog = ArtCatalog.new()
-var presentation_time: float = 0.0
+var animator: UnitAnimator = UnitAnimator.new()
 var panel_style: StyleBoxFlat
 var run: RunController = RunController.new()
 var selected: String = ""
@@ -10,6 +10,10 @@ var pointer: Vector2 = Vector2(-1,-1)
 var move_from: Vector2i = Vector2i(-1, -1)
 var shovel: bool = false
 var pending_remove: Vector2i
+var heat_label: Label
+var shovel_button: Button
+var panel_open: bool = true
+var layout_phase: String = ""
 var header: Label
 var notice: Label
 var cards: HBoxContainer
@@ -39,21 +43,30 @@ func _ready() -> void:
 	sound = SoundService.new()
 	add_child(sound)
 	RenderingServer.set_default_clear_color(Color("151e2c"))
-	header = label(Vector2(30, 20), 22)
-	notice = label(Vector2(30, 105), 18)
-	button("开始鼠潮", Vector2(920, 25), func() -> void: run.start(); rebuild())
-	button("暂停 / 继续", Vector2(1040, 25), func() -> void:
+	heat_label = label(Vector2(34, 25), 29)
+	header = label(Vector2(1005, 647), 17)
+	notice = label(Vector2(32, 145), 16)
+	notice.size = Vector2(1180, 26)
+	notice.clip_text = true
+	button("开始鼠潮", Vector2(30, 117), func() -> void: run.start(); rebuild())
+	button("暂停 / 继续", Vector2(154, 117), func() -> void:
 		if run.state.phase == "battle": run.paused = not run.paused)
-	button("1× / 2×", Vector2(1170, 25), func() -> void: run.speed = 3.0 - run.speed)
-	button("全场维修 · 4 金", Vector2(920, 75), func() -> void: report(run.board.repair()))
-	button("铲除", Vector2(1080, 75), func() -> void: shovel = not shovel; selected = "")
-	button("重新开局", Vector2(1160, 75), func() -> void: restart.popup_centered())
+	button("1× / 2×", Vector2(290, 117), func() -> void: run.speed = 3.0 - run.speed)
+	button("全场维修 · 4 金", Vector2(390, 117), func() -> void: report(run.board.repair()))
+	button("小铺 / 食谱", Vector2(1020, 117), func() -> void: panel_open = not panel_open)
+	shovel_button = button("锅铲\n铲除", Vector2(1150, 20), func() -> void:
+		shovel = not shovel
+		selected = ""
+		move_from = Vector2i(-1,-1))
+	shovel_button.custom_minimum_size = Vector2(98, 82)
+	shovel_button.tooltip_text = "选中锅铲后点击美食铲除；右键或 Esc 取消。战斗中需确认，无返还。"
+	button("重新开局", Vector2(1160, 117), func() -> void: restart.popup_centered())
 	cards = HBoxContainer.new()
-	cards.position = Vector2(30, 580)
-	cards.add_theme_constant_override("separation", 8)
+	cards.position = Vector2(190, 18)
+	cards.add_theme_constant_override("separation", 6)
 	add_child(cards)
 	panel = VBoxContainer.new()
-	panel.position = Vector2(940, 155)
+	panel.position = Vector2(924, 196)
 	panel.add_theme_constant_override("separation", 12)
 	add_child(panel)
 	confirm = ConfirmationDialog.new()
@@ -68,9 +81,9 @@ func _ready() -> void:
 		tutorial_step = 0
 		rebuild())
 	add_child(restart)
-	inspect = label(Vector2(940,475),14)
-	tutorial = label(Vector2(30,695),15)
-	tutorial_skip = button("跳过引导",Vector2(1150,690),func() -> void: tutorial_step = mini(3,tutorial_step+1))
+	inspect = label(Vector2(32,640),15)
+	tutorial = label(Vector2(32,690),14)
+	tutorial_skip = button("跳过引导",Vector2(870,685),func() -> void: tutorial_step = mini(3,tutorial_step+1))
 	if debug_enabled: create_debug_panel()
 	run.changed.connect(rebuild)
 	if not run.resume_run():
@@ -107,6 +120,9 @@ func rebuild() -> void:
 	for child: Node in panel.get_children():
 		panel.remove_child(child)
 		child.queue_free()
+	if layout_phase != run.state.phase:
+		panel_open = run.state.phase != "battle"
+		layout_phase = run.state.phase
 	var title: Label = Label.new()
 	title.text = {"recipe":"食谱三选一","prepare":"打烊小铺","battle":"正在守卫粮仓","won":"胜利","lost":"失败"}.get(run.state.phase,"")
 	panel.add_child(title)
@@ -128,26 +144,37 @@ func rebuild() -> void:
 		summary.text = "今夜战报\n战斗 %.1f 分钟\n击杀 %d · 漏粮 %d\n美食阵亡 %d" % [run.state.elapsed/60.0,run.state.metrics.kills,run.state.metrics.leaks,run.state.metrics.deaths]
 		panel.add_child(summary)
 	var owned: Label = Label.new()
-	owned.text = "已选食谱："
-	for id: String in run.state.recipes: owned.text += "\n" + run.data.recipes[id].title
+	owned.text = "已选食谱 %d · 悬停查看" % run.state.recipes.size()
+	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + "\n"
 	owned.add_theme_font_size_override("font_size",16)
 	panel.add_child(owned)
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
 		var stats: Dictionary = run.data.foods[id].stats
-		node.text = "%s ★%d\n热量 %d · %d/6" % [run.data.foods[id].title, run.state.star(id), stats.cost, run.state.cards[id]]
-		node.custom_minimum_size = Vector2(142, 90)
+		node.text = "%s ★%d\n%d 热量 · %d/6" % [run.data.foods[id].title, run.state.star(id), stats.cost, run.state.cards[id]]
+		node.custom_minimum_size = Vector2(110, 78)
 		node.add_theme_font_size_override("font_size", 14)
-		decorate_button(node, art.food(id), 40)
+		decorate_button(node, art.food(id), 32)
 		node.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 		node.tooltip_text = "生命 %.0f · 伤害 %.0f\n间隔 %.2f 秒 · 射程 %.1f 格\n放置冷却 %.0f 秒" % [run.board.max_hp(id), stats.damage * run.data.rules.star_hp[run.state.star(id) - 1], stats.interval, run.recipes.reach(id), stats.cooldown]
 		node.pressed.connect(func() -> void: selected = id; shovel = false; move_from = Vector2i(-1,-1))
 		cards.add_child(node)
+	cards.position.x = 190 + (922 - (run.state.cards.size() * 116 - 6)) * 0.5
 
 func _process(delta: float) -> void:
+	animator.bind(run, projection)
+	var before: float = run.state.elapsed
 	run.advance(delta)
-	if not run.paused and run.state.phase == "battle": presentation_time += delta * run.speed
-	header.text = "深夜食堂   |   第 %d 关   粮仓 %d/10   金币 %d   热量 %d/350   %s %s" % [run.state.wave, run.state.pantry, run.state.coins, run.state.heat, "暂停" if run.paused else {"prepare":"准备","battle":"战斗","recipe":"选谱","won":"胜利","lost":"失败"}.get(run.state.phase,run.state.phase), "%.0f×" % run.speed]
+	var visual_delta: float = 0.0
+	if not run.paused:
+		visual_delta = run.state.elapsed - before if run.state.phase == "battle" else (minf(delta, 0.25) if run.state.phase == "prepare" else 0.0)
+	animator.advance(visual_delta, run.combat.enemies)
+	heat_label.text = "热量 %d\n" % run.state.heat
+	heat_label.tooltip_text = "每关上限 350；每秒恢复 5，准备阶段不恢复。"
+	header.text = "第 %02d / 08 关 · %s\n鼠潮 %d/%d · 余鼠 %d" % [run.state.wave, "暂停" if run.paused else {"prepare":"准备","battle":"战斗","recipe":"选谱","won":"胜利","lost":"失败"}.get(run.state.phase,""), run.director.cursor,run.director.events.size(),run.combat.enemies.size()]
+	shovel_button.modulate = Color("ffd38c") if shovel else Color.WHITE
+	for index: int in range(cards.get_child_count()):
+		cards.get_child(index).modulate = Color("ffd38c") if run.state.cards.keys()[index] == selected else Color.WHITE
 	notice.text = run.message
 	if run.state.phase != old_phase and run.state.phase in ["recipe","won"]: sound.cue("clear")
 	if run.state.pantry < old_pantry: sound.cue("danger")
@@ -196,7 +223,7 @@ func text_at(position_value: Vector2, title: String, color: Color = Color.WHITE,
 
 func _draw() -> void:
 	if run.state == null: return
-	draw_texture_rect(ArtCatalog.BACKGROUND, Rect2(0, 0, 1280, 720), false)
+	draw_kitchen()
 	draw_board()
 	var hovered: Dictionary = hovered_unit()
 	if not hovered.is_empty():
@@ -218,14 +245,36 @@ func _draw() -> void:
 			var event: Dictionary = run.director.events[i]
 			if event.time - run.director.elapsed <= 5:
 				text_at(projection.foot(775, event.row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
-	draw_style_box(panel_style, Rect2(18, 12, 1244, 82))
-	draw_style_box(panel_style, Rect2(18, 100, 886, 36))
-	draw_style_box(panel_style, Rect2(926, 140, 340, 398))
-	draw_style_box(panel_style, Rect2(18, 540, 1244, 180))
-	text_at(Vector2(30,555),"选中：%s   %s   鼠潮 %d/%d · 场上 %d" % [run.data.foods[selected].title if selected != "" else "无", "铲除模式" if shovel else "右键 / Esc 取消", run.director.cursor,run.director.events.size(),run.combat.enemies.size()])
+	draw_style_box(panel_style, Rect2(18, 12, 1244, 96))
+	text_at(Vector2(34, 80), "粮仓 %d/10 · 金币 %d" % [run.state.pantry,run.state.coins], Color("f2dab2"), 14)
+	text_at(Vector2(580, 138), "%s · %.0f×" % ["锅铲已选中" if shovel else (run.data.foods[selected].title if selected != "" else "选择美食 / 调整阵地"), run.speed], Color("f3dbb8"), 15)
+	if panel.visible:
+		draw_style_box(panel_style, Rect2(910, 180, 346, 426))
+	draw_style_box(panel_style, Rect2(18, 632, 966, 82))
+	draw_style_box(panel_style, Rect2(994, 632, 268, 82))
 	for i: int in range(run.state.cards.size()):
 		var id: String = run.state.cards.keys()[i]
-		text_at(Vector2(35 + i * 150,682),"冷却 %.1f 秒" % run.state.cooldowns.get(id,0.0),Color("a9bac9"),14)
+		var remaining: float = run.state.cooldowns.get(id,0.0)
+		text_at(Vector2(cards.position.x + 8 + i * 116,101), "冷却 %.1fs" % remaining if remaining > 0 else "可放置", Color("f0cea0") if remaining > 0 else Color("a8d5b5"),12)
+
+func draw_kitchen() -> void:
+	draw_rect(Rect2(0,0,1280,720), Color("233c38"))
+	# Flat backsplash and wooden worktop, aligned with the board and HUD.
+	for y: int in range(3):
+		for x: int in range(16):
+			draw_rect(Rect2(x * 84 + 2, y * 62 + 2,80,58), Color("304e46"))
+	draw_style_box(tile_style(Color("78543b")), Rect2(18,166,1244,458))
+	for y: int in range(178,624,24):
+		draw_line(Vector2(24,y),Vector2(1256,y),Color("8a624442"),1)
+	draw_style_box(tile_style(Color("392e25")), Rect2(138,170,984,452))
+	for row: int in range(5):
+		var center: Vector2 = projection.foot(-51,row) - Vector2(0,18)
+		draw_circle(center,33,Color("d8c7a2"))
+		draw_circle(center,26,Color("ede1c0"))
+		draw_arc(center,22,0,TAU,32,Color("baa986"),2,true)
+		var entry: Vector2 = projection.foot(812,row) - Vector2(16,40)
+		draw_style_box(tile_style(Color("433e32")),Rect2(entry,Vector2(64,58)))
+		text_at(entry + Vector2(17,36),"◀",Color("c5a779"),22)
 
 func outline(points: PackedVector2Array, color: Color, width: float = 1.0) -> void:
 	var closed: PackedVector2Array = points.duplicate()
@@ -236,7 +285,7 @@ func draw_board() -> void:
 	var edge: PackedVector2Array = projection.polygon(Rect2(Vector2.ZERO, BoardProjection.LOGICAL_SIZE))
 	var front: PackedVector2Array = PackedVector2Array([edge[3], edge[2], edge[2] + Vector2(0, 8), edge[3] + Vector2(0, 8)])
 	draw_colored_polygon(front, Color("102a29"))
-	draw_colored_polygon(edge, Color("173f3c30"))
+	draw_colored_polygon(edge, Color("c8c59b"))
 	outline(edge, Color("c5a56b85"), 1.5)
 	var hover_cell: Vector2i = projection.cell_at(pointer)
 	for row: int in range(5):
@@ -244,8 +293,8 @@ func draw_board() -> void:
 		text_at(exit_pos + Vector2(-22, 0), "◀", Color("d6c6a0"), 18)
 		for col: int in range(8):
 			var tile: PackedVector2Array = projection.tiles[row * 8 + col]
-			draw_colored_polygon(tile, Color("54807822") if (row + col) % 2 == 0 else Color("17363118"))
-			outline(tile, Color("a2b8a335"))
+			draw_colored_polygon(tile, Color("d7cdab") if (row + col) % 2 == 0 else Color("9fae89"))
+			outline(tile, Color("f0e1b555"))
 			if move_from == Vector2i(col, row):
 				draw_colored_polygon(tile, Color("e7c07630"))
 				outline(tile, Color("f8d482"), 2.0)
@@ -256,8 +305,9 @@ func draw_board() -> void:
 func draw_food(unit: Dictionary) -> void:
 	var scale_value: float = projection.depth_scale(unit.row)
 	var foot: Vector2 = projection.foot(unit.col * 96 + 48, unit.row)
-	var bob: float = sin(presentation_time * 2.5 + unit.col) * 1.2
-	draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.flash > 0, bob)
+	var pose: Dictionary = animator.pose(unit, foot)
+	foot = pose.foot
+	draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.flash > 0, pose, scale_value)
 	var fraction: float = unit.hp / run.board.max_hp(unit.id)
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56, 4) * scale_value), Color("633f46"))
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56 * fraction, 4) * scale_value), Color("ff817d") if fraction < 0.25 else Color("7fd29b"))
@@ -268,21 +318,22 @@ func draw_mouse(enemy: Dictionary) -> void:
 	var size: Vector2 = Vector2(58, 72)
 	if enemy.id == "elite": size = Vector2(68, 82)
 	if enemy.id == "boss": size = Vector2(82, 98)
-	var bob: float = sin(presentation_time * 7.0 + enemy.x * 0.1) * 1.5
-	draw_actor(art.mouse(enemy.id), foot, size * scale_value, enemy.flash > 0, bob)
+	var pose: Dictionary = animator.pose(enemy, foot)
+	draw_actor(art.mouse(enemy.id), foot, size * scale_value, enemy.flash > 0, pose, scale_value)
 	var status_pos: Vector2 = foot - Vector2(22, size.y * 0.8) * scale_value
 	if enemy.slow_time > 0: text_at(status_pos,"❄",Color("83e4f5"))
 	if enemy.burn_time > 0: text_at(status_pos + Vector2(29, 0),"♨",Color("ffab69"))
 	if enemy.id in ["boss", "elite"]: text_at(status_pos + Vector2(0, -14),run.data.enemies[enemy.id].title,Color("ffe1a1"),12)
 	draw_rect(Rect2(foot + Vector2(-23, 4) * scale_value,Vector2(46 * enemy.hp / enemy.max_hp, 4) * scale_value),Color("ed8796"))
 
-func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, hit: bool, bob: float) -> void:
+func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, hit: bool, pose: Dictionary, depth: float) -> void:
 	if texture == null: return
-	draw_set_transform(foot + Vector2(4, 0), -0.04, Vector2(1, 0.25))
+	draw_set_transform(pose.shadow + Vector2(4, 0), -0.04, Vector2(1, 0.25))
 	draw_circle(Vector2.ZERO, size.x * 0.34, Color(0, 0, 0, 0.28))
 	draw_set_transform(Vector2.ZERO)
-	var center: Vector2 = foot - Vector2(0, size.y * 0.36 - bob)
-	draw_texture_rect(texture, Rect2(center - size * 0.5, size), false, Color(1.7, 1.7, 1.7) if hit else Color.WHITE)
+	draw_set_transform(foot + pose.offset * depth, pose.angle, pose.scale)
+	draw_texture_rect(texture, Rect2(Vector2(-size.x * 0.5, -size.y * 0.86), size), false, Color(1.7, 1.7, 1.7) if hit else Color.WHITE)
+	draw_set_transform(Vector2.ZERO)
 
 func decorate_button(node: Button, texture: Texture2D, width: int) -> void:
 	node.icon = texture
@@ -308,7 +359,7 @@ func panel_button(title: String, action: Callable, tip: String = "") -> Button:
 	var node: Button = Button.new()
 	node.text = title
 	node.tooltip_text = tip
-	node.custom_minimum_size = Vector2(280,40)
+	node.custom_minimum_size = Vector2(308,40)
 	node.pressed.connect(action)
 	panel.add_child(node)
 	return node
@@ -321,10 +372,10 @@ func hovered_unit() -> Dictionary:
 func update_inspector() -> void:
 	var unit: Dictionary = hovered_unit()
 	inspect.text = ""
-	panel.visible = unit.is_empty()
-	inspect.position = Vector2(940,155) if not unit.is_empty() else Vector2(940,540)
+	panel.visible = panel_open
+	inspect.position = Vector2(32,640)
 	if not unit.is_empty():
-		inspect.text = "%s ★%d\n生命 %.0f / %.0f\n伤害 %.1f · 间隔 %.2f秒\n射程 %.1f格%s" % [run.data.foods[unit.id].title,run.state.star(unit.id),unit.hp,run.board.max_hp(unit.id),run.recipes.damage(unit),run.recipes.interval(unit),run.recipes.reach(unit.id)," · 面粉影响" if unit.flour > 0 else ""]
+		inspect.text = "%s ★%d   生命 %.0f / %.0f   伤害 %.1f · 间隔 %.2f秒 · 射程 %.1f格%s" % [run.data.foods[unit.id].title,run.state.star(unit.id),unit.hp,run.board.max_hp(unit.id),run.recipes.damage(unit),run.recipes.interval(unit),run.recipes.reach(unit.id)," · 面粉影响" if unit.flour > 0 else ""]
 	elif debug_enabled and run.state.phase == "battle":
 		inspect.text = "F3 开发面板 · 各行压力"
 		for row: int in range(5):

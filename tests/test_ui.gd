@@ -25,6 +25,15 @@ func run_test() -> void:
 	event.position = scene.projection.project(Vector2(144,195))
 	scene._unhandled_input(event)
 	assert(scene.run.state.units.size() == 1)
+	var frozen: float = scene.animator.time
+	scene._process(0.1)
+	assert(scene.animator.time == frozen)
+	scene.run.paused = false
+	scene.run.speed = 2.0
+	var before: float = scene.run.state.elapsed
+	scene._process(0.1)
+	assert(is_equal_approx(scene.animator.time - frozen, scene.run.state.elapsed - before))
+	assert(scene.animator.time - frozen > 0.18)
 	print("PASS UI: event coordinates, repeated click, paused placement")
 	scene.queue_free()
 	await process_frame

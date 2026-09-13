@@ -13,7 +13,8 @@
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
-| [art/perspective.md](art/perspective.md) | 台面透视、深度表现与鼠标命中 | 已接入并验证 |
+| [art/animation.md](art/animation.md) | 全单位待机、放置、攻击与移动动画规则及验收 | 已实现，鼠标复验待完成 |
+| [art/perspective.md](art/perspective.md) | 正交棋盘、顶部操作栏与鼠标命中 | 布局更新，验证见专页 |
 | [art/asset_pack.md](art/asset_pack.md) | 29 项美术内容、规格、映射与接入 | 已生成并接入 |
 | [art/generation_prompts.md](art/generation_prompts.md) | 四类资源的完整生成提示词 | 已记录 |
 | [testing/art_pack.md](testing/art_pack.md) | 美术导入、窗口及性能验收 | 见实际记录 |
@@ -37,3 +38,5 @@
 新增文档必须加入本索引，并链接相关上游规则。文档至少包含：状态（拟议／已确定／已实现／已废弃）、适用范围、设计或规则、边界及异常情况、验收方式；涉及数值或接口时增加相应定义。只有实际完成实现及验证，才能更新为“已实现”。
 
 重要决策使用 `decisions/ADR-NNN-主题.md`，记录背景、选择、理由、影响、状态和日期。被替代的决策保留历史并链接后继决策；当前规则同步更新到其权威文档。
+
+| [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 本次验证记录 |

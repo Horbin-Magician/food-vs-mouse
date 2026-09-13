@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "flour"
+title = "面粉鼠"
+stats = {"hp": 110, "speed": 14, "dps": 20, "leak": 1}

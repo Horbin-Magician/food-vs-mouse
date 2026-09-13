@@ -149,7 +149,9 @@ func _draw() -> void:
 		var pos: Vector2 = ORIGIN + Vector2(enemy.x,enemy.row * CELL.y + 39)
 		draw_circle(pos + Vector2(-12,-17),10,Color("acacbb"))
 		draw_circle(pos + Vector2(12,-17),10,Color("acacbb"))
-		draw_circle(pos,20,Color.WHITE if enemy.flash > 0 else Color("8d91a3"))
+		draw_circle(pos,32 if enemy.id == "boss" else (27 if enemy.id == "elite" else 20),Color.WHITE if enemy.flash > 0 else Color("8d91a3"))
+		if enemy.slow_time > 0: text_at(pos + Vector2(-22,-28),"❄",Color("83e4f5"))
+		if enemy.burn_time > 0: text_at(pos + Vector2(7,-28),"♨",Color("ffab69"))
 		text_at(pos + Vector2(-19,5),run.data.enemies[enemy.id].title,Color("202431"),12)
 		draw_rect(Rect2(pos + Vector2(-23,24),Vector2(46 * enemy.hp / enemy.max_hp,4)),Color("ed8796"))
 	for shot: Dictionary in run.combat.projectiles:

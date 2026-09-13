@@ -24,6 +24,6 @@ func _init() -> void:
 	run.choose_recipe(run.state.choices[0])
 	run.start()
 	run.finish_wave()
-	assert(run.state.phase == "won")
+	assert(run.state.wave == 4 and run.state.phase == "recipe")
 	print("PASS progression: three waves, heal, move, repair, rewards")
 	quit()

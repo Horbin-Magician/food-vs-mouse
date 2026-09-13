@@ -9,14 +9,17 @@ var state: RunState
 var data: Catalog
 var board: BoardController
 var recipes: RecipeSystem
+var rng: RandomNumberGenerator
+var current_wave: Resource
 var enemies: Array = []
 var projectiles: Array = []
 
-func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem) -> void:
+func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem, random: RandomNumberGenerator) -> void:
 	state = s
 	data = c
 	board = b
 	recipes = r
+	rng = random
 
 func clear() -> void:
 	enemies.clear()
@@ -27,8 +30,11 @@ func clear() -> void:
 		unit.flour = 0.0
 
 func spawn(id: String, row: int, wave: Resource) -> void:
+	current_wave = wave
 	var stats: Dictionary = data.enemies[id].stats
-	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * wave.stats.hp_scale, "max_hp": stats.hp * wave.stats.hp_scale, "dps": stats.dps * wave.stats.damage_scale, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
+	var hp_scale: float = 1.0 if id == "boss" else wave.stats.hp_scale
+	var damage_scale: float = 1.0 if id == "boss" else wave.stats.damage_scale
+	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
 
 func add_heat(amount: float) -> void:
 	state.metrics.overflow += maxf(0.0, state.heat + amount - data.rules.heat_cap)
@@ -83,6 +89,11 @@ func step(delta: float) -> void:
 				enemy.burn_tick -= data.rules.burn_tick
 				damage_enemy(enemy,recipes.value("burn","damage"),"pepper",false)
 			if not enemies.has(enemy): continue
+		if enemy.id == "boss":
+			enemy.summon += delta
+			if enemy.summon >= data.rules.boss_summon_interval:
+				enemy.summon -= data.rules.boss_summon_interval
+				summon_pair("gray")
 		var blocker: Dictionary = {}
 		for unit: Dictionary in state.units:
 			var x: float = unit.col * 96.0 + 48.0
@@ -90,7 +101,7 @@ func step(delta: float) -> void:
 				if blocker.is_empty() or unit.col > blocker.col: blocker = unit
 		if blocker.is_empty():
 			enemy.timer = 0.0
-			enemy.x -= data.enemies[enemy.id].stats.speed * (1.0-enemy.slow) * delta
+			enemy.x -= data.enemies[enemy.id].stats.speed * movement_multiplier(enemy) * (1.0-enemy.slow) * delta
 		else:
 			enemy.timer += delta
 			if enemy.timer >= 1.0:
@@ -121,7 +132,14 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 	enemy.hp -= amount
 	enemy.flash = 0.15
 	state.metrics.damage[source] = state.metrics.damage.get(source, 0.0) + actual
+	if enemy.id == "boss" and not enemy.rage and enemy.hp > 0 and enemy.hp < enemy.max_hp * data.rules.boss_rage_threshold:
+		enemy.rage = true
+		summon_pair("lid")
 	if enemy.hp <= 0:
+		if enemy.id == "flour":
+			for unit: Dictionary in state.units:
+				if unit.row == enemy.row and absf(unit.col * 96.0 + 48.0-enemy.x) <= data.rules.flour_radius:
+					unit.flour = data.rules.flour_duration
 		enemies.erase(enemy)
 		state.metrics.kills += 1
 		enemy_killed.emit(enemy.id)
@@ -152,3 +170,17 @@ func hit(projectile: Dictionary, target: Dictionary) -> void:
 		if projectile.source == "pepper" and recipes.has("burn"):
 			if enemy.burn_time <= 0: enemy.burn_tick = 0.0
 			enemy.burn_time = recipes.value("burn","duration")
+
+func summon_pair(id: String) -> void:
+	var first: int = rng.randi_range(0,4)
+	var second: int = rng.randi_range(0,3)
+	if second >= first: second += 1
+	spawn(id,first,current_wave)
+	spawn(id,second,current_wave)
+
+func movement_multiplier(enemy: Dictionary) -> float:
+	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)
+	for other: Dictionary in enemies:
+		if other.uid != enemy.uid and other.id == "drummer" and other.row == enemy.row and absf(other.x-enemy.x) <= data.rules.drummer_radius:
+			return result * (1.0 + data.rules.drummer_speed)
+	return result

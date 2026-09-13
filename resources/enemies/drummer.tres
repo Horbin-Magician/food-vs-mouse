@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "drummer"
+title = "鼓手鼠"
+stats = {"hp": 170, "speed": 10, "dps": 15, "leak": 1}

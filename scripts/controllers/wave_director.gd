@@ -19,7 +19,8 @@ func begin(definition: Resource, rng: RandomNumberGenerator) -> void:
 	var composition: Array = definition.stats.composition
 	for i: int in range(composition.size()):
 		var row: int = first[i] if i < 3 else definition.stats.rows[rng.randi_range(0, definition.stats.rows.size() - 1)]
-		if i >= 3 and row == previous and streak >= 2:
+		var before_boss: bool = i + 1 < composition.size() and composition[i+1] == "boss" and row == 2 and previous == 2
+		if i >= 3 and ((row == previous and streak >= 2) or before_boss):
 			var alternatives: Array = definition.stats.rows.duplicate()
 			alternatives.erase(previous)
 			row = alternatives[rng.randi_range(0, alternatives.size() - 1)]

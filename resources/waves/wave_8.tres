@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "wave_8"
+title = "鼠潮 8"
+stats = {"duration": 150, "composition": ["lid", "runner", "gnawer", "drummer", "flour", "gray", "lid", "runner", "gnawer", "drummer", "flour", "gray", "lid", "runner", "gnawer", "drummer", "flour", "gray", "lid", "runner", "gnawer", "drummer", "flour", "gray", "boss"], "rows": [0, 1, 2, 3, 4], "hp_scale": 1.7, "damage_scale": 1.42}

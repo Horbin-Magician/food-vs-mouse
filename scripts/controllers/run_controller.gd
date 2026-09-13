@@ -24,7 +24,7 @@ func new_run(seed_value: int = 1) -> void:
 	recipes = RecipeSystem.new(state,data)
 	shop = ShopController.new(state,data,board,rng)
 	shop.open()
-	combat = CombatController.new(state, data, board, recipes)
+	combat = CombatController.new(state, data, board, recipes, rng)
 	director = WaveDirector.new()
 	paused = false
 	accumulator = 0.0

@@ -11,7 +11,7 @@ root = Path(__file__).resolve().parents[1]
 failed = []
 for test in sorted((root / "tests").glob("test_*.gd")):
     try:
-        result = subprocess.run([engine, "--headless", "--path", str(root), "--log-file", str(Path(tempfile.gettempdir()) / (test.stem + ".log")), "--script", str(test), "--", "--qa"], capture_output=True, text=True, timeout=30)
+        result = subprocess.run([engine, "--headless", "--path", str(root), "--log-file", str(Path(tempfile.gettempdir()) / (test.stem + ".log")), "--script", str(test), "--", "--qa-test"], capture_output=True, text=True, timeout=30)
         output = result.stdout + result.stderr
         passed = result.returncode == 0 and "PASS " in output and "SCRIPT ERROR" not in output
         print(f'{"PASS" if passed else "FAIL"} {test.name}')

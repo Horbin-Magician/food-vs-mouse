@@ -4,6 +4,7 @@ const ORIGIN: Vector2 = Vector2(120, 150)
 const CELL: Vector2 = Vector2(96, 78)
 var run: RunController = RunController.new()
 var selected: String = ""
+var tile_styles: Array[StyleBoxFlat] = []
 var pointer: Vector2 = Vector2(-1,-1)
 var move_from: Vector2i = Vector2i(-1, -1)
 var shovel: bool = false
@@ -27,10 +28,11 @@ var old_units: int = 0
 var colors: Dictionary = {"bun": Color("f4d8a5"), "toast": Color("d99954"), "pudding": Color("f4b558"), "tea": Color("85dbe9"), "pepper": Color("ef776b"), "popcorn": Color("f8e6a4"), "noodles": Color("deb3ef"), "garlic": Color("b1d987")}
 
 func _ready() -> void:
+	tile_styles = [tile_style(Color("2e4050")),tile_style(Color("283948"))]
 	run.persistence = true
 	debug_enabled = OS.is_debug_build() and "--dev" in OS.get_cmdline_user_args()
-	if "--qa" in OS.get_cmdline_user_args():
-		run.saves.folder = "user://qa_visual/"
+	if "--qa" in OS.get_cmdline_user_args() or "--qa-test" in OS.get_cmdline_user_args():
+		run.saves.folder = "user://qa_automated/" if "--qa-test" in OS.get_cmdline_user_args() else "user://qa_visual/"
 		DirAccess.make_dir_recursive_absolute(run.saves.folder)
 	sound = SoundService.new()
 	add_child(sound)
@@ -190,7 +192,7 @@ func _draw() -> void:
 		text_at(ORIGIN + Vector2(-75, row * CELL.y + 45), "粮仓 ◀", Color("c6d2df"))
 		for col: int in range(8):
 			var rect: Rect2 = Rect2(ORIGIN + Vector2(col,row) * CELL, CELL - Vector2(3,3))
-			draw_style_box(tile_style(Color("2e4050") if (row + col) % 2 == 0 else Color("283948")), rect)
+			draw_style_box(tile_styles[(row + col) % 2], rect)
 			if move_from == Vector2i(col,row): draw_rect(rect, Color("f8d482"),false,3)
 	var hovered: Dictionary = hovered_unit()
 	if not hovered.is_empty():

@@ -78,6 +78,7 @@ func step(delta: float) -> void:
 			projectile.remaining -= 1
 			if projectile.remaining <= 0: break
 		if projectile.remaining <= 0 or projectile.x > 900.0: projectiles.erase(projectile)
+	var drummers: Array = enemies.filter(func(e: Dictionary) -> bool: return e.id == "drummer")
 	for enemy: Dictionary in enemies.duplicate():
 		enemy.flash = maxf(0.0, enemy.flash - delta)
 		enemy.slow_time = maxf(0.0,enemy.slow_time-delta)
@@ -101,7 +102,7 @@ func step(delta: float) -> void:
 				if blocker.is_empty() or unit.col > blocker.col: blocker = unit
 		if blocker.is_empty():
 			enemy.timer = 0.0
-			enemy.x -= data.enemies[enemy.id].stats.speed * movement_multiplier(enemy) * (1.0-enemy.slow) * delta
+			enemy.x -= data.enemies[enemy.id].stats.speed * movement_multiplier(enemy, drummers) * (1.0-enemy.slow) * delta
 		else:
 			enemy.timer += delta
 			if enemy.timer >= 1.0:
@@ -178,9 +179,9 @@ func summon_pair(id: String) -> void:
 	spawn(id,first,current_wave)
 	spawn(id,second,current_wave)
 
-func movement_multiplier(enemy: Dictionary) -> float:
+func movement_multiplier(enemy: Dictionary, sources: Array) -> float:
 	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)
-	for other: Dictionary in enemies:
-		if other.uid != enemy.uid and other.id == "drummer" and other.row == enemy.row and absf(other.x-enemy.x) <= data.rules.drummer_radius:
+	for other: Dictionary in sources:
+		if other.hp > 0 and other.x >= 0 and other.uid != enemy.uid and other.id == "drummer" and other.row == enemy.row and absf(other.x-enemy.x) <= data.rules.drummer_radius:
 			return result * (1.0 + data.rules.drummer_speed)
 	return result

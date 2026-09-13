@@ -41,6 +41,6 @@ func _init() -> void:
 	run.combat.spawn("gray",2,run.data.waves[0])
 	run.combat.spawn("drummer",2,run.data.waves[0])
 	run.combat.spawn("drummer",2,run.data.waves[0])
-	assert(is_equal_approx(run.combat.movement_multiplier(run.combat.enemies[0]),1.2))
+	assert(is_equal_approx(run.combat.movement_multiplier(run.combat.enemies[0],run.combat.enemies),1.2))
 	print("PASS content: eight waves, generation, boss, summons, flour, drummer")
 	quit()

@@ -48,9 +48,22 @@ func advance(delta: float) -> void:
 			state.phase = "lost"
 			message = "粮仓失守。调整阵型，再试一次。"
 		elif director.finished() and combat.enemies.is_empty():
-			state.phase = "won"
-			message = "本关守住了！"
-			board.heal(data.rules.heal)
+			finish_wave()
 		if state.phase != "battle":
 			combat.clear()
 			changed.emit()
+
+func finish_wave() -> void:
+	if state.phase != "battle": return
+	state.metrics.passed = state.wave
+	board.heal(data.rules.heal)
+	if state.wave == data.waves.size():
+		state.phase = "won"
+		message = "今夜粮仓守住了！"
+		return
+	state.coins += data.rules.rewards[state.wave - 1] + (data.rules.bonus if state.leaks <= 1 else 0)
+	state.wave += 1
+	state.phase = "prepare"
+	state.repaired = false
+	state.heat = data.rules.heat_start
+	message = "通关奖励已到账。可免费调位、交换、移除，或维修一次。"

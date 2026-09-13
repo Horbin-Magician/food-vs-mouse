@@ -1,0 +1,27 @@
+extends SceneTree
+
+func _init() -> void:
+	var run: RunController = RunController.new()
+	run.new_run(7)
+	run.start()
+	run.board.place("bun",2,0,false)
+	run.state.units[0].hp = 100.0
+	run.finish_wave()
+	assert(run.state.wave == 2 and run.state.phase == "prepare")
+	assert(run.state.coins == 14 and run.state.units[0].hp == 127.0)
+	run.finish_wave()
+	assert(run.state.coins == 14, "reward cannot repeat")
+	assert(run.board.move(2,0,1,1) == "")
+	assert(run.state.units[0].hp == 127.0 and run.state.units.size() == 1)
+	assert(run.board.repair() == "" and run.state.coins == 10)
+	assert(run.state.units[0].hp == 180.0)
+	assert(run.board.repair() != "" and run.state.coins == 10)
+	run.start()
+	assert(run.state.cooldowns.is_empty() and run.state.units[0].timer == 0.0)
+	run.finish_wave()
+	assert(run.state.wave == 3)
+	run.start()
+	run.finish_wave()
+	assert(run.state.phase == "won")
+	print("PASS progression: three waves, heal, move, repair, rewards")
+	quit()

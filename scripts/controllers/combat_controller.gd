@@ -26,7 +26,7 @@ func clear() -> void:
 
 func spawn(id: String, row: int, wave: Resource) -> void:
 	var stats: Dictionary = data.enemies[id].stats
-	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * wave.stats.hp_scale, "max_hp": stats.hp * wave.stats.hp_scale, "dps": stats.dps * wave.stats.damage_scale, "timer": 0.0, "flash": 0.0})
+	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * wave.stats.hp_scale, "max_hp": stats.hp * wave.stats.hp_scale, "dps": stats.dps * wave.stats.damage_scale, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
 
 func add_heat(amount: float) -> void:
 	state.metrics.overflow += maxf(0.0, state.heat + amount - data.rules.heat_cap)
@@ -93,6 +93,9 @@ func nearest(row: int, x: float, reach: float) -> Dictionary:
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 	if not enemies.has(enemy): return
+	if enemy.armor > 0:
+		amount = maxf(1.0, amount - data.enemies[enemy.id].stats.get("armor", 0))
+		enemy.armor -= 1
 	var actual: float = minf(enemy.hp, amount)
 	enemy.hp -= amount
 	enemy.flash = 0.15

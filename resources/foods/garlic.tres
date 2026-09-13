@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="FoodDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/food_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "garlic"
+title = "蒜香面包"
+stats = {"cost": 125, "cooldown": 10, "hp": 420, "damage": 18, "interval": 2, "reach": 0.65, "price": 4, "kind": "melee", "aura": 0.15}

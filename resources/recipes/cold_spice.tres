@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/recipe_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "cold_spice"
+title = "趁冷加辣"
+stats = {"requires": "pepper", "description": "辣椒串攻击减速目标伤害增加50%", "multiplier": 1.5}

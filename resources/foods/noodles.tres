@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="FoodDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/food_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "noodles"
+title = "拉面碗"
+stats = {"cost": 150, "cooldown": 10, "hp": 180, "damage": 22, "interval": 2, "reach": 8, "price": 4, "kind": "shot", "pierce": 3}

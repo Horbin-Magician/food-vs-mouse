@@ -8,13 +8,15 @@ signal enemy_killed(enemy_id: String)
 var state: RunState
 var data: Catalog
 var board: BoardController
+var recipes: RecipeSystem
 var enemies: Array = []
 var projectiles: Array = []
 
-func _init(s: RunState, c: Catalog, b: BoardController) -> void:
+func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem) -> void:
 	state = s
 	data = c
 	board = b
+	recipes = r
 
 func clear() -> void:
 	enemies.clear()
@@ -26,7 +28,7 @@ func clear() -> void:
 
 func spawn(id: String, row: int, wave: Resource) -> void:
 	var stats: Dictionary = data.enemies[id].stats
-	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * wave.stats.hp_scale, "max_hp": stats.hp * wave.stats.hp_scale, "dps": stats.dps * wave.stats.damage_scale, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
+	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * wave.stats.hp_scale, "max_hp": stats.hp * wave.stats.hp_scale, "dps": stats.dps * wave.stats.damage_scale, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
 
 func add_heat(amount: float) -> void:
 	state.metrics.overflow += maxf(0.0, state.heat + amount - data.rules.heat_cap)
@@ -38,31 +40,49 @@ func step(delta: float) -> void:
 		state.cooldowns[id] = maxf(0.0, state.cooldowns[id] - delta)
 	for unit: Dictionary in state.units.duplicate():
 		unit.flash = maxf(0.0, unit.flash - delta)
+		unit.flour = maxf(0.0,unit.flour - delta)
 		var stats: Dictionary = data.foods[unit.id].stats
 		if stats.kind == "wall": continue
 		unit.timer += delta
-		if unit.timer < stats.interval: continue
+		var interval: float = recipes.interval(unit)
+		if unit.timer < interval: continue
 		if stats.kind == "producer":
 			unit.timer -= stats.interval
-			add_heat(data.rules.production * data.rules.star_production[state.star(unit.id) - 1])
+			add_heat(data.rules.production * data.rules.star_production[state.star(unit.id) - 1] + recipes.value("caramel","heat"))
 			continue
-		var target: Dictionary = nearest(unit.row, unit.col * 96.0 + 48.0, stats.reach * 96.0)
+		var target: Dictionary = nearest(unit.row, unit.col * 96.0 + 48.0, recipes.reach(unit.id) * 96.0)
 		if target.is_empty():
-			unit.timer = stats.interval
+			unit.timer = interval
 			continue
 		unit.timer = 0.0
 		unit.attacks += 1
-		projectiles.append({"row": unit.row, "x": unit.col * 96.0 + 48.0, "damage": stats.damage * data.rules.star_hp[state.star(unit.id) - 1], "source": unit.id})
+		if stats.kind == "melee":
+			damage_enemy(target,recipes.damage(unit),unit.id)
+		else:
+			projectiles.append({"row": unit.row, "x": unit.col * 96.0 + 48.0, "damage": recipes.damage(unit), "source": unit.id, "radius": recipes.radius(unit) * 96.0, "remaining": stats.get("pierce",1), "hit": []})
 	for projectile: Dictionary in projectiles.duplicate():
 		var distance: float = data.rules.projectile_speed * delta
-		var target: Dictionary = nearest(projectile.row, projectile.x - 15.0, distance + 30.0)
+		var targets: Array = enemies.filter(func(e: Dictionary) -> bool: return e.row == projectile.row and e.x >= projectile.x - 15.0 and e.x <= projectile.x + distance + 15.0 and e.uid not in projectile.hit)
+		targets.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return a.x < b.x)
 		projectile.x += distance
-		if not target.is_empty():
-			damage_enemy(target, projectile.damage, projectile.source)
-			projectiles.erase(projectile)
-		elif projectile.x > 900.0: projectiles.erase(projectile)
+		for target: Dictionary in targets:
+			if not enemies.has(target): continue
+			projectile.hit.append(target.uid)
+			hit(projectile,target)
+			projectile.remaining -= 1
+			if projectile.remaining <= 0: break
+		if projectile.remaining <= 0 or projectile.x > 900.0: projectiles.erase(projectile)
 	for enemy: Dictionary in enemies.duplicate():
 		enemy.flash = maxf(0.0, enemy.flash - delta)
+		enemy.slow_time = maxf(0.0,enemy.slow_time-delta)
+		if enemy.slow_time <= 0: enemy.slow = 0.0
+		if enemy.burn_time > 0:
+			enemy.burn_time = maxf(0.0,enemy.burn_time-delta)
+			enemy.burn_tick += delta
+			if enemy.burn_tick + 0.000001 >= data.rules.burn_tick:
+				enemy.burn_tick -= data.rules.burn_tick
+				damage_enemy(enemy,recipes.value("burn","damage"),"pepper",false)
+			if not enemies.has(enemy): continue
 		var blocker: Dictionary = {}
 		for unit: Dictionary in state.units:
 			var x: float = unit.col * 96.0 + 48.0
@@ -70,7 +90,7 @@ func step(delta: float) -> void:
 				if blocker.is_empty() or unit.col > blocker.col: blocker = unit
 		if blocker.is_empty():
 			enemy.timer = 0.0
-			enemy.x -= data.enemies[enemy.id].stats.speed * delta
+			enemy.x -= data.enemies[enemy.id].stats.speed * (1.0-enemy.slow) * delta
 		else:
 			enemy.timer += delta
 			if enemy.timer >= 1.0:
@@ -91,9 +111,10 @@ func nearest(row: int, x: float, reach: float) -> Dictionary:
 			if result.is_empty() or enemy.x < result.x: result = enemy
 	return result
 
-func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
+func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool = true) -> void:
 	if not enemies.has(enemy): return
-	if enemy.armor > 0:
+	if direct and source == "pepper" and enemy.slow_time > 0: amount *= recipes.value("cold_spice","multiplier",1.0)
+	if direct and enemy.armor > 0:
 		amount = maxf(1.0, amount - data.enemies[enemy.id].stats.get("armor", 0))
 		enemy.armor -= 1
 	var actual: float = minf(enemy.hp, amount)
@@ -104,12 +125,30 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String) -> void:
 		enemies.erase(enemy)
 		state.metrics.kills += 1
 		enemy_killed.emit(enemy.id)
+		if recipes.has("recycle") and state.metrics.kills % int(recipes.value("recycle","every")) == 0:
+			add_heat(recipes.value("recycle","heat"))
 
 func damage_unit(unit: Dictionary, amount: float) -> void:
 	if not state.units.has(unit): return
+	if unit.id == "toast": amount = maxf(1.0,amount-recipes.value("crust","armor"))
 	unit.hp -= amount
 	unit.flash = 0.15
 	if unit.hp <= 0:
 		state.units.erase(unit)
 		state.metrics.deaths += 1
 		unit_died.emit(unit.id)
+
+func hit(projectile: Dictionary, target: Dictionary) -> void:
+	var affected: Array = [target]
+	if projectile.radius > 0:
+		affected = enemies.filter(func(e: Dictionary) -> bool: return e.row == target.row and absf(e.x-target.x) <= projectile.radius)
+	for enemy: Dictionary in affected:
+		var multiplier: float = recipes.value("burst","multiplier",1.0) if projectile.source == "popcorn" and enemy.uid == target.uid else 1.0
+		damage_enemy(enemy,projectile.damage * multiplier,projectile.source)
+		if not enemies.has(enemy): continue
+		if projectile.source == "tea":
+			enemy.slow = maxf(enemy.slow,recipes.value("ice","slow",data.foods.tea.stats.slow))
+			enemy.slow_time = data.foods.tea.stats.slow_duration
+		if projectile.source == "pepper" and recipes.has("burn"):
+			if enemy.burn_time <= 0: enemy.burn_tick = 0.0
+			enemy.burn_time = recipes.value("burn","duration")

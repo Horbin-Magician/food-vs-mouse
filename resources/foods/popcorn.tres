@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="FoodDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/food_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "popcorn"
+title = "爆米花"
+stats = {"cost": 175, "cooldown": 12, "hp": 150, "damage": 42, "interval": 3, "reach": 8, "price": 5, "kind": "shot", "radius": 0.7}

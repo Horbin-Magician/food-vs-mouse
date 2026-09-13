@@ -6,6 +6,9 @@ var data: Catalog = Catalog.new()
 var state: RunState
 var board: BoardController
 var combat: CombatController
+var shop: ShopController
+var recipes: RecipeSystem
+var unlocked: Array = []
 var director: WaveDirector = WaveDirector.new()
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var paused: bool = false
@@ -18,7 +21,10 @@ func new_run(seed_value: int = 1) -> void:
 	state.seed_value = seed_value
 	rng.seed = seed_value
 	board = BoardController.new(state, data)
-	combat = CombatController.new(state, data, board)
+	recipes = RecipeSystem.new(state,data)
+	shop = ShopController.new(state,data,board,rng)
+	shop.open()
+	combat = CombatController.new(state, data, board, recipes)
 	director = WaveDirector.new()
 	paused = false
 	accumulator = 0.0
@@ -56,14 +62,30 @@ func advance(delta: float) -> void:
 func finish_wave() -> void:
 	if state.phase != "battle": return
 	state.metrics.passed = state.wave
-	board.heal(data.rules.heal)
+	board.heal(recipes.value("reheat","heal",data.rules.heal))
 	if state.wave == data.waves.size():
 		state.phase = "won"
 		message = "今夜粮仓守住了！"
 		return
 	state.coins += data.rules.rewards[state.wave - 1] + (data.rules.bonus if state.leaks <= 1 else 0)
 	state.wave += 1
-	state.phase = "prepare"
+	state.phase = "recipe"
+	recipes.offer(rng,unlocked)
 	state.repaired = false
 	state.heat = data.rules.heat_start
 	message = "通关奖励已到账。可免费调位、交换、移除，或维修一次。"
+
+func choose_recipe(id: String) -> String:
+	var error: String = recipes.choose(id)
+	if not error.is_empty(): return error
+	enter_shop()
+	return ""
+
+func skip_recipe() -> void:
+	if state.phase == "recipe" and state.choices.is_empty(): enter_shop()
+
+func enter_shop() -> void:
+	state.phase = "prepare"
+	shop.open()
+	message = "选谱完成，购买卡牌并调整阵地后开始下一关。"
+	changed.emit()

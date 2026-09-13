@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/recipe_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "breakfast"
+title = "早餐套餐"
+stats = {"requires": "pudding", "description": "布丁正交相邻攻击单位伤害增加15%，不叠加", "multiplier": 1.15, "unlock": "puddings", "threshold": 3}

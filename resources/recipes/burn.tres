@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/recipe_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "burn"
+title = "小火慢烤"
+stats = {"requires": "pepper", "description": "辣椒串附加每秒6伤害，持续3秒的灼烧", "damage": 6, "duration": 3, "unlock": "passed", "threshold": 4}

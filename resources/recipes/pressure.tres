@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/recipe_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "pressure"
+title = "高压蒸笼"
+stats = {"requires": "bun", "description": "小笼包每第4次攻击产生0.6格范围伤害", "every": 4, "radius": 0.6}

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/recipe_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "long"
+title = "串串加长"
+stats = {"requires": "pepper", "description": "辣椒串射程提高至5格", "reach": 5}

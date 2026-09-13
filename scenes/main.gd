@@ -13,7 +13,7 @@ var cards: HBoxContainer
 var panel: VBoxContainer
 var confirm: ConfirmationDialog
 var refresh_timer: float = 0.0
-var colors: Dictionary = {"bun": Color("f4d8a5"), "toast": Color("d99954"), "pudding": Color("f4b558")}
+var colors: Dictionary = {"bun": Color("f4d8a5"), "toast": Color("d99954"), "pudding": Color("f4b558"), "tea": Color("85dbe9"), "pepper": Color("ef776b"), "popcorn": Color("f8e6a4"), "noodles": Color("deb3ef"), "garlic": Color("b1d987")}
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color("151e2c"))
@@ -66,6 +66,28 @@ func rebuild() -> void:
 	for child: Node in cards.get_children():
 		cards.remove_child(child)
 		child.queue_free()
+	for child: Node in panel.get_children():
+		panel.remove_child(child)
+		child.queue_free()
+	var title: Label = Label.new()
+	title.text = "食谱三选一" if run.state.phase == "recipe" else "打烊小铺"
+	panel.add_child(title)
+	if run.state.phase == "recipe":
+		for id: String in run.state.choices:
+			panel_button(run.data.recipes[id].title,func() -> void: report(run.choose_recipe(id)),run.data.recipes[id].stats.description)
+		if run.state.choices.is_empty(): panel_button("食谱已收集完 · 继续",func() -> void: run.skip_recipe())
+	elif run.state.phase == "prepare":
+		for index: int in range(run.state.offers.size()):
+			var offer: Dictionary = run.state.offers[index]
+			var sold: bool = offer.id.is_empty() or offer.bought or run.state.cards.get(offer.id,0) >= 6
+			var item: Button = panel_button("售罄" if sold else "%s · %d 金" % [run.data.foods[offer.id].title,run.data.foods[offer.id].stats.price],func() -> void: report(run.shop.buy(index)))
+			item.disabled = sold
+		panel_button("刷新 · 2 金（%d/2）" % run.state.refreshes,func() -> void: report(run.shop.refresh()))
+	var owned: Label = Label.new()
+	owned.text = "已选食谱："
+	for id: String in run.state.recipes: owned.text += "\n" + run.data.recipes[id].title
+	owned.add_theme_font_size_override("font_size",16)
+	panel.add_child(owned)
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
 		var stats: Dictionary = run.data.foods[id].stats
@@ -147,3 +169,12 @@ func tile_style(color: Color) -> StyleBoxFlat:
 	style.bg_color = color
 	style.set_corner_radius_all(8)
 	return style
+
+func panel_button(title: String, action: Callable, tip: String = "") -> Button:
+	var node: Button = Button.new()
+	node.text = title
+	node.tooltip_text = tip
+	node.custom_minimum_size = Vector2(280,40)
+	node.pressed.connect(action)
+	panel.add_child(node)
+	return node

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RecipeDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/recipe_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "burst"
+title = "焦香爆裂"
+stats = {"requires": "popcorn", "description": "爆米花直接命中目标额外受到50%伤害", "multiplier": 1.5}

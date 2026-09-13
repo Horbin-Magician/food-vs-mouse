@@ -11,6 +11,11 @@ func _init() -> void:
 		for i: int in range(2,director.events.size()):
 			assert(not (director.events[i].row == director.events[i-1].row and director.events[i].row == director.events[i-2].row))
 			assert(run.data.enemies.has(director.events[i].id))
+	assert(run.data.waves[0].stats.rows == [2,3,4])
+	assert(run.data.waves[7].stats.rows == [0,1,2,3,4,5,6])
+	var final_director: WaveDirector = WaveDirector.new()
+	final_director.begin(run.data.waves[7],run.rng)
+	assert(final_director.events.back().row == 3)
 	run.state.wave = 8
 	run.start()
 	run.combat.spawn("boss",2,run.data.waves[7])

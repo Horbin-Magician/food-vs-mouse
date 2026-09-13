@@ -44,7 +44,8 @@ func _ready() -> void:
 	add_child(sound)
 	RenderingServer.set_default_clear_color(Color("151e2c"))
 	heat_label = label(Vector2(34, 25), 29)
-	header = label(Vector2(1005, 647), 17)
+	header = label(Vector2(930, 652), 14)
+	header.tooltip_text = "进度表示计划鼠潮的生成比例；全部生成后仍需清除剩余敌人。"
 	notice = label(Vector2(32, 145), 16)
 	notice.size = Vector2(1180, 26)
 	notice.clip_text = true
@@ -54,11 +55,15 @@ func _ready() -> void:
 	button("1× / 2×", Vector2(290, 117), func() -> void: run.speed = 3.0 - run.speed)
 	button("全场维修 · 4 金", Vector2(390, 117), func() -> void: report(run.board.repair()))
 	button("小铺 / 食谱", Vector2(1020, 117), func() -> void: panel_open = not panel_open)
-	shovel_button = button("锅铲\n铲除", Vector2(1150, 20), func() -> void:
+	shovel_button = button("铲除", Vector2(1150, 20), func() -> void:
 		shovel = not shovel
 		selected = ""
 		move_from = Vector2i(-1,-1))
 	shovel_button.custom_minimum_size = Vector2(98, 82)
+	shovel_button.icon = preload("res://assets/ui/spatula.svg")
+	shovel_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+	shovel_button.expand_icon = true
+	shovel_button.add_theme_constant_override("icon_max_width", 40)
 	shovel_button.tooltip_text = "选中锅铲后点击美食铲除；右键或 Esc 取消。战斗中需确认，无返还。"
 	button("重新开局", Vector2(1160, 117), func() -> void: restart.popup_centered())
 	cards = HBoxContainer.new()
@@ -81,9 +86,11 @@ func _ready() -> void:
 		tutorial_step = 0
 		rebuild())
 	add_child(restart)
-	inspect = label(Vector2(32,640),15)
-	tutorial = label(Vector2(32,690),14)
-	tutorial_skip = button("跳过引导",Vector2(870,685),func() -> void: tutorial_step = mini(3,tutorial_step+1))
+	inspect = label(Vector2.ZERO,15)
+	inspect.visible = false
+	tutorial = label(Vector2.ZERO,14)
+	tutorial.visible = false
+	tutorial_skip = button("跳过引导",Vector2(1150,145),func() -> void: tutorial_step = mini(3,tutorial_step+1))
 	if debug_enabled: create_debug_panel()
 	run.changed.connect(rebuild)
 	if not run.resume_run():
@@ -151,11 +158,27 @@ func rebuild() -> void:
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
 		var stats: Dictionary = run.data.foods[id].stats
-		node.text = "%s ★%d\n%d 热量 · %d/6" % [run.data.foods[id].title, run.state.star(id), stats.cost, run.state.cards[id]]
+		var card_text: String = "%s ★%d\n%d 热量 · %d/6" % [run.data.foods[id].title, run.state.star(id), stats.cost, run.state.cards[id]]
 		node.custom_minimum_size = Vector2(110, 78)
 		node.add_theme_font_size_override("font_size", 14)
 		decorate_button(node, art.food(id), 32)
-		node.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+		node.icon = null
+		var portrait: TextureRect = TextureRect.new()
+		portrait.texture = art.food(id)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait.position = Vector2(37,2)
+		portrait.size = Vector2(36,36)
+		portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		node.add_child(portrait)
+		var caption: Label = Label.new()
+		caption.text = card_text
+		caption.position = Vector2(0,38)
+		caption.size = Vector2(110,38)
+		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		caption.add_theme_font_size_override("font_size",13)
+		caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		node.add_child(caption)
 		node.tooltip_text = "生命 %.0f · 伤害 %.0f\n间隔 %.2f 秒 · 射程 %.1f 格\n放置冷却 %.0f 秒" % [run.board.max_hp(id), stats.damage * run.data.rules.star_hp[run.state.star(id) - 1], stats.interval, run.recipes.reach(id), stats.cooldown]
 		node.pressed.connect(func() -> void: selected = id; shovel = false; move_from = Vector2i(-1,-1))
 		cards.add_child(node)
@@ -171,7 +194,7 @@ func _process(delta: float) -> void:
 	animator.advance(visual_delta, run.combat.enemies)
 	heat_label.text = "热量 %d\n" % run.state.heat
 	heat_label.tooltip_text = "每关上限 350；每秒恢复 5，准备阶段不恢复。"
-	header.text = "第 %02d / 08 关 · %s\n鼠潮 %d/%d · 余鼠 %d" % [run.state.wave, "暂停" if run.paused else {"prepare":"准备","battle":"战斗","recipe":"选谱","won":"胜利","lost":"失败"}.get(run.state.phase,""), run.director.cursor,run.director.events.size(),run.combat.enemies.size()]
+	header.text = wave_status()
 	shovel_button.modulate = Color("ffd38c") if shovel else Color.WHITE
 	for index: int in range(cards.get_child_count()):
 		cards.get_child(index).modulate = Color("ffd38c") if run.state.cards.keys()[index] == selected else Color.WHITE
@@ -192,8 +215,40 @@ func _process(delta: float) -> void:
 			if unit.id == "toast": tutorial_step = 3
 	var tips: Array[String] = ["① 热量每秒恢复；放置布丁每10秒生产热量。","② 选择小笼包，再点入口提示所在行的格子，向右攻击。","③ 把吐司放在输出右侧阻挡鼠群，留意每张卡的共享冷却。"]
 	tutorial_skip.visible = tutorial_step < 3 and run.state.wave == 1
-	tutorial.text = tips[tutorial_step] if tutorial_step < 3 and run.state.wave == 1 else "战斗中退出将回到本关开战前；准备操作自动保存。"
+	tutorial.text = tips[tutorial_step] if tutorial_step < 3 and run.state.wave == 1 else ""
+	notice.text = inspect.text if not inspect.text.is_empty() else (run.message if not run.message.is_empty() else tutorial.text)
+	notice.tooltip_text = tutorial.text + "\n战斗中退出将回到本关开战前；准备操作自动保存。"
+	notice.size.x = 1100 if tutorial_skip.visible else 1180
 	queue_redraw()
+
+func wave_progress() -> float:
+	if run.state.phase == "prepare": return 0.0
+	if run.state.phase in ["recipe", "won"]: return 1.0
+	return clampf(float(run.director.cursor) / maxi(1, run.director.events.size()), 0.0, 1.0)
+
+func wave_status() -> String:
+	var status: String = {"prepare":"等待开战", "recipe":"选择食谱", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
+	if run.state.phase == "battle":
+		status = "清理余鼠 %d" % run.combat.enemies.size() if wave_progress() >= 1.0 else "鼠潮 %d%% · 余鼠 %d" % [roundi(wave_progress() * 100), run.combat.enemies.size()]
+		if run.paused: status = "暂停 · " + status
+	return "第 %02d / 08 关 · %s" % [run.state.wave, status]
+
+func draw_wave_progress() -> void:
+	var bar: Rect2 = Rect2(930, 680, 316, 14)
+	var frame: StyleBoxFlat = tile_style(Color("142c32"))
+	frame.set_corner_radius_all(7)
+	frame.border_color = Color("b99c69")
+	frame.set_border_width_all(2)
+	draw_style_box(frame, bar.grow(3))
+	var fill_width: float = bar.size.x * wave_progress()
+	if fill_width > 0:
+		draw_rect(Rect2(bar.position,Vector2(fill_width,bar.size.y)),Color("68bcc2"))
+		draw_rect(Rect2(bar.position,Vector2(fill_width,4)),Color("c3eeeb"))
+	for index: int in range(1,8):
+		var x: float = bar.position.x + bar.size.x * index / 8.0
+		draw_line(Vector2(x,bar.position.y + 2),Vector2(x,bar.end.y - 2),Color("254a5266"),2)
+	draw_line(Vector2(bar.end.x,bar.position.y - 11),Vector2(bar.end.x,bar.end.y + 2),Color("e5ce9e"),2)
+	draw_colored_polygon(PackedVector2Array([Vector2(bar.end.x,bar.position.y-11),Vector2(bar.end.x-13,bar.position.y-11),Vector2(bar.end.x-10,bar.position.y-3),Vector2(bar.end.x,bar.position.y-3)]),Color("e2a36e"))
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("cancel_selection"):
@@ -202,10 +257,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		move_from = Vector2i(-1,-1)
 	if debug_enabled and event.is_action_pressed("debug_panel"): debug_window.popup_centered()
 	if event.is_action_pressed("board_select"):
+		if panel.visible and Rect2(910,180,346,426).has_point(event.position): return
 		var cell: Vector2i = projection.cell_at(event.position)
 		var col: int = cell.x
 		var row: int = cell.y
-		if col < 0 or col >= 8 or row < 0 or row >= 5: return
+		if col < 0 or col >= RunState.COLS or row < 0 or row >= RunState.ROWS: return
 		if shovel:
 			if run.state.phase == "battle" and not run.paused:
 				pending_remove = Vector2i(col,row)
@@ -228,10 +284,10 @@ func _draw() -> void:
 	var hovered: Dictionary = hovered_unit()
 	if not hovered.is_empty():
 		var start_x: float = hovered.col * 96 + 48
-		var reach: float = minf(run.recipes.reach(hovered.id) * 96, 768 - start_x)
-		draw_colored_polygon(projection.polygon(Rect2(start_x, hovered.row * 78, reach, 78)), Color(0.5, 0.85, 0.9, 0.14))
+		var reach: float = minf(run.recipes.reach(hovered.id) * 96, RunState.BOARD_WIDTH - start_x)
+		draw_colored_polygon(projection.polygon(Rect2(start_x, hovered.row * 96, reach, 96)), Color(0.5, 0.85, 0.9, 0.14))
 	# Draw each lane back to front; all objects share the same projected ground.
-	for row: int in range(5):
+	for row: int in range(RunState.ROWS):
 		for unit: Dictionary in run.state.units:
 			if unit.row == row: draw_food(unit)
 		for enemy: Dictionary in run.combat.enemies:
@@ -244,18 +300,17 @@ func _draw() -> void:
 		for i: int in range(run.director.cursor,mini(run.director.cursor + 3,run.director.events.size())):
 			var event: Dictionary = run.director.events[i]
 			if event.time - run.director.elapsed <= 5:
-				text_at(projection.foot(775, event.row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
-	draw_style_box(panel_style, Rect2(18, 12, 1244, 96))
+				text_at(projection.foot(RunState.BOARD_WIDTH + 7, event.row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
+	draw_style_box(panel_style, Rect2(18, 12, 1244, 100))
 	text_at(Vector2(34, 80), "粮仓 %d/10 · 金币 %d" % [run.state.pantry,run.state.coins], Color("f2dab2"), 14)
 	text_at(Vector2(580, 138), "%s · %.0f×" % ["锅铲已选中" if shovel else (run.data.foods[selected].title if selected != "" else "选择美食 / 调整阵地"), run.speed], Color("f3dbb8"), 15)
 	if panel.visible:
 		draw_style_box(panel_style, Rect2(910, 180, 346, 426))
-	draw_style_box(panel_style, Rect2(18, 632, 966, 82))
-	draw_style_box(panel_style, Rect2(994, 632, 268, 82))
+	draw_wave_progress()
 	for i: int in range(run.state.cards.size()):
 		var id: String = run.state.cards.keys()[i]
 		var remaining: float = run.state.cooldowns.get(id,0.0)
-		text_at(Vector2(cards.position.x + 8 + i * 116,101), "冷却 %.1fs" % remaining if remaining > 0 else "可放置", Color("f0cea0") if remaining > 0 else Color("a8d5b5"),12)
+		text_at(Vector2(cards.position.x + 8 + i * 116,107), "冷却 %.1fs" % remaining if remaining > 0 else "可放置", Color("f0cea0") if remaining > 0 else Color("a8d5b5"),12)
 
 func draw_kitchen() -> void:
 	draw_rect(Rect2(0,0,1280,720), Color("233c38"))
@@ -266,15 +321,15 @@ func draw_kitchen() -> void:
 	draw_style_box(tile_style(Color("78543b")), Rect2(18,166,1244,458))
 	for y: int in range(178,624,24):
 		draw_line(Vector2(24,y),Vector2(1256,y),Color("8a624442"),1)
-	draw_style_box(tile_style(Color("392e25")), Rect2(138,170,984,452))
-	for row: int in range(5):
+	draw_style_box(tile_style(Color("392e25")), Rect2(340,170,582,456))
+	for row: int in range(RunState.ROWS):
 		var center: Vector2 = projection.foot(-51,row) - Vector2(0,18)
-		draw_circle(center,33,Color("d8c7a2"))
-		draw_circle(center,26,Color("ede1c0"))
-		draw_arc(center,22,0,TAU,32,Color("baa986"),2,true)
-		var entry: Vector2 = projection.foot(812,row) - Vector2(16,40)
-		draw_style_box(tile_style(Color("433e32")),Rect2(entry,Vector2(64,58)))
-		text_at(entry + Vector2(17,36),"◀",Color("c5a779"),22)
+		draw_circle(center,25,Color("d8c7a2"))
+		draw_circle(center,20,Color("ede1c0"))
+		draw_arc(center,17,0,TAU,32,Color("baa986"),2,true)
+		var entry: Vector2 = projection.foot(RunState.BOARD_WIDTH + 44,row) - Vector2(16,40)
+		draw_style_box(tile_style(Color("433e32")),Rect2(entry,Vector2(44,48)))
+		text_at(entry + Vector2(10,32),"◀",Color("c5a779"),22)
 
 func outline(points: PackedVector2Array, color: Color, width: float = 1.0) -> void:
 	var closed: PackedVector2Array = points.duplicate()
@@ -288,11 +343,11 @@ func draw_board() -> void:
 	draw_colored_polygon(edge, Color("c8c59b"))
 	outline(edge, Color("c5a56b85"), 1.5)
 	var hover_cell: Vector2i = projection.cell_at(pointer)
-	for row: int in range(5):
+	for row: int in range(RunState.ROWS):
 		var exit_pos: Vector2 = projection.foot(-46, row)
 		text_at(exit_pos + Vector2(-22, 0), "◀", Color("d6c6a0"), 18)
-		for col: int in range(8):
-			var tile: PackedVector2Array = projection.tiles[row * 8 + col]
+		for col: int in range(RunState.COLS):
+			var tile: PackedVector2Array = projection.tiles[row * RunState.COLS + col]
 			draw_colored_polygon(tile, Color("d7cdab") if (row + col) % 2 == 0 else Color("9fae89"))
 			outline(tile, Color("f0e1b555"))
 			if move_from == Vector2i(col, row):
@@ -365,6 +420,7 @@ func panel_button(title: String, action: Callable, tip: String = "") -> Button:
 	return node
 
 func hovered_unit() -> Dictionary:
+	if panel.visible and Rect2(910,180,346,426).has_point(pointer): return {}
 	var cell: Vector2i = projection.cell_at(pointer)
 	if cell.x < 0: return {}
 	return run.board.at(cell.y, cell.x)
@@ -378,7 +434,7 @@ func update_inspector() -> void:
 		inspect.text = "%s ★%d   生命 %.0f / %.0f   伤害 %.1f · 间隔 %.2f秒 · 射程 %.1f格%s" % [run.data.foods[unit.id].title,run.state.star(unit.id),unit.hp,run.board.max_hp(unit.id),run.recipes.damage(unit),run.recipes.interval(unit),run.recipes.reach(unit.id)," · 面粉影响" if unit.flour > 0 else ""]
 	elif debug_enabled and run.state.phase == "battle":
 		inspect.text = "F3 开发面板 · 各行压力"
-		for row: int in range(5):
+		for row: int in range(RunState.ROWS):
 			var pressure: float = 0.0
 			for enemy: Dictionary in run.combat.enemies:
 				if enemy.row == row: pressure += enemy.hp

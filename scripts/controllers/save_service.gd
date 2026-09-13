@@ -82,7 +82,7 @@ func validate(p: Dictionary, data: Catalog) -> bool:
 	if not number(p.heat,0,data.rules.heat_cap) or not number(p.refreshes,0,2,true) or not p.repaired is bool: return false
 	if not number(p.leaks,0,1000,true) or not number(p.elapsed,0,1000000) or not number(p.next_uid,1,10000000,true): return false
 	if not p.cards is Dictionary or not p.recipes is Array or not p.units is Array or not p.offers is Array or not p.choices is Array or not p.metrics is Dictionary: return false
-	if p.cards.size() < 3 or p.units.size() > 40 or p.offers.size() != 3 or p.choices.size() > 3: return false
+	if p.cards.size() < 3 or p.units.size() > RunState.ROWS * RunState.COLS or p.offers.size() != 3 or p.choices.size() > 3: return false
 	for initial: String in ["bun","toast","pudding"]:
 		if not p.cards.has(initial): return false
 	for id: Variant in p.cards:
@@ -105,8 +105,8 @@ func validate(p: Dictionary, data: Catalog) -> bool:
 	var pudding_count: int = 0
 	for unit: Variant in p.units:
 		if not unit is Dictionary or not p.cards.has(unit.get("id")): return false
-		if not number(unit.get("row"),0,4,true) or not number(unit.get("col"),0,7,true): return false
-		var cell: int = int(unit.row)*8+int(unit.col)
+		if not number(unit.get("row"),0,RunState.ROWS-1,true) or not number(unit.get("col"),0,RunState.COLS-1,true): return false
+		var cell: int = int(unit.row)*RunState.COLS+int(unit.col)
 		if cell in seen or unit.get("uid") in uids or not number(unit.get("uid"),1,p.next_uid-1,true): return false
 		seen.append(cell)
 		uids.append(unit.uid)

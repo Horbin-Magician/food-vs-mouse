@@ -37,7 +37,7 @@ func spawn(id: String, row: int, wave: Resource) -> void:
 	var stats: Dictionary = data.enemies[id].stats
 	var hp_scale: float = 1.0 if id == "boss" else wave.stats.hp_scale
 	var damage_scale: float = 1.0 if id == "boss" else wave.stats.damage_scale
-	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": 820.0, "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
+	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": float(RunState.BOARD_WIDTH + 52), "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
 
 	spawned.emit(enemies[-1])
 
@@ -84,7 +84,7 @@ func step(delta: float) -> void:
 			hit(projectile,target)
 			projectile.remaining -= 1
 			if projectile.remaining <= 0: break
-		if projectile.remaining <= 0 or projectile.x > 900.0: projectiles.erase(projectile)
+		if projectile.remaining <= 0 or projectile.x > RunState.BOARD_WIDTH + 132.0: projectiles.erase(projectile)
 	var drummers: Array = enemies.filter(func(e: Dictionary) -> bool: return e.id == "drummer")
 	for enemy: Dictionary in enemies.duplicate():
 		enemy.flash = maxf(0.0, enemy.flash - delta)
@@ -181,8 +181,8 @@ func hit(projectile: Dictionary, target: Dictionary) -> void:
 			enemy.burn_time = recipes.value("burn","duration")
 
 func summon_pair(id: String) -> void:
-	var first: int = rng.randi_range(0,4)
-	var second: int = rng.randi_range(0,3)
+	var first: int = rng.randi_range(0,RunState.ROWS-1)
+	var second: int = rng.randi_range(0,RunState.ROWS-2)
 	if second >= first: second += 1
 	spawn(id,first,current_wave)
 	spawn(id,second,current_wave)

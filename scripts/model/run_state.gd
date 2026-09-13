@@ -1,6 +1,12 @@
 class_name RunState
 extends RefCounted
 
+const ROWS: int = 7
+const COLS: int = 9
+const CELL_WIDTH: int = 96
+const BOARD_WIDTH: int = COLS * CELL_WIDTH
+const CENTER_ROW: int = ROWS / 2
+
 var run_id: String = ""
 var seed_value: int = 1
 var wave: int = 1

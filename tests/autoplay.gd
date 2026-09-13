@@ -26,7 +26,7 @@ func evaluate() -> void:
 				if run.state.units.any(func(u: Dictionary) -> bool: return u.hp < run.board.max_hp(u.id)*0.6): run.board.repair()
 				run.start()
 			# Uses only normal placement costs and cooldowns. Prioritizes marked lanes.
-			var rows: Array = [1,2,3] if run.state.wave == 1 else [0,1,2,3,4]
+			var rows: Array = [2,3,4] if run.state.wave == 1 else [0,1,2,3,4,5,6]
 			var plan: Array = []
 			for row: int in rows: plan.append(["bun",row,1])
 			for row: int in [1,2,3]: plan.append(["pudding",row,0])

@@ -4,4 +4,4 @@
 script = ExtResource("1")
 id = "wave_3"
 title = "鼠潮 3"
-stats = {"duration": 90, "composition": ["gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner"], "rows": [0, 1, 2, 3, 4], "hp_scale": 1.2, "damage_scale": 1.12}
+stats = {"duration": 90, "composition": ["gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner", "gray", "lid", "gray", "runner"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 1.2, "damage_scale": 1.12}

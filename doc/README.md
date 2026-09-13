@@ -18,6 +18,7 @@
 | [art/asset_pack.md](art/asset_pack.md) | 29 项美术内容、规格、映射与接入 | 已生成并接入 |
 | [art/generation_prompts.md](art/generation_prompts.md) | 四类资源的完整生成提示词 | 已记录 |
 | [testing/art_pack.md](testing/art_pack.md) | 美术导入、窗口及性能验收 | 见实际记录 |
+| [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 自动及渲染检查通过，鼠标复验待完成 |
 | [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |
 
 | [testing/balance.md](testing/balance.md) | 压力测试、自动策略和真人验收缺口 | 初测完成，真人待验收 |
@@ -38,5 +39,3 @@
 新增文档必须加入本索引，并链接相关上游规则。文档至少包含：状态（拟议／已确定／已实现／已废弃）、适用范围、设计或规则、边界及异常情况、验收方式；涉及数值或接口时增加相应定义。只有实际完成实现及验证，才能更新为“已实现”。
 
 重要决策使用 `decisions/ADR-NNN-主题.md`，记录背景、选择、理由、影响、状态和日期。被替代的决策保留历史并链接后继决策；当前规则同步更新到其权威文档。
-
-| [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 本次验证记录 |

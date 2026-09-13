@@ -22,7 +22,7 @@ func max_hp(id: String) -> float:
 
 func place(id: String, row: int, col: int, paused: bool) -> String:
 	if state.phase != "battle" or paused: return "仅可在未暂停的战斗中放置"
-	if not state.cards.has(id) or row < 0 or row >= 5 or col < 0 or col >= 8: return "请选择持有卡与有效格子"
+	if not state.cards.has(id) or row < 0 or row >= RunState.ROWS or col < 0 or col >= RunState.COLS: return "请选择持有卡与有效格子"
 	if not at(row, col).is_empty(): return "格子已占用"
 	var definition: Dictionary = data.foods[id].stats
 	if state.heat < definition.cost: return "热量不足"
@@ -41,7 +41,7 @@ func place(id: String, row: int, col: int, paused: bool) -> String:
 
 func move(row: int, col: int, target_row: int, target_col: int) -> String:
 	if state.phase != "prepare": return "只可在准备阶段调位"
-	if target_row < 0 or target_row >= 5 or target_col < 0 or target_col >= 8: return "目标超出阵地"
+	if target_row < 0 or target_row >= RunState.ROWS or target_col < 0 or target_col >= RunState.COLS: return "目标超出阵地"
 	var source: Dictionary = at(row, col)
 	if source.is_empty(): return "原格子为空"
 	if row == target_row and col == target_col: return ""

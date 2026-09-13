@@ -11,12 +11,15 @@ func _init() -> void:
 	run.state.heat = 350
 	run.state.cooldowns.clear()
 	assert(run.board.place("pudding",0,1,false) != "" and run.state.heat == 350)
-	for row: int in range(5):
-		for col: int in range(1,8):
+	for row: int in range(RunState.ROWS):
+		for col: int in range(RunState.COLS):
+			if not run.board.at(row,col).is_empty(): continue
 			run.state.heat = 350
 			run.state.cooldowns.clear()
 			assert(run.board.place("toast",row,col,false) == "")
-	assert(run.state.units.size() == 40)
+	assert(run.state.units.size() == 63)
+	assert(run.board.place("bun",7,0,false) != "")
+	assert(run.board.place("bun",0,9,false) != "")
 	var heat: float = run.state.heat
 	assert(run.board.place("bun",0,0,false) != "" and run.state.heat == heat)
 	run.state.phase = "prepare"
@@ -27,7 +30,13 @@ func _init() -> void:
 	assert(run.board.move(0,0,1,1) == "")
 	assert(run.board.at(1,1).uid == first.uid and run.board.at(1,1).hp == 31.0)
 	assert(run.board.at(0,0).uid == second.uid and run.board.at(0,0).hp == 80.0)
-	assert(run.state.units.size() == 40)
+	assert(run.state.units.size() == 63)
+	run.saves.folder = "user://qa_grid/"
+	DirAccess.make_dir_recursive_absolute(run.saves.folder)
+	assert(run.saves.save_run(run.state,run.rng))
+	var loaded: Dictionary = run.saves.load_run(run.data)
+	assert(not loaded.is_empty() and loaded.units.size() == 63)
+	assert(run.saves.restore(loaded).units == run.state.units)
 	run.start()
 	run.state.heat = 0
 	for unit: Dictionary in run.state.units: unit.timer = 0.0

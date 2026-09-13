@@ -1,6 +1,7 @@
 class_name RunState
 extends RefCounted
 
+var run_id: String = ""
 var seed_value: int = 1
 var wave: int = 1
 var phase: String = "prepare"

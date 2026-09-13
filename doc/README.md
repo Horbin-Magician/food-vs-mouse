@@ -6,11 +6,16 @@
 
 | 文档 | 用途 | 状态 |
 |---|---|---|
-| [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 已定义，尚待实现与试玩验证 |
+| [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 首版代码已接入，真人与平衡验收待完成 |
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
 
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
+
+| [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 基础表现已实现 |
+| [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |
+
+| [testing/balance.md](testing/balance.md) | 压力测试、自动策略和真人验收缺口 | 初测完成，真人待验收 |
 
 ## 后续文档归档
 

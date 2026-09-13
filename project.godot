@@ -24,6 +24,16 @@ window/stretch/aspect="keep"
 
 [input]
 
+board_select={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+
+debug_panel={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194334)]
+}
+
 cancel_selection={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"physical_keycode":4194305), Object(InputEventMouseButton,"button_index":2)]
@@ -34,3 +44,5 @@ cancel_selection={
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/default_filters/use_nearest_mipmap_filter=false
+textures/vram_compression/import_etc2_astc=true
+textures/vram_compression/import_s3tc_bptc=true

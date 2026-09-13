@@ -21,6 +21,7 @@
 | [art/perspective.md](art/perspective.md) | 正交棋盘、顶部卡牌、底部操作栏与鼠标命中 | 紧凑顶栏与棋盘再次扩展已实现，验证见专页 |
 | [art/asset_pack.md](art/asset_pack.md) | 29 项美术内容、规格、映射与接入 | 已生成并接入 |
 | [art/generation_prompts.md](art/generation_prompts.md) | 四类资源的完整生成提示词 | 已记录 |
+| [testing/asset_edges.md](testing/asset_edges.md) | 图集透明边缘、跨格残片修复与验证 | 已修整；逐格对照、导入与原生渲染通过 |
 | [testing/art_pack.md](testing/art_pack.md) | 美术导入、窗口及性能验收 | 见实际记录 |
 | [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 自动及渲染检查通过，鼠标复验待完成 |
 | [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |

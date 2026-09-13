@@ -630,6 +630,8 @@ func _draw() -> void:
 	for row: int in range(RunState.ROWS):
 		for unit: Dictionary in run.state.units:
 			if unit.row == row: draw_food(unit)
+		for corpse: Dictionary in animator.corpses:
+			if corpse.row == row: draw_mouse(corpse)
 		for enemy: Dictionary in run.combat.enemies:
 			if enemy.row == row: draw_mouse(enemy)
 		for shot: Dictionary in run.combat.projectiles:
@@ -708,13 +710,19 @@ func draw_mouse(enemy: Dictionary) -> void:
 	var size: Vector2 = Vector2(58, 72)
 	if enemy.id == "elite": size = Vector2(68, 82)
 	if enemy.id == "boss": size = Vector2(82, 98)
-	var pose: Dictionary = animator.pose(enemy, foot)
-	draw_actor(art.mouse(enemy.id), foot, size * scale_value, enemy.flash > 0, pose, scale_value)
+	draw_mouse_frame(enemy, foot, size, scale_value)
+	if enemy.has("death_age"): return
 	var status_pos: Vector2 = foot - Vector2(22, size.y * 0.8) * scale_value
 	if enemy.slow_time > 0: text_at(status_pos,"❄",Color("83e4f5"))
 	if enemy.burn_time > 0: text_at(status_pos + Vector2(29, 0),"♨",Color("ffab69"))
 	if enemy.id in ["boss", "elite"]: text_at(status_pos + Vector2(0, -14),run.data.enemies[enemy.id].title,Color("ffe1a1"),12)
 	draw_rect(Rect2(foot + Vector2(-23, 4) * scale_value,Vector2(46 * enemy.hp / enemy.max_hp, 4) * scale_value),Color("ed8796"))
+
+func draw_mouse_frame(enemy: Dictionary, foot: Vector2, size: Vector2, scale_value: float) -> void:
+	# Articulated frames already contain anticipation, weight and recoil.
+	var pose: Dictionary = animator.mouse_pose(enemy, foot)
+	size.x = size.y
+	draw_actor(art.mouse_frame(enemy.id, animator.mouse_frame(enemy)), foot, size * scale_value, false, pose, scale_value)
 
 func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, hit: bool, pose: Dictionary, depth: float) -> void:
 	if texture == null: return

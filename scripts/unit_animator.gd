@@ -15,6 +15,11 @@ const PROFILES: Dictionary = {
 const DROP_TIME: float = 0.38
 const MOVE_TIME: float = 0.32
 const ACTION_TIME: float = 0.25
+const MOUSE_ACTION_TIME: float = 0.48
+const HURT_TIME: float = 0.30
+const DEATH_TIME: float = 0.72
+const STRIDE_DISTANCE: float = 12.0
+var corpses: Array[Dictionary] = []
 var entries: Dictionary = {}
 var state: RunState
 var projection: BoardProjection
@@ -26,16 +31,19 @@ func bind(run: RunController, board_projection: BoardProjection) -> void:
 	state = run.state
 	projection = board_projection
 	entries.clear()
+	corpses.clear()
 	time = 0.0
 	phase = state.phase
 	run.board.placed.connect(appear)
 	run.board.moved.connect(move)
 	run.combat.spawned.connect(appear)
 	run.combat.acted.connect(act)
+	run.combat.enemy_hurt.connect(hurt)
+	run.combat.enemy_fallen.connect(fall)
 
 func entry(unit: Dictionary) -> Dictionary:
 	if not entries.has(unit.uid):
-		entries[unit.uid] = {"drop": 0.0, "action": 0.0, "move": 0.0, "from": Vector2.ZERO, "x": unit.get("x", 0.0), "stride": 0.0, "walking": false}
+		entries[unit.uid] = {"drop": 0.0, "action": 0.0, "move": 0.0, "from": Vector2.ZERO, "x": unit.get("x", 0.0), "stride": 0.0, "walking": false, "hurt": 0.0, "mouse": unit.has("x")}
 	return entries[unit.uid]
 
 func appear(unit: Dictionary) -> void:
@@ -46,7 +54,38 @@ func act(uid: int) -> void:
 	if not entries.has(uid):
 		for unit: Dictionary in state.units:
 			if unit.uid == uid: entry(unit)
-	if entries.has(uid): entries[uid].action = ACTION_TIME
+	if entries.has(uid): entries[uid].action = MOUSE_ACTION_TIME if entries[uid].mouse else ACTION_TIME
+
+func hurt(unit: Dictionary) -> void:
+	entry(unit).hurt = HURT_TIME
+
+func fall(unit: Dictionary) -> void:
+	var snapshot: Dictionary = unit.duplicate(true)
+	snapshot["death_age"] = 0.0
+	corpses.append(snapshot)
+
+func mouse_frame(unit: Dictionary) -> Vector2i:
+	if unit.has("death_age"):
+		return Vector2i(mini(5, int(unit.death_age / DEATH_TIME * 6)), 3)
+	var value: Dictionary = entry(unit)
+	if value.hurt > 0:
+		return Vector2i(clampi(int((1.0 - value.hurt / HURT_TIME) * 6), 0, 5), 2)
+	if value.action > 0:
+		return Vector2i(clampi(int((1.0 - value.action / MOUSE_ACTION_TIME) * 6), 0, 5), 1)
+	if value.walking: return Vector2i(posmod(int(value.stride / TAU * 6), 6), 0)
+	return Vector2i(5, 1)
+
+func mouse_pose(unit: Dictionary, foot: Vector2) -> Dictionary:
+	var offset := Vector2.ZERO
+	var stretch := Vector2.ONE
+	if not unit.has("death_age"):
+		var value: Dictionary = entry(unit)
+		if value.drop > 0:
+			var progress: float = 1.0 - value.drop / DROP_TIME
+			offset.y = -30.0 * pow(1.0 - minf(progress / 0.6, 1.0), 2)
+			var squash: float = sin(clampf((progress - 0.5) / 0.5, 0.0, 1.0) * PI)
+			stretch += Vector2(0.16, -0.14) * squash
+	return {"shadow": foot, "foot": foot, "offset": offset, "scale": stretch, "angle": 0.0}
 
 func move(unit: Dictionary, from_row: int, from_col: int) -> void:
 	var value: Dictionary = entry(unit)
@@ -61,22 +100,27 @@ func moving_foot(value: Dictionary, target: Vector2) -> Vector2:
 
 func advance(delta: float, enemies: Array) -> void:
 	if phase != state.phase:
+		corpses.clear()
 		for value: Dictionary in entries.values():
 			value.action = 0.0
 			value.drop = 0.0
 			value.move = 0.0
+			value.hurt = 0.0
 		phase = state.phase
+	for corpse: Dictionary in corpses.duplicate():
+		corpse.death_age += delta
+		if corpse.death_age >= DEATH_TIME: corpses.erase(corpse)
 	time += delta
 	var live: Dictionary = {}
 	for unit: Dictionary in state.units + enemies:
 		live[unit.uid] = true
 		var value: Dictionary = entry(unit)
-		for key: String in ["drop", "action", "move"]:
+		for key: String in ["drop", "action", "move", "hurt"]:
 			value[key] = maxf(0.0, value[key] - delta)
 		if unit.has("x") and delta > 0:
 			var distance: float = absf(unit.x - value.x)
 			value.walking = distance > 0.0001
-			value.stride += distance * 0.24
+			value.stride = fmod(value.stride + distance * TAU / STRIDE_DISTANCE, TAU)
 			value.x = unit.x
 	for uid: int in entries.keys():
 		if not live.has(uid): entries.erase(uid)

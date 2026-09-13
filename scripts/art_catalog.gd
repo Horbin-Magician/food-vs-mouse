@@ -11,6 +11,7 @@ const RECIPE_IDS: Array[String] = ["pressure", "wide", "recycle", "burst", "ice"
 var foods: Dictionary = {}
 var food_portraits: Dictionary = {}
 var mice: Dictionary = {}
+var mouse_frames: Dictionary = {}
 var recipes: Dictionary = {}
 
 func _init() -> void:
@@ -27,6 +28,18 @@ func _init() -> void:
 		portrait.filter_clip = true
 		food_portraits[id] = portrait
 	fill(mice, MOUSE_SHEET, MOUSE_IDS, 2)
+	for id: String in MOUSE_IDS:
+		var sheet: Texture2D = load("res://assets/art/mouse_frames/%s.png" % id)
+		var frames: Array[Texture2D] = []
+		var cell: Vector2 = sheet.get_size() / Vector2(6, 4)
+		for row: int in range(4):
+			for col: int in range(6):
+				var frame := AtlasTexture.new()
+				frame.atlas = sheet
+				frame.region = Rect2(Vector2(col, row) * cell, cell)
+				frame.filter_clip = true
+				frames.append(frame)
+		mouse_frames[id] = frames
 	fill(recipes, RECIPE_SHEET, RECIPE_IDS, 3)
 
 func fill(target: Dictionary, sheet: Texture2D, ids: Array[String], rows: int) -> void:
@@ -49,3 +62,6 @@ func recipe(id: String) -> Texture2D:
 
 func food_portrait(id: String) -> Texture2D:
 	return food_portraits.get(id)
+
+func mouse_frame(id: String, frame: Vector2i) -> Texture2D:
+	return mouse_frames[id][frame.y * 6 + frame.x]

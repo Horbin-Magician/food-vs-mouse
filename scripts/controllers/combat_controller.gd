@@ -3,6 +3,8 @@ extends RefCounted
 
 signal acted(uid: int)
 signal spawned(unit: Dictionary)
+signal enemy_hurt(unit: Dictionary)
+signal enemy_fallen(unit: Dictionary)
 
 signal unit_died(food_id: String)
 signal enemy_leaked(damage: int)
@@ -169,6 +171,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 	var actual: float = minf(enemy.hp, amount)
 	enemy.hp -= amount
 	enemy.flash = 0.15
+	if enemy.hp > 0: enemy_hurt.emit(enemy)
 	state.metrics.damage[source] = state.metrics.damage.get(source, 0.0) + actual
 	if enemy.id == "boss" and not enemy.rage and enemy.hp > 0 and enemy.hp < enemy.max_hp * data.rules.boss_rage_threshold:
 		enemy.rage = true
@@ -178,6 +181,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 			for unit: Dictionary in state.units:
 				if unit.row == enemy.row and absf(unit.col * 96.0 + 48.0-enemy.x) <= data.rules.flour_radius:
 					unit.flour = data.rules.flour_duration
+		enemy_fallen.emit(enemy)
 		enemies.erase(enemy)
 		state.metrics.kills += 1
 		enemy_killed.emit(enemy.id)

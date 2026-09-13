@@ -63,7 +63,7 @@ func run_test() -> void:
 	scene.rebuild()
 	scene._process(0)
 	scene.shovel = false
-	event.position = Vector2(950,380)
+	event.position = scene.PANEL_RECT.get_center()
 	scene._unhandled_input(event)
 	assert(scene.move_from == Vector2i(-1,-1))
 	scene.panel_open = false
@@ -87,6 +87,56 @@ func run_test() -> void:
 	assert(scene.wave_progress() == 0.0)
 	scene.run.state.phase = "won"
 	assert(scene.wave_progress() == 1.0 and "守卫成功" in scene.wave_status())
+	# Readable state and controls stay consistent with business permissions.
+	scene.run.state.phase = "prepare"
+	scene.run.paused = false
+	scene.run.state.coins = 0
+	scene.run.state.cooldowns["bun"] = 6.0
+	scene.rebuild()
+	scene._process(0)
+	await process_frame
+	assert(not scene.start_button.disabled and scene.pause_button.disabled)
+	assert(scene.repair_button.disabled)
+	assert(scene.card_status("bun") == "开战后放置")
+	assert(not scene.cards.get_child(0).get_node("Cooldown").visible)
+	for child: Node in scene.panel.get_children():
+		if child is Button: assert(child.disabled)
+	assert(scene.panel.get_global_rect().end.x <= scene.PANEL_RECT.end.x)
+	assert(scene.panel.get_global_rect().end.y <= scene.PANEL_RECT.end.y)
+	scene.run.state.phase = "battle"
+	scene.run.paused = true
+	scene._process(0)
+	assert(scene.card_status("bun") == "已暂停")
+	assert(scene.start_button.disabled and not scene.pause_button.disabled)
+	assert(scene.pause_button.text == "继续")
+	assert(scene.cards.get_child(0).get_node("Cooldown").size.y <= 2)
+	scene.run.paused = false
+	scene.run.state.cooldowns.clear()
+	scene.run.state.heat = 0
+	assert(scene.card_status("bun") == "热量不足")
+	scene.run.state.heat = 350
+	scene.selected = "bun"
+	assert("已选中" in scene.card_status("bun"))
+	# Modal blank areas must never trigger board placement.
+	scene.confirm.popup_centered()
+	var unit_count: int = scene.run.state.units.size()
+	event.position = scene.projection.project(Vector2(48,48))
+	scene._unhandled_input(event)
+	assert(scene.run.state.units.size() == unit_count)
+	scene.confirm.hide()
+	scene.run.state.phase = "recipe"
+	scene.run.state.choices = ["pressure", "breakfast", "cold_spice"]
+	scene.rebuild()
+	await process_frame
+	await process_frame
+	assert(scene.panel.get_global_rect().end.y <= scene.PANEL_RECT.end.y)
+	for child: Node in scene.panel.get_children():
+		if child is Button:
+			for content: Node in child.get_children():
+				if content is Control:
+					assert(content.position.x + content.size.x <= child.size.x)
+					assert(content.position.y + content.size.y <= child.size.y)
+	assert(scene.PANEL_RECT.position.x > scene.projection.ORIGIN.x + scene.projection.CANVAS_SIZE.x)
 	print("PASS UI: placement, pause, animation time, shovel confirmation, cancel, eight-card bounds, overlay input")
 	scene.queue_free()
 	await process_frame

@@ -12,6 +12,8 @@
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
+| [art/ui.md](art/ui.md) | 全局 UI 主题、信息层级、控件状态与弹窗规范 | 已接入，验证见专页 |
+| [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
 | [art/animation.md](art/animation.md) | 全单位待机、放置、攻击与移动动画规则及验收 | 已实现，鼠标复验待完成 |
 | [art/perspective.md](art/perspective.md) | 正交棋盘、顶部操作栏与鼠标命中 | 布局更新，验证见专页 |

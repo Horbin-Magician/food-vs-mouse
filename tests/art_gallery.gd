@@ -26,7 +26,7 @@ func _input(event: InputEvent) -> void:
 	super._input(event)
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_R:
-			run.state.phase = "recipe"
+			run.state.phase = "prepare"
 			run.state.choices = ["pressure", "ice", "breakfast"]
 			rebuild()
 		if event.keycode == KEY_P:

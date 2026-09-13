@@ -5,13 +5,17 @@ signal card_upgraded(food_id: String, star: int)
 var state: RunState
 var data: Catalog
 var board: BoardController
+var recipes: RecipeSystem
+var unlocked: Array = []
 var rng: RandomNumberGenerator
 
-func _init(s: RunState, c: Catalog, b: BoardController, random: RandomNumberGenerator) -> void:
+func _init(s: RunState, c: Catalog, b: BoardController, random: RandomNumberGenerator, recipe_system: RecipeSystem, unlocked_ids: Array) -> void:
 	state = s
 	data = c
 	board = b
 	rng = random
+	recipes = recipe_system
+	unlocked = unlocked_ids
 
 func open() -> void:
 	state.refreshes = 0
@@ -24,6 +28,7 @@ func generate() -> void:
 		if state.cards.get(id,0) < 6: pool.append(id)
 	for i: int in range(3):
 		state.offers.append({"id": pool[rng.randi_range(0,pool.size()-1)] if not pool.is_empty() else "", "bought": false})
+	recipes.offer(rng, unlocked)
 
 func buy(index: int) -> String:
 	if state.phase != "prepare": return "仅准备阶段可购买"
@@ -50,4 +55,14 @@ func refresh() -> String:
 	state.coins -= data.rules.refresh_cost
 	state.refreshes += 1
 	generate()
+	return ""
+
+func buy_recipe(id: String) -> String:
+	if state.phase != "prepare": return "仅准备阶段可购买"
+	if id not in state.choices or not data.recipes.has(id) or not recipes.eligible(id, unlocked): return "食谱已售罄或不可用"
+	if state.coins < data.rules.recipe_price: return "金币不足"
+	state.coins -= data.rules.recipe_price
+	state.recipes.append(id)
+	state.metrics.recipes.append(id)
+	state.choices.erase(id)
 	return ""

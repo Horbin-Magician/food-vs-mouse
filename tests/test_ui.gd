@@ -192,7 +192,7 @@ func run_test() -> void:
 	scene._unhandled_input(event)
 	assert(scene.run.state.units.size() == unit_count)
 	scene.confirm.hide()
-	scene.run.state.phase = "recipe"
+	scene.run.state.phase = "prepare"
 	scene.run.state.choices = ["pressure", "breakfast", "cold_spice"]
 	scene.rebuild()
 	await process_frame
@@ -239,6 +239,14 @@ func run_test() -> void:
 	scene.shop_items.get_child(0).pressed.emit()
 	assert(scene.run.state.cards[offer_id] == count_before + 1)
 	assert(scene.run.state.coins == coins_before - scene.run.data.foods[offer_id].stats.price)
+	scene.run.state.coins = 20
+	scene.rebuild()
+	var recipe_id: String = scene.run.state.choices[0]
+	var recipe_button: Button = scene.shop_surface.get_node("Recipe_" + recipe_id)
+	assert(scene.SHOP_RECT.encloses(recipe_button.get_global_rect()))
+	recipe_button.pressed.emit()
+	assert(scene.run.state.coins == 16 and recipe_id in scene.run.state.recipes)
+	assert(not scene.shop_surface.has_node("Recipe_" + recipe_id))
 	scene.run.state.coins = 10
 	scene.rebuild()
 	scene.shop_refresh.pressed.emit()
@@ -264,7 +272,7 @@ func run_test() -> void:
 	assert(not scene.shop_overlay.visible)
 	scene.shovel_button.pressed.emit()
 	assert(scene.shovel_cursor_active)
-	scene.run.state.phase = "recipe"
+	scene.run.state.phase = "won"
 	scene.update_controls()
 	assert(not scene.shovel and not scene.shovel_cursor_active)
 	scene.run.state.phase = "prepare"

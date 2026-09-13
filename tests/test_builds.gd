@@ -5,7 +5,7 @@ func _init() -> void:
 	run.new_run(42)
 	var same: RunController = RunController.new()
 	same.new_run(42)
-	assert(run.state.offers == same.state.offers)
+	assert(run.state.offers == same.state.offers and run.state.choices == same.state.choices)
 	run.state.cards.bun = 2
 	run.start()
 	run.board.place("bun",2,0,false)
@@ -36,16 +36,23 @@ func _init() -> void:
 	enemy.slow_time = 2
 	run.combat.damage_enemy(enemy,32,"pepper")
 	assert(enemy.hp == 218 and enemy.armor == 2)
-	run.state.phase = "recipe"
+	run.state.phase = "prepare"
 	run.state.recipes.clear()
 	run.recipes.offer(run.rng,[])
 	var choice: String = run.state.choices[0]
-	assert(run.recipes.choose(choice) == "")
-	assert(run.recipes.choose(choice) != "")
-	for id: String in run.data.recipes: run.state.recipes.append(id)
+	run.state.coins = 0
+	assert(run.shop.buy_recipe(choice) != "" and run.state.recipes.is_empty())
+	run.state.coins = 20
+	run.state.phase = "battle"
+	assert(run.shop.buy_recipe(choice) != "" and run.state.coins == 20)
+	run.state.phase = "prepare"
+	assert(run.shop.buy_recipe(choice) == "")
+	assert(run.state.coins == 16 and run.recipes.has(choice))
+	assert(run.shop.buy_recipe(choice) != "")
+	assert(run.state.coins == 16)
+	run.state.recipes = run.data.recipes.keys()
 	run.recipes.offer(run.rng,[])
 	assert(run.state.choices.is_empty())
-	run.skip_recipe()
 	assert(run.state.phase == "prepare")
 	print("PASS builds: deterministic shop, atomic purchases, stars, stacked formulas, armor, empty recipes")
 	quit()

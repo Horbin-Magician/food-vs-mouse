@@ -9,15 +9,9 @@ func evaluate() -> void:
 		run.new_run(42)
 		var steps: int = 0
 		while run.state.phase not in ["won","lost"] and steps < 20000:
-			if run.state.phase == "recipe":
-				var preference: Array = ["pressure","burst","wide","recycle","caramel","reheat","crust"] if build == "steam" else ["ice","cold_spice","long","burn","caramel","reheat","crust"]
-				var chosen: String = ""
-				for id: String in preference:
-					if id in run.state.choices: chosen = id; break
-				if chosen.is_empty() and not run.state.choices.is_empty(): chosen = run.state.choices[0]
-				if chosen.is_empty(): run.skip_recipe()
-				else: run.choose_recipe(chosen)
 			if run.state.phase == "prepare":
+				for id: String in run.state.choices.duplicate():
+					if run.state.coins >= 8: run.shop.buy_recipe(id)
 				var wants: Array = ["bun","toast","pudding","popcorn","garlic"] if build == "steam" else ["bun","toast","pudding","tea","pepper","garlic"]
 				for refresh: int in range(3):
 					for i: int in range(run.state.offers.size()):

@@ -91,12 +91,10 @@ func validate(p: Dictionary, data: Catalog) -> bool:
 	for id: Variant in p.recipes:
 		if not data.recipes.has(id) or id in seen: return false
 		seen.append(id)
-	if seen.size() > 7: return false
 	seen.clear()
 	for id: Variant in p.choices:
 		if not data.recipes.has(id) or id in p.recipes or id in seen: return false
 		seen.append(id)
-	if p.phase == "prepare" and not p.choices.is_empty(): return false
 	for offer: Variant in p.offers:
 		if not offer is Dictionary or not offer.get("bought") is bool or not offer.get("id") is String: return false
 		if offer.id != "" and not data.foods.has(offer.id): return false

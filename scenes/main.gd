@@ -5,7 +5,7 @@ var art: ArtCatalog = ArtCatalog.new()
 var animator: UnitAnimator = UnitAnimator.new()
 const TOP_RECT := Rect2(12, -16, 1256, 100)
 const FOOTER_Y := 678.0
-const SHOP_RECT := Rect2(220, 152, 840, 416)
+const SHOP_RECT := Rect2(220, 82, 840, 556)
 const PANEL_RECT := Rect2(974, 180, 282, 444)
 const CARD_DRAG_THRESHOLD := 6.0
 const FOOD_ROLES := {"bun":"蒸汽输出", "toast":"前排守卫", "pudding":"热量生产", "tea":"冰霜减速", "pepper":"近距爆发", "popcorn":"范围清群", "noodles":"穿透输出", "garlic":"相邻增益"}
@@ -230,15 +230,9 @@ func rebuild() -> void:
 	if layout_phase != run.state.phase:
 		panel_open = run.state.phase != "battle"
 		layout_phase = run.state.phase
-	panel_label({"recipe":"灵感菜单", "prepare":"打烊小铺", "battle":"本局食谱", "won":"今夜，守住了", "lost":"明晚，再来"}.get(run.state.phase,""), 24, GameTheme.TEXT)
-	panel_label({"recipe":"选择一道食谱 · 效果持续整局", "prepare":"补充阵容，为下一波做准备", "battle":"已获得的加成持续生效", "won":"八关告捷 · 食堂安然无恙", "lost":"粮仓失守 · 换个阵容再试试"}.get(run.state.phase,""), 13, GameTheme.MUTED)
-	if run.state.phase == "recipe":
-		for id: String in run.state.choices:
-			var choice: Button = panel_button("",func() -> void: report(run.choose_recipe(id)),run.data.recipes[id].stats.description)
-			choice.custom_minimum_size.y = 92
-			row_content(choice, art.recipe(id), run.data.recipes[id].title, run.data.recipes[id].stats.description)
-		if run.state.choices.is_empty(): panel_button("食谱已收集完 · 继续 →",func() -> void: run.skip_recipe())
-	elif run.state.phase == "prepare":
+	panel_label({"prepare":"打烊小铺", "battle":"本局食谱", "won":"今夜，守住了", "lost":"明晚，再来"}.get(run.state.phase,""), 24, GameTheme.TEXT)
+	panel_label({"prepare":"购买美食与灵感食谱，为下一波做准备", "battle":"已获得的加成持续生效", "won":"八关告捷 · 食堂安然无恙", "lost":"粮仓失守 · 换个阵容再试试"}.get(run.state.phase,""), 13, GameTheme.MUTED)
+	if run.state.phase == "prepare":
 		build_shop()
 	if run.state.phase in ["won","lost"]:
 		panel_label("今 夜 战 报", 13, GameTheme.GOLD)
@@ -246,9 +240,9 @@ func rebuild() -> void:
 			panel_label(line, 18, GameTheme.TEXT)
 		var again: Button = panel_button("再守一夜  →",func() -> void: restart.popup_centered(Vector2i(460,190)))
 		GameTheme.primary(again)
-	var owned: Label = panel_label("已选食谱 %02d  ·  悬停查看" % run.state.recipes.size(), 13, GameTheme.MUTED)
+	var owned: Label = panel_label("已购食谱 %02d  ·  悬停查看" % run.state.recipes.size(), 13, GameTheme.MUTED)
 	owned.mouse_filter = Control.MOUSE_FILTER_STOP
-	owned.tooltip_text = "尚未选择食谱；通过关卡后获得。" if run.state.recipes.is_empty() else "本局食谱\n"
+	owned.tooltip_text = "尚未购买食谱；在小铺用金币购买。" if run.state.recipes.is_empty() else "本局食谱\n"
 	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
@@ -354,7 +348,7 @@ func build_shop() -> void:
 		shop_surface.remove_child(child)
 		child.queue_free()
 	card_label(shop_surface, "打烊小铺", Vector2(24, 20), Vector2(380, 36), 26, GameTheme.TEXT)
-	card_label(shop_surface, "补充阵容，为下一波做准备", Vector2(24, 61), Vector2(400, 22), 14, GameTheme.MUTED)
+	card_label(shop_surface, "购买美食与灵感食谱，为下一波做准备", Vector2(24, 61), Vector2(400, 22), 14, GameTheme.MUTED)
 	card_label(shop_surface, "金币  %d" % run.state.coins, Vector2(576, 28), Vector2(140, 28), 20, GameTheme.GOLD)
 	var close := shop_button("关闭 ×", Vector2(724, 24), Vector2(92, 36), func() -> void: set_panel_open(false))
 	close.name = "Close"
@@ -396,17 +390,29 @@ func build_shop() -> void:
 		var price_label := card_label(item, price, Vector2(16, 183), Vector2(224, 26), 16, GameTheme.MUTED if item.disabled else GameTheme.GOLD)
 		price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		item.tooltip_text = price if item.disabled else "购买后自动解锁或累积升星进度；累计 3 张二星，6 张三星。"
-	var feedback := card_label(shop_surface, run.message, Vector2(24, 325), Vector2(792, 22), 13, GameTheme.ACCENT)
+	card_label(shop_surface, "灵感食谱 · 每张 %d 金 · 购买后整局生效" % run.data.rules.recipe_price, Vector2(24, 327), Vector2(760, 24), 15, GameTheme.GOLD)
+	if run.state.choices.is_empty():
+		card_label(shop_surface, "暂无可购食谱 · 可刷新或继续开战", Vector2(24, 379), Vector2(760, 26), 16, GameTheme.MUTED)
+	for index: int in range(run.state.choices.size()):
+		var id: String = run.state.choices[index]
+		var item := shop_button("", Vector2(24 + index * 268, 361), Vector2(256, 90), func() -> void: report(run.shop.buy_recipe(id)))
+		item.custom_minimum_size = Vector2(256, 90)
+		item.name = "Recipe_" + id
+		item.disabled = run.state.coins < run.data.rules.recipe_price
+		item.tooltip_text = run.data.recipes[id].stats.description
+		row_content(item, art.recipe(id), run.data.recipes[id].title, "%d 金 · %s" % [run.data.rules.recipe_price, "金币不足" if item.disabled else "购买食谱"])
+		focus_buttons.append(item)
+	var feedback := card_label(shop_surface, run.message, Vector2(24, 465), Vector2(792, 22), 13, GameTheme.ACCENT)
 	feedback.clip_text = true
 	feedback.tooltip_text = run.message
-	shop_refresh = shop_button("刷新 · %d 金    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 360), Vector2(240, 36), func() -> void: report(run.shop.refresh()))
+	shop_refresh = shop_button("刷新 · %d 金    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 500), Vector2(240, 36), func() -> void: report(run.shop.refresh()))
 	shop_refresh.disabled = run.state.refreshes >= run.data.rules.refresh_limit or run.state.coins < run.data.rules.refresh_cost
-	shop_refresh.tooltip_text = "刷新次数已用完" if run.state.refreshes >= run.data.rules.refresh_limit else ("金币不足" if shop_refresh.disabled else "更换三个商品，消耗 %d 金币" % run.data.rules.refresh_cost)
-	var owned := card_label(shop_surface, "已选食谱 %02d · 悬停查看" % run.state.recipes.size(), Vector2(288, 367), Vector2(280, 24), 13, GameTheme.MUTED)
+	shop_refresh.tooltip_text = "刷新次数已用完" if run.state.refreshes >= run.data.rules.refresh_limit else ("金币不足" if shop_refresh.disabled else "更换美食与食谱商品，消耗 %d 金币" % run.data.rules.refresh_cost)
+	var owned := card_label(shop_surface, "已购食谱 %02d · 悬停查看" % run.state.recipes.size(), Vector2(288, 507), Vector2(280, 24), 13, GameTheme.MUTED)
 	owned.mouse_filter = Control.MOUSE_FILTER_STOP
-	owned.tooltip_text = "尚未选择食谱；通过关卡后获得。" if run.state.recipes.is_empty() else "本局食谱\n"
+	owned.tooltip_text = "尚未购买食谱；在小铺用金币购买。" if run.state.recipes.is_empty() else "本局食谱\n"
 	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
-	var done := shop_button("完成购物  →", Vector2(620, 360), Vector2(196, 36), func() -> void: set_panel_open(false))
+	var done := shop_button("完成购物  →", Vector2(620, 500), Vector2(196, 36), func() -> void: set_panel_open(false))
 	GameTheme.primary(done)
 	focus_buttons.append_array([shop_refresh, done])
 	# Keep keyboard focus within the modal, including after a purchase rebuild.
@@ -485,7 +491,7 @@ func _process(delta: float) -> void:
 	heat_pickup_view.queue_redraw()
 	header.text = wave_status()
 	update_controls()
-	if run.state.phase != old_phase and run.state.phase in ["recipe","won"]: sound.cue("clear")
+	if run.state.phase != old_phase and run.state.phase in ["prepare","won"]: sound.cue("clear")
 	if run.state.pantry < old_pantry: sound.cue("danger")
 	if run.state.units.size() > old_units: sound.cue("place")
 	old_phase = run.state.phase
@@ -497,11 +503,11 @@ func _process(delta: float) -> void:
 
 func wave_progress() -> float:
 	if run.state.phase == "prepare": return 0.0
-	if run.state.phase in ["recipe", "won"]: return 1.0
+	if run.state.phase == "won": return 1.0
 	return clampf(float(run.director.cursor) / maxi(1, run.director.events.size()), 0.0, 1.0)
 
 func wave_status() -> String:
-	var status: String = {"prepare":"等待开战", "recipe":"选择食谱", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
+	var status: String = {"prepare":"等待开战", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
 	if run.state.phase == "battle":
 		status = "清理余鼠 %d" % run.combat.enemies.size() if wave_progress() >= 1.0 else "鼠潮 %d%% · 余鼠 %d" % [roundi(wave_progress() * 100), run.combat.enemies.size()]
 		if run.paused: status = "暂停 · " + status
@@ -523,7 +529,7 @@ func update_controls() -> void:
 	sync_panel_visibility()
 	modal_shade.visible = confirm.visible or restart.visible
 	start_button.disabled = phase != "prepare"
-	start_button.text = "开始鼠潮  →" if phase == "prepare" else {"battle":"守卫进行中", "recipe":"请先选择食谱", "won":"守卫完成", "lost":"守卫结束"}.get(phase, "")
+	start_button.text = "开始鼠潮  →" if phase == "prepare" else {"battle":"守卫进行中", "won":"守卫完成", "lost":"守卫结束"}.get(phase, "")
 	pause_button.disabled = phase != "battle"
 	pause_button.text = "继续" if run.paused else "暂停"
 	pause_button.tooltip_text = "暂停时可查看信息，不能执行战斗操作。"
@@ -531,7 +537,7 @@ func update_controls() -> void:
 	repair_button.disabled = phase != "prepare" or run.state.repaired or run.state.coins < run.data.rules.repair_cost
 	repair_button.text = "本关已维修" if run.state.repaired else "维修 · %d 金" % run.data.rules.repair_cost
 	repair_button.tooltip_text = "仅准备阶段可用" if phase != "prepare" else ("本关维修次数已用完" if run.state.repaired else ("金币不足" if run.state.coins < run.data.rules.repair_cost else "恢复场上美食 30% 最大生命；每个准备阶段一次。"))
-	var panel_name: String = {"recipe":"食谱", "prepare":"小铺", "battle":"食谱", "won":"战报", "lost":"战报"}.get(phase, "面板")
+	var panel_name: String = {"prepare":"小铺", "battle":"食谱", "won":"战报", "lost":"战报"}.get(phase, "面板")
 	toggle_button.text = ("收起" if panel_open else "打开") + panel_name
 	shovel_button.disabled = phase not in ["prepare", "battle"] or run.paused
 	if phase not in ["prepare", "battle"]: shovel = false

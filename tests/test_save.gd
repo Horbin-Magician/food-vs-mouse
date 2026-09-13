@@ -25,9 +25,26 @@ func _init() -> void:
 	run.finish_wave()
 	assert(run.saves.save_run(run.state,run.rng))
 	snapshot = run.saves.load_run(run.data)
-	assert(snapshot.phase == "recipe" and snapshot.choices == run.state.choices)
+	assert(snapshot.phase == "prepare" and snapshot.choices == run.state.choices)
 	var restored: RunState = run.saves.restore(snapshot)
 	assert(restored.units == run.state.units and restored.coins == run.state.coins)
+	# Purchased recipes and remaining stock survive restore; legacy choice phase migrates once.
+	var recipe_id: String = run.state.choices[0]
+	assert(run.shop.buy_recipe(recipe_id).is_empty())
+	assert(run.saves.save_run(run.state,run.rng))
+	assert(run.resume_run())
+	assert(recipe_id in run.state.recipes and recipe_id not in run.state.choices)
+	run.persistence = true
+	run.state.phase = "recipe"
+	assert(run.saves.save_run(run.state,run.rng))
+	var legacy_coins: int = run.state.coins
+	var legacy_choices: Array = run.state.choices.duplicate()
+	assert(run.resume_run() and run.state.phase == "prepare")
+	assert(run.state.coins == legacy_coins and run.state.choices == legacy_choices)
+	var migrated_offers: Array = run.state.offers.duplicate(true)
+	var migrated_rng: int = run.rng.state
+	assert(run.resume_run())
+	assert(run.state.offers == migrated_offers and run.rng.state == migrated_rng and run.state.coins == legacy_coins)
 	var corrupt: Dictionary = snapshot.duplicate(true)
 	corrupt.units.append(corrupt.units[0].duplicate())
 	assert(not run.saves.validate(corrupt,run.data))

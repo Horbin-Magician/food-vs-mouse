@@ -32,7 +32,7 @@ func new_run(seed_value: int = 1) -> void:
 	rng.seed = seed_value
 	board = BoardController.new(state, data)
 	recipes = RecipeSystem.new(state,data)
-	shop = ShopController.new(state,data,board,rng)
+	shop = ShopController.new(state,data,board,rng,recipes,unlocked)
 	shop.open()
 	combat = CombatController.new(state, data, board, recipes, rng)
 	director = WaveDirector.new()
@@ -92,30 +92,14 @@ func finish_wave() -> void:
 		return
 	state.coins += data.rules.rewards[state.wave - 1] + (data.rules.bonus if state.leaks <= 1 else 0)
 	state.wave += 1
-	state.phase = "recipe"
-	recipes.offer(rng,unlocked)
+	state.phase = "prepare"
+	shop.open()
 	state.repaired = false
 	state.heat = data.rules.heat_start
 	message = "通关奖励已到账。可免费调位、交换、移除，或维修一次。"
 
-func choose_recipe(id: String) -> String:
-	var error: String = recipes.choose(id)
-	if not error.is_empty(): return error
-	enter_shop()
-	return ""
-
-func skip_recipe() -> void:
-	if state.phase == "recipe" and state.choices.is_empty(): enter_shop()
-
-func enter_shop() -> void:
-	state.phase = "prepare"
-	shop.open()
-	message = "选谱完成，购买卡牌并调整阵地后开始下一关。"
-	persist()
-	changed.emit()
-
 func persist() -> bool:
-	if not persistence or state.phase not in ["prepare","recipe"]: return true
+	if not persistence or state.phase != "prepare": return true
 	if saves.save_run(state,rng): return true
 	message = saves.error
 	return false
@@ -136,7 +120,13 @@ func resume_run() -> bool:
 	rng.state = int(payload.rng)
 	board = BoardController.new(state,data)
 	recipes = RecipeSystem.new(state,data)
-	shop = ShopController.new(state,data,board,rng)
+	shop = ShopController.new(state,data,board,rng,recipes,unlocked)
+	if state.phase == "recipe":
+		var legacy_choices: Array = state.choices.duplicate()
+		state.phase = "prepare"
+		shop.open()
+		state.choices = legacy_choices
+		persist()
 	combat = CombatController.new(state,data,board,recipes,rng)
 	director = WaveDirector.new()
 	paused = false

@@ -12,5 +12,5 @@ func _init() -> void:
 	run.saves.folder = "user://qa_visual/"
 	DirAccess.make_dir_recursive_absolute(run.saves.folder)
 	assert(run.saves.save_run(run.state,run.rng))
-	print("Prepared isolated visual fixture: wave 2 recipe, damaged bun")
+	print("Prepared isolated visual fixture: wave 2 shop, damaged bun")
 	quit()

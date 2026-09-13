@@ -29,13 +29,6 @@ func offer(rng: RandomNumberGenerator, unlocked: Array) -> void:
 	while not pool.is_empty() and state.choices.size() < 3:
 		state.choices.append(pool.pop_at(rng.randi_range(0,pool.size()-1)))
 
-func choose(id: String) -> String:
-	if state.phase != "recipe" or id not in state.choices or has(id): return "食谱已选择或不可用"
-	state.recipes.append(id)
-	state.metrics.recipes.append(id)
-	state.choices.clear()
-	return ""
-
 func adjacent(unit: Dictionary, id: String) -> bool:
 	for other: Dictionary in state.units:
 		if other.id == id and absi(other.row-unit.row) + absi(other.col-unit.col) == 1: return true

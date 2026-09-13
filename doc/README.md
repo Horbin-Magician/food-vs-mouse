@@ -9,6 +9,9 @@
 | [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 已定义，尚待实现与试玩验证 |
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
 
+| [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
+| [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
+
 ## 后续文档归档
 
 按实际工作需要创建目录和文档，不预建没有内容的模板文件。

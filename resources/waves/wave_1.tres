@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "wave_1"
+title = "打烊鼠影"
+stats = {"duration": 60, "composition": ["gray", "gray", "gray", "gray", "gray", "gray", "gray", "gray", "gray", "gray"], "rows": [1, 2, 3], "hp_scale": 1.0, "damage_scale": 1.0}

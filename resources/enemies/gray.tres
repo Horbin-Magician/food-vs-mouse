@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "gray"
+title = "灰鼠"
+stats = {"hp": 100, "speed": 12, "dps": 20, "leak": 1}

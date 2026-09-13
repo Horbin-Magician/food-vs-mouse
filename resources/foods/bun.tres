@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="FoodDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/food_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "bun"
+title = "小笼包"
+stats = {"cost": 100, "cooldown": 7, "hp": 180, "damage": 24, "interval": 1.5, "reach": 8, "price": 3, "kind": "shot"}

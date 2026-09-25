@@ -5,6 +5,8 @@ signal acted(uid: int)
 signal spawned(unit: Dictionary)
 signal enemy_hurt(unit: Dictionary)
 signal enemy_fallen(unit: Dictionary)
+signal food_hurt(unit: Dictionary)
+signal food_fallen(unit: Dictionary)
 
 signal unit_died(food_id: String)
 signal enemy_leaked(damage: int)
@@ -193,7 +195,9 @@ func damage_unit(unit: Dictionary, amount: float) -> void:
 	if unit.id == "toast": amount = maxf(1.0,amount-recipes.value("crust","armor"))
 	unit.hp -= amount
 	unit.flash = 0.15
+	if unit.hp > 0: food_hurt.emit(unit)
 	if unit.hp <= 0:
+		food_fallen.emit(unit)
 		state.units.erase(unit)
 		state.metrics.deaths += 1
 		unit_died.emit(unit.id)

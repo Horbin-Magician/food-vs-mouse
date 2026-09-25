@@ -21,6 +21,14 @@ func _ready() -> void:
 	run.combat.enemies[1].burn_time = 10
 	run.message = "美术验收：8 美食 / 8 鼠群；按 R 查看食谱，P 查看小铺"
 	rebuild()
+	if "--capture-art" in OS.get_cmdline_user_args():
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("/tmp/f_art_shop.png")
+		panel_open = false
+		rebuild()
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("/tmp/f_art_board.png")
+		get_tree().quit()
 
 func _input(event: InputEvent) -> void:
 	super._input(event)

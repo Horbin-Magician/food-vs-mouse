@@ -19,6 +19,11 @@
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
+| [art/style_exploration.md](art/style_exploration.md) | 小笼包与灰鼠的现代 Q 版风格、造型与动作创意候选 | 已选择 F，历史候选保留 |
+| [art/f_animation_frames.md](art/f_animation_frames.md) | 已选 F 风格的小笼包与灰鼠完整动作图集 | 72 帧原稿已交付；运行时接入及检查见 F 专项记录 |
+| [art/f_restyle.md](art/f_restyle.md) | F 风格全角色造型及正式资源替换 | 全部 16 角色已正式替换，小笼包及鼠群逐帧已接入 |
+| [art/f_restyle_prompts.md](art/f_restyle_prompts.md) | 八美食与七鼠新图的完整内置工具提示词 | 已归档 |
+| [testing/f_restyle.md](testing/f_restyle.md) | F 替换的源图、处理与接入验收 | 15 组回归及原生渲染完成；窗口交互／缩放复验受限 |
 | [testing/mouse_animation.md](testing/mouse_animation.md) | 鼠群逐帧动作、回归与图集验收 | 14 组回归、全部帧渲染与原生窗口专项通过 |
 | [art/animation.md](art/animation.md) | 美食程序动画与鼠群四组逐帧动画规则及验收 | 鼠群专项通过，历史美食验收边界见正文 |
 | [art/perspective.md](art/perspective.md) | 正交棋盘、顶部卡牌、底部操作栏与鼠标命中 | 紧凑顶栏与棋盘再次扩展已实现，验证见专页 |

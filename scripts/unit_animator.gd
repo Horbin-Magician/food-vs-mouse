@@ -20,6 +20,7 @@ const HURT_TIME: float = 0.30
 const DEATH_TIME: float = 0.72
 const STRIDE_DISTANCE: float = 12.0
 var corpses: Array[Dictionary] = []
+var food_corpses: Array[Dictionary] = []
 var entries: Dictionary = {}
 var state: RunState
 var projection: BoardProjection
@@ -32,6 +33,7 @@ func bind(run: RunController, board_projection: BoardProjection) -> void:
 	projection = board_projection
 	entries.clear()
 	corpses.clear()
+	food_corpses.clear()
 	time = 0.0
 	phase = state.phase
 	run.board.placed.connect(appear)
@@ -40,6 +42,8 @@ func bind(run: RunController, board_projection: BoardProjection) -> void:
 	run.combat.acted.connect(act)
 	run.combat.enemy_hurt.connect(hurt)
 	run.combat.enemy_fallen.connect(fall)
+	run.combat.food_hurt.connect(food_hurt)
+	run.combat.food_fallen.connect(food_fall)
 
 func entry(unit: Dictionary) -> Dictionary:
 	if not entries.has(unit.uid):
@@ -63,6 +67,46 @@ func fall(unit: Dictionary) -> void:
 	var snapshot: Dictionary = unit.duplicate(true)
 	snapshot["death_age"] = 0.0
 	corpses.append(snapshot)
+
+func food_hurt(unit: Dictionary) -> void:
+	if unit.id == "bun": hurt(unit)
+
+func food_fall(unit: Dictionary) -> void:
+	if unit.id != "bun": return
+	var snapshot: Dictionary = unit.duplicate(true)
+	snapshot["death_age"] = 0.0
+	food_corpses.append(snapshot)
+
+func bun_frame(unit: Dictionary) -> Vector2i:
+	if unit.has("death_age"):
+		return Vector2i(mini(5, int(unit.death_age / DEATH_TIME * 6)), 4)
+	var value: Dictionary = entry(unit)
+	if value.hurt > 0:
+		return Vector2i(sequence_frame(value.hurt, HURT_TIME), 3)
+	if value.drop > 0:
+		return Vector2i(sequence_frame(value.drop, DROP_TIME), 1)
+	if value.move > 0:
+		return Vector2i(sequence_frame(value.move, MOVE_TIME), 5)
+	if value.action > 0:
+		return Vector2i(sequence_frame(value.action, ACTION_TIME), 2)
+	return Vector2i(posmod(int(time / 0.2) + unit.uid, 6), 0)
+
+func sequence_frame(remaining: float, duration: float) -> int:
+	return clampi(int((1.0 - remaining / duration) * 6), 0, 5)
+
+func bun_pose(unit: Dictionary, foot: Vector2) -> Dictionary:
+	if unit.has("death_age"):
+		return {"shadow": foot, "foot": foot, "offset": Vector2.ZERO, "scale": Vector2.ONE, "angle": 0.0}
+	# Translation follows the board; deformation is already painted in the frame.
+	var value: Dictionary = entry(unit)
+	var ground: Vector2 = foot
+	if value.move > 0:
+		ground = value.from.lerp(foot, smoothstep(0.0, 1.0, 1.0 - value.move / MOVE_TIME))
+	var offset := Vector2.ZERO
+	if value.drop > 0:
+		var progress: float = 1.0 - value.drop / DROP_TIME
+		offset.y = -30.0 * pow(1.0 - minf(progress / 0.6, 1.0), 2)
+	return {"shadow": ground, "foot": moving_foot(value, foot), "offset": offset, "scale": Vector2.ONE, "angle": 0.0}
 
 func mouse_frame(unit: Dictionary) -> Vector2i:
 	if unit.has("death_age"):
@@ -101,6 +145,7 @@ func moving_foot(value: Dictionary, target: Vector2) -> Vector2:
 func advance(delta: float, enemies: Array) -> void:
 	if phase != state.phase:
 		corpses.clear()
+		food_corpses.clear()
 		for value: Dictionary in entries.values():
 			value.action = 0.0
 			value.drop = 0.0
@@ -110,6 +155,9 @@ func advance(delta: float, enemies: Array) -> void:
 	for corpse: Dictionary in corpses.duplicate():
 		corpse.death_age += delta
 		if corpse.death_age >= DEATH_TIME: corpses.erase(corpse)
+	for corpse: Dictionary in food_corpses.duplicate():
+		corpse.death_age += delta
+		if corpse.death_age >= DEATH_TIME: food_corpses.erase(corpse)
 	time += delta
 	var live: Dictionary = {}
 	for unit: Dictionary in state.units + enemies:

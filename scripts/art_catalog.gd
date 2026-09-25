@@ -3,6 +3,7 @@ extends RefCounted
 
 const BACKGROUND: Texture2D = preload("res://assets/art/kitchen.png")
 const FOOD_SHEET: Texture2D = preload("res://assets/art/foods.png")
+const BUN_SHEET: Texture2D = preload("res://assets/art/food_frames/bun.png")
 const MOUSE_SHEET: Texture2D = preload("res://assets/art/mice.png")
 const RECIPE_SHEET: Texture2D = preload("res://assets/art/recipes.png")
 const FOOD_IDS: Array[String] = ["bun", "toast", "pudding", "tea", "pepper", "popcorn", "noodles", "garlic"]
@@ -12,9 +13,17 @@ var foods: Dictionary = {}
 var food_portraits: Dictionary = {}
 var mice: Dictionary = {}
 var mouse_frames: Dictionary = {}
+var bun_frames: Array[Texture2D] = []
 var recipes: Dictionary = {}
 
 func _init() -> void:
+	for row: int in range(6):
+		for col: int in range(6):
+			var frame := AtlasTexture.new()
+			frame.atlas = BUN_SHEET
+			frame.region = Rect2(Vector2(col, row) * 256, Vector2(256, 256))
+			frame.filter_clip = true
+			bun_frames.append(frame)
 	fill(foods, FOOD_SHEET, FOOD_IDS, 2)
 	var food_image: Image = FOOD_SHEET.get_image()
 	for id: String in FOOD_IDS:
@@ -53,6 +62,9 @@ func fill(target: Dictionary, sheet: Texture2D, ids: Array[String], rows: int) -
 
 func food(id: String) -> Texture2D:
 	return foods.get(id)
+
+func bun_frame(frame: Vector2i) -> Texture2D:
+	return bun_frames[frame.y * 6 + frame.x]
 
 func mouse(id: String) -> Texture2D:
 	return mice.get(id)

@@ -628,6 +628,8 @@ func _draw() -> void:
 		draw_colored_polygon(projection.polygon(Rect2(start_x, hovered.row * 96, reach, 96)), Color(0.5, 0.85, 0.9, 0.14))
 	# Draw each lane back to front; all objects share the same projected ground.
 	for row: int in range(RunState.ROWS):
+		for corpse: Dictionary in animator.food_corpses:
+			if corpse.row == row: draw_food(corpse)
 		for unit: Dictionary in run.state.units:
 			if unit.row == row: draw_food(unit)
 		for corpse: Dictionary in animator.corpses:
@@ -697,9 +699,13 @@ func draw_board() -> void:
 func draw_food(unit: Dictionary) -> void:
 	var scale_value: float = projection.depth_scale(unit.row)
 	var foot: Vector2 = projection.foot(unit.col * 96 + 48, unit.row)
-	var pose: Dictionary = animator.pose(unit, foot)
+	var pose: Dictionary = animator.bun_pose(unit, foot) if unit.id == "bun" else animator.pose(unit, foot)
 	foot = pose.foot
-	draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.flash > 0, pose, scale_value)
+	if unit.id == "bun":
+		draw_actor(art.bun_frame(animator.bun_frame(unit)), foot, Vector2(76, 76) * scale_value, unit.flash > 0 and not unit.has("death_age"), pose, scale_value)
+	else:
+		draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.flash > 0, pose, scale_value)
+	if unit.has("death_age"): return
 	var fraction: float = unit.hp / run.board.max_hp(unit.id)
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56, 4) * scale_value), Color("633f46"))
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56 * fraction, 4) * scale_value), Color("ff817d") if fraction < 0.25 else Color("7fd29b"))

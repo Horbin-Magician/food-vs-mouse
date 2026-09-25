@@ -24,7 +24,8 @@ func _ready() -> void:
 	if "--capture-art" in OS.get_cmdline_user_args():
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("/tmp/f_art_shop.png")
-		panel_open = false
+		run.state.phase = "battle"
+		run.paused = true
 		rebuild()
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("/tmp/f_art_board.png")

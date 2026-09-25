@@ -2,6 +2,7 @@ class_name BoardController
 extends RefCounted
 
 signal placed(unit: Dictionary)
+signal removed(unit: Dictionary)
 signal moved(unit: Dictionary, from_row: int, from_col: int)
 
 var state: RunState
@@ -56,22 +57,14 @@ func move(row: int, col: int, target_row: int, target_col: int) -> String:
 	moved.emit(source, row, col)
 	return ""
 
-func remove(row: int, col: int, paused: bool, confirmed: bool) -> String:
-	if paused or state.phase not in ["prepare", "battle"]: return "当前不能移除"
-	if state.phase == "battle" and not confirmed: return "需要确认铲除"
+func remove(row: int, col: int, paused: bool) -> String:
 	var unit: Dictionary = at(row, col)
-	if unit.is_empty(): return "格子为空"
+	if unit.is_empty(): return ""
+	if paused or state.phase not in ["prepare", "battle"]: return "当前不能移除"
 	state.units.erase(unit)
+	removed.emit(unit)
 	return ""
 
 func heal(ratio: float) -> void:
 	for unit: Dictionary in state.units:
 		unit.hp = minf(max_hp(unit.id), unit.hp + max_hp(unit.id) * ratio)
-
-func repair() -> String:
-	if state.phase != "prepare" or state.repaired: return "本准备阶段已维修或当前不可维修"
-	if state.coins < data.rules.repair_cost: return "金币不足"
-	state.coins -= data.rules.repair_cost
-	state.repaired = true
-	heal(data.rules.repair)
-	return ""

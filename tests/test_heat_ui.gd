@@ -35,16 +35,17 @@ func run_test() -> void:
 	assert("暂停" in scene.feedback_text and scene.run.state.units.size() == 1)
 	scene.run.paused = false
 	scene.shovel = true
-	scene.restart.popup_centered()
+	scene.create_debug_panel()
+	scene.debug_window.popup_centered()
 	await process_frame
 	click(pos)
 	assert(pickup.flight < 0, "modal blocks pickup")
-	scene.restart.hide()
+	scene.debug_window.hide()
 	await process_frame
 	click(pos)
 	click(pos)
 	assert(pickup.flight == 0 and scene.run.state.heat == 100)
-	assert(not scene.confirm.visible and scene.run.state.units.size() == 1 and scene.shovel)
+	assert(not scene.debug_window.visible and scene.run.state.units.size() == 1 and scene.shovel)
 	for frame: int in range(13): scene.run.advance(1.0 / 60.0)
 	var halfway: Vector2 = scene.heat_pickup_view.pickup_position(pickup)
 	assert(halfway.distance_to(scene.heat_label.get_global_rect().get_center()) < pos.distance_to(scene.heat_label.get_global_rect().get_center()))

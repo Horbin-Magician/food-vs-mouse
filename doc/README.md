@@ -10,8 +10,10 @@
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
 
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
+| [design/screens.md](design/screens.md) | 主菜单、继续／新局与全屏胜败战报 | 已实现，窗口鼠标验收待完成 |
+| [testing/screens.md](testing/screens.md) | 菜单与战报流程、存档及渲染验证 | 导入、16 组回归与原生渲染通过 |
 | [design/shop.md](design/shop.md) | 食谱与灵感统一商店购买、价格与存档兼容规则 | 已实现，经济平衡待验证 |
-| [testing/shop.md](testing/shop.md) | 统一商店的交易、流程、存档与窗口验收 | 导入、13 组回归及窗口操作通过 |
+| [testing/shop.md](testing/shop.md) | 统一商店的交易、购物完成开战、存档与窗口验收 | 最新流程自动／渲染通过，鼠标复验待完成 |
 | [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |
 | [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 回归及窗口拾取通过，缩放限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |

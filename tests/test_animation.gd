@@ -52,7 +52,7 @@ func _init() -> void:
 	animator.advance(0.4, run.combat.enemies)
 	assert(animator.pose(unit, projection.foot(720, 4)).foot.is_equal_approx(projection.foot(720, 4)))
 	assert(unit.hp == hp)
-	run.board.remove(4, 7, false, true)
+	run.board.remove(4, 7, false)
 	animator.advance(0, run.combat.enemies)
 	assert(not animator.entries.has(unit.uid))
 	run.new_run(43)

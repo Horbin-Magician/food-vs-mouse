@@ -3,6 +3,7 @@ extends Node2D
 var projection: BoardProjection = BoardProjection.new()
 var art: ArtCatalog = ArtCatalog.new()
 var animator: UnitAnimator = UnitAnimator.new()
+var shovel_feedback: ShovelFeedback = ShovelFeedback.new()
 var damage_feedback: DamageFeedback = DamageFeedback.new()
 const TOP_RECT := Rect2(12, -16, 1256, 100)
 const FOOTER_Y := 678.0
@@ -14,13 +15,9 @@ var shop_overlay: Control
 var shop_surface: Panel
 var shop_items: HBoxContainer
 var shop_refresh: Button
-var modal_shade: ColorRect
 var ui: Control
-var start_button: Button
 var pause_button: Button
 var speed_button: Button
-var repair_button: Button
-var toggle_button: Button
 var panel_style: StyleBoxFlat
 var top_style: StyleBoxFlat
 var run: RunController = RunController.new()
@@ -42,7 +39,6 @@ var shovel_cursor: TextureRect
 var shovel_cursor_active: bool = false
 var pointer_in_window: bool = true
 var window_focused: bool = true
-var pending_remove: Vector2i
 var heat_label: Label
 var heat_pickup_view: HeatPickupView
 var shovel_button: Button
@@ -51,12 +47,10 @@ var layout_phase: String = ""
 var header: Label
 var cards: HBoxContainer
 var panel: VBoxContainer
-var confirm: ConfirmationDialog
 var sound: SoundService
 var inspect: Label
 var feedback_text: String = ""
 var feedback_remaining: float = 0.0
-var restart: ConfirmationDialog
 var debug_window: AcceptDialog
 var debug_enabled: bool = false
 var old_phase: String = ""
@@ -76,7 +70,7 @@ func _ready() -> void:
 	add_child(ui)
 	run.persistence = true
 	debug_enabled = OS.is_debug_build() and "--dev" in OS.get_cmdline_user_args()
-	if "--qa" in OS.get_cmdline_user_args() or "--qa-test" in OS.get_cmdline_user_args():
+	if run.state == null and ("--qa" in OS.get_cmdline_user_args() or "--qa-test" in OS.get_cmdline_user_args()):
 		run.saves.folder = "user://qa_automated/" if "--qa-test" in OS.get_cmdline_user_args() else "user://qa_visual/"
 		DirAccess.make_dir_recursive_absolute(run.saves.folder)
 	sound = SoundService.new()
@@ -86,19 +80,11 @@ func _ready() -> void:
 	heat_label.add_theme_color_override("font_color", GameTheme.GOLD)
 	header = label(Vector2(948, 674), 14)
 	header.tooltip_text = "进度表示计划鼠潮的生成比例；全部生成后仍需清除剩余敌人。"
-	start_button = button("开始鼠潮  →", Vector2(24, FOOTER_Y), func() -> void: run.start(); rebuild())
-	start_button.custom_minimum_size = Vector2(160, 30)
-	start_button.tooltip_text = "战斗中退出将回到本关开战前；准备操作自动保存。"
-	GameTheme.primary(start_button)
-	pause_button = button("暂停", Vector2(196, FOOTER_Y), func() -> void:
+	pause_button = button("暂停", Vector2(24, FOOTER_Y), func() -> void:
 		if run.state.phase == "battle": run.paused = not run.paused)
 	pause_button.custom_minimum_size = Vector2(82, 30)
-	speed_button = button("1× 速度", Vector2(288, FOOTER_Y), func() -> void: run.speed = 3.0 - run.speed)
+	speed_button = button("1× 速度", Vector2(118, FOOTER_Y), func() -> void: run.speed = 3.0 - run.speed)
 	speed_button.custom_minimum_size = Vector2(96, 30)
-	repair_button = button("维修 · 4 金", Vector2(396, FOOTER_Y), func() -> void: report(run.board.repair()))
-	repair_button.custom_minimum_size = Vector2(132, 30)
-	toggle_button = button("收起小铺", Vector2(708, FOOTER_Y), func() -> void: set_panel_open(not panel_open))
-	toggle_button.custom_minimum_size = Vector2(116, 30)
 	var cursor_layer := CanvasLayer.new()
 	cursor_layer.layer = 100
 	add_child(cursor_layer)
@@ -140,8 +126,7 @@ func _ready() -> void:
 	shovel_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
 	shovel_button.expand_icon = true
 	shovel_button.add_theme_constant_override("icon_max_width", 34)
-	shovel_button.tooltip_text = "拿起锅铲后点击美食铲除；左键点击原处、右键或 Esc 放回。战斗中需确认，无返还。"
-	button("重新开局", Vector2(836, FOOTER_Y), func() -> void: restart.popup_centered(Vector2i(460, 190)))
+	shovel_button.tooltip_text = "拿起锅铲后点击美食铲除；左键点击原处、右键或 Esc 放回。立即铲除，无返还。"
 	cards = HBoxContainer.new()
 	cards.position = Vector2(190, 6)
 	cards.add_theme_constant_override("separation", 8)
@@ -157,24 +142,6 @@ func _ready() -> void:
 	heat_pickup_view.projection = projection
 	heat_pickup_view.target = heat_label
 	ui.add_child(heat_pickup_view)
-	modal_shade = ColorRect.new()
-	modal_shade.color = Color(0.025, 0.065, 0.07, 0.72)
-	modal_shade.size = Vector2(1280,720)
-	modal_shade.visible = false
-	ui.add_child(modal_shade)
-	confirm = ConfirmationDialog.new()
-	style_dialog(confirm, "移除这份美食？", "战斗中铲除不会返还热量。\n确认后，该格子将立即空出。", "确认铲除")
-	confirm.confirmed.connect(func() -> void: report(run.board.remove(pending_remove.y, pending_remove.x, run.paused, true)))
-	restart = ConfirmationDialog.new()
-	style_dialog(restart, "重新开始今夜守卫？", "当前阵地与本局进度将结束。\n本局已达成的食谱解锁会保留。", "重新开局")
-	restart.confirmed.connect(func() -> void:
-		panel_open = true
-		run.new_run(int(Time.get_unix_time_from_system()))
-		selected = ""
-		shovel = false
-		move_from = Vector2i(-1,-1)
-		feedback_remaining = 0.0
-		rebuild())
 	inspect = label(Vector2.ZERO, 13)
 	inspect.visible = false
 	inspect.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -204,17 +171,17 @@ func _ready() -> void:
 	shop_overlay.gui_input.connect(func(event: InputEvent) -> void:
 		if event.is_action_pressed("board_select"):
 			shop_overlay.accept_event()
-			set_panel_open(false))
+			# Shopping ends only through the explicit completion button.
+	)
 	shop_surface = Panel.new()
 	shop_surface.position = SHOP_RECT.position
 	shop_surface.size = SHOP_RECT.size
 	shop_surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	shop_surface.add_theme_stylebox_override("panel", panel_style)
 	shop_overlay.add_child(shop_surface)
-	ui.move_child(modal_shade, -1)
 	if debug_enabled: create_debug_panel()
 	run.changed.connect(rebuild)
-	if not run.resume_run():
+	if run.state == null and not run.resume_run():
 		var save_error: String = run.message
 		run.new_run(int(Time.get_unix_time_from_system()))
 		if not save_error.is_empty(): run.message = save_error
@@ -244,6 +211,7 @@ func report(error: String) -> void:
 	rebuild()
 
 func rebuild() -> void:
+	shovel_feedback.bind(run, projection, art)
 	if cards == null: return
 	cancel_card_drag()
 	for child: Node in cards.get_children():
@@ -263,8 +231,6 @@ func rebuild() -> void:
 		panel_label("今 夜 战 报", 13, GameTheme.GOLD)
 		for line: String in ["守卫时长        %.1f 分钟" % (run.state.elapsed/60.0), "击退鼠群        %d" % run.state.metrics.kills, "粮仓损失        %d" % run.state.metrics.leaks, "美食阵亡        %d" % run.state.metrics.deaths]:
 			panel_label(line, 18, GameTheme.TEXT)
-		var again: Button = panel_button("再守一夜  →",func() -> void: restart.popup_centered(Vector2i(460,190)))
-		GameTheme.primary(again)
 	var owned: Label = panel_label("已购食谱 %02d  ·  悬停查看" % run.state.recipes.size(), 13, GameTheme.MUTED)
 	owned.mouse_filter = Control.MOUSE_FILTER_STOP
 	owned.tooltip_text = "尚未购买食谱；在小铺用金币购买。" if run.state.recipes.is_empty() else "本局食谱\n"
@@ -343,11 +309,11 @@ func rebuild() -> void:
 func set_panel_open(value: bool) -> void:
 	panel_open = value
 	sync_panel_visibility()
-	if not value: toggle_button.grab_focus()
+
 
 func sync_panel_visibility() -> void:
-	panel.visible = panel_open and run.state.phase != "prepare"
-	var show_shop: bool = panel_open and run.state.phase == "prepare"
+	panel.visible = false
+	var show_shop: bool = run.state.phase == "prepare"
 	if show_shop:
 		cancel_card_drag()
 		selected = ""
@@ -356,7 +322,7 @@ func sync_panel_visibility() -> void:
 	var was_visible: bool = shop_overlay.visible
 	shop_overlay.visible = show_shop
 	if show_shop and not was_visible:
-		shop_surface.get_node("Close").grab_focus()
+		shop_surface.get_node("Done").grab_focus()
 
 func shop_button(title: String, pos: Vector2, bounds: Vector2, action: Callable) -> Button:
 	var node := Button.new()
@@ -375,15 +341,12 @@ func build_shop() -> void:
 	card_label(shop_surface, "打烊小铺", Vector2(24, 20), Vector2(380, 36), 26, GameTheme.TEXT)
 	card_label(shop_surface, "购买美食与灵感食谱，为下一波做准备", Vector2(24, 61), Vector2(400, 22), 14, GameTheme.MUTED)
 	card_label(shop_surface, "金币  %d" % run.state.coins, Vector2(576, 28), Vector2(140, 28), 20, GameTheme.GOLD)
-	var close := shop_button("关闭 ×", Vector2(724, 24), Vector2(92, 36), func() -> void: set_panel_open(false))
-	close.name = "Close"
-	close.tooltip_text = "关闭小铺，继续布阵；也可按 Esc 或右键。"
 	shop_items = HBoxContainer.new()
 	shop_items.position = Vector2(24, 96)
 	shop_items.size = Vector2(792, 222)
 	shop_items.add_theme_constant_override("separation", 12)
 	shop_surface.add_child(shop_items)
-	var focus_buttons: Array[Button] = [close]
+	var focus_buttons: Array[Button] = []
 	for index: int in range(run.state.offers.size()):
 		var offer: Dictionary = run.state.offers[index]
 		var count: int = run.state.cards.get(offer.id, 0)
@@ -437,7 +400,9 @@ func build_shop() -> void:
 	owned.mouse_filter = Control.MOUSE_FILTER_STOP
 	owned.tooltip_text = "尚未购买食谱；在小铺用金币购买。" if run.state.recipes.is_empty() else "本局食谱\n"
 	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
-	var done := shop_button("完成购物  →", Vector2(620, 500), Vector2(196, 36), func() -> void: set_panel_open(false))
+	var done := shop_button("购物完成  →", Vector2(620, 500), Vector2(196, 36), finish_shopping)
+	done.name = "Done"
+	done.tooltip_text = "完成购物并立即开始本关；准备状态自动保存。"
 	GameTheme.primary(done)
 	focus_buttons.append_array([shop_refresh, done])
 	# Keep keyboard focus within the modal, including after a purchase rebuild.
@@ -447,22 +412,7 @@ func build_shop() -> void:
 	for index: int in range(enabled.size()):
 		enabled[index].focus_next = enabled[index].get_path_to(enabled[(index + 1) % enabled.size()])
 		enabled[index].focus_previous = enabled[index].get_path_to(enabled[(index - 1 + enabled.size()) % enabled.size()])
-	if shop_overlay.visible: close.grab_focus()
-
-func style_dialog(dialog: ConfirmationDialog, title_text: String, body: String, action: String) -> void:
-	dialog.title = title_text
-	dialog.transparent_bg = true
-	dialog.dialog_text = body
-	dialog.theme = ui.theme
-	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
-	dialog.min_size = Vector2i(460,190)
-	dialog.ok_button_text = action
-	dialog.cancel_button_text = "取消"
-	ui.add_child(dialog)
-	dialog.visibility_changed.connect(update_shovel_cursor)
-	dialog.get_label().horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	dialog.get_label().add_theme_font_size_override("font_size", 16)
-	GameTheme.primary(dialog.get_ok_button())
+	if shop_overlay.visible: done.grab_focus()
 
 func card_label(parent: Control, text: String, pos: Vector2, bounds: Vector2, font_size: int, color: Color, wrap: bool = false) -> Label:
 	var caption := Label.new()
@@ -516,10 +466,14 @@ func _process(delta: float) -> void:
 		visual_delta = run.state.elapsed - before if run.state.phase == "battle" else (minf(delta, 0.25) if run.state.phase == "prepare" else 0.0)
 	animator.advance(visual_delta, run.combat.enemies)
 	damage_feedback.advance(visual_delta)
+	shovel_feedback.advance(visual_delta)
 	heat_label.text = "%03d" % run.state.heat
 	heat_label.tooltip_text = "每关上限 %.0f；每秒恢复 %.0f，准备阶段不恢复。\n点击布丁冒出的火苗，飞入此处后获得热量。" % [run.data.rules.heat_cap, run.data.rules.heat_rate]
 	heat_pickup_view.queue_redraw()
 	header.text = wave_status()
+	header.tooltip_text = "战斗中退出会回到本关开战前。已购食谱："
+	for id: String in run.state.recipes:
+		header.tooltip_text += "\n" + run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description
 	update_controls()
 	if run.state.phase != old_phase and run.state.phase in ["prepare","won"]: sound.cue("clear")
 	if run.state.pantry < old_pantry: sound.cue("danger")
@@ -537,7 +491,7 @@ func wave_progress() -> float:
 	return clampf(float(run.director.cursor) / maxi(1, run.director.events.size()), 0.0, 1.0)
 
 func wave_status() -> String:
-	var status: String = {"prepare":"等待开战", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
+	var status: String = {"prepare":"关前购物", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
 	if run.state.phase == "battle":
 		status = "清理余鼠 %d" % run.combat.enemies.size() if wave_progress() >= 1.0 else "鼠潮 %d%% · 余鼠 %d" % [roundi(wave_progress() * 100), run.combat.enemies.size()]
 		if run.paused: status = "暂停 · " + status
@@ -557,18 +511,10 @@ func draw_wave_progress() -> void:
 func update_controls() -> void:
 	var phase: String = run.state.phase
 	sync_panel_visibility()
-	modal_shade.visible = confirm.visible or restart.visible
-	start_button.disabled = phase != "prepare"
-	start_button.text = "开始鼠潮  →" if phase == "prepare" else {"battle":"守卫进行中", "won":"守卫完成", "lost":"守卫结束"}.get(phase, "")
 	pause_button.disabled = phase != "battle"
 	pause_button.text = "继续" if run.paused else "暂停"
 	pause_button.tooltip_text = "暂停时可查看信息，不能执行战斗操作。"
 	speed_button.text = "%.0f× 速度" % run.speed
-	repair_button.disabled = phase != "prepare" or run.state.repaired or run.state.coins < run.data.rules.repair_cost
-	repair_button.text = "本关已维修" if run.state.repaired else "维修 · %d 金" % run.data.rules.repair_cost
-	repair_button.tooltip_text = "仅准备阶段可用" if phase != "prepare" else ("本关维修次数已用完" if run.state.repaired else ("金币不足" if run.state.coins < run.data.rules.repair_cost else "恢复场上美食 30% 最大生命；每个准备阶段一次。"))
-	var panel_name: String = {"prepare":"小铺", "battle":"食谱", "won":"战报", "lost":"战报"}.get(phase, "面板")
-	toggle_button.text = ("收起" if panel_open else "打开") + panel_name
 	shovel_button.disabled = phase not in ["prepare", "battle"] or run.paused
 	if phase not in ["prepare", "battle"]: shovel = false
 	shovel_button.set_pressed_no_signal(shovel)
@@ -589,7 +535,7 @@ func update_controls() -> void:
 		cooldown.material.set_shader_parameter("card_size", card.size)
 
 func update_shovel_cursor() -> void:
-	if confirm == null or restart == null or shop_overlay == null: return
+	if shop_overlay == null: return
 	var active: bool = shovel and run.state.phase in ["prepare", "battle"] and not run.paused and not placement_modal_visible() and pointer_in_window and window_focused and is_visible_in_tree()
 	shovel_cursor.position = pointer - Vector2(30, 8)
 	shovel_cursor.visible = active
@@ -622,7 +568,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		move_from = Vector2i(-1,-1)
 	if debug_enabled and event.is_action_pressed("debug_panel"): debug_window.popup_centered()
 	if event.is_action_pressed("board_select"):
-		if confirm.visible or restart.visible or shop_overlay.visible: return
+		if placement_modal_visible(): return
 		if panel.visible and PANEL_RECT.has_point(event.position): return
 		var pickup_uid: int = heat_pickup_view.pickup_at(event.position)
 		if pickup_uid >= 0:
@@ -634,10 +580,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var row: int = cell.y
 		if col < 0 or col >= RunState.COLS or row < 0 or row >= RunState.ROWS: return
 		if shovel:
-			if run.state.phase == "battle" and not run.paused:
-				pending_remove = Vector2i(col,row)
-				confirm.popup_centered(Vector2i(460,190))
-			else: report(run.board.remove(row,col,run.paused,true))
+			report(run.board.remove(row, col, run.paused))
 		elif run.state.phase == "prepare":
 			if move_from.x < 0: move_from = Vector2i(col,row)
 			else:
@@ -676,11 +619,11 @@ func _draw() -> void:
 			var event: Dictionary = run.director.events[i]
 			if event.time - run.director.elapsed <= 5:
 				text_at(projection.foot(RunState.BOARD_WIDTH + 7, event.row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
+	shovel_feedback.draw(self)
 	draw_style_box(top_style, TOP_RECT)
 	draw_texture_rect(preload("res://assets/ui/flame.svg"), Rect2(38, 14, 26, 30), false)
 	text_at(Vector2(38, 61), "粮仓 %d/10   金 %d" % [run.state.pantry,run.state.coins], GameTheme.TEXT, 13)
 	draw_line(Vector2(178,12),Vector2(178,60),GameTheme.BORDER)
-	text_at(Vector2(554, 698), "右键 / Esc  取消选择", GameTheme.MUTED, 12)
 	if panel.visible: draw_style_box(panel_style, PANEL_RECT)
 	draw_wave_progress()
 	if drag_active:
@@ -801,7 +744,7 @@ func update_inspector() -> void:
 			for enemy: Dictionary in run.combat.enemies:
 				if enemy.row == row: pressure += enemy.hp
 			inspect.text += " %d:%.0f" % [row+1,pressure]
-	inspect.visible = not inspect.text.is_empty() and not shop_overlay.visible and not confirm.visible and not restart.visible
+	inspect.visible = not inspect.text.is_empty() and not placement_modal_visible()
 	inspect.size = Vector2(360, 0)
 	inspect.position = Vector2(clampf(pointer.x + 16, 12, 908), clampf(pointer.y + 20, 180, 720 - inspect.size.y - 12))
 
@@ -841,7 +784,7 @@ func create_debug_panel() -> void:
 	debug_window.visibility_changed.connect(update_shovel_cursor)
 
 func placement_modal_visible() -> bool:
-	return shop_overlay.visible or confirm.visible or restart.visible or (debug_window != null and debug_window.visible)
+	return shop_overlay.visible or (debug_window != null and debug_window.visible)
 
 func begin_card_drag(id: String) -> void:
 	if placement_modal_visible(): return
@@ -895,8 +838,10 @@ func _input(event: InputEvent) -> void:
 			else:
 				# A click keeps selection; only a completed drag clears it.
 				drag_card = ""
-	if shop_overlay.visible and not confirm.visible and not restart.visible:
-		if event.is_action_pressed("cancel_selection"):
-			set_panel_open(false)
-			get_viewport().set_input_as_handled()
-			return
+	if shop_overlay.visible and event.is_action_pressed("cancel_selection"):
+		get_viewport().set_input_as_handled()
+
+func finish_shopping() -> void:
+	if run.state.phase != "prepare": return
+	run.start()
+	rebuild()

@@ -49,7 +49,7 @@ func _init() -> void:
 	run.collect_heat(first.uid)
 	assert(run.combat.heat_pickups[0].flight == -1, "stale UID cannot collect another pickup")
 	var second: Dictionary = run.combat.heat_pickups[0]
-	assert(run.board.remove(0, 0, false, true).is_empty())
+	assert(run.board.remove(0, 0, false).is_empty())
 	assert(run.collect_heat(second.uid).is_empty(), "source removal does not discard production")
 	run.state.heat = 340
 	var overflow: float = run.state.metrics.overflow

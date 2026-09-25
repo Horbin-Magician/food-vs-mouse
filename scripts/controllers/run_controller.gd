@@ -16,7 +16,7 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var paused: bool = false
 var speed: float = 1.0
 var accumulator: float = 0.0
-var message: String = "选择开战，再选卡放置；准备阶段可调位。"
+var message: String = "购物完成后自动开战，再选卡放置。"
 
 func new_run(seed_value: int = 1) -> void:
 	if persistence and state != null and state.phase not in ["won","lost"]:
@@ -38,7 +38,7 @@ func new_run(seed_value: int = 1) -> void:
 	director = WaveDirector.new()
 	paused = false
 	accumulator = 0.0
-	message = "准备就绪；开战后用热量布阵。"
+	message = "购买所需美食与食谱，购物完成后立即开战。"
 	persist()
 	changed.emit()
 
@@ -94,9 +94,8 @@ func finish_wave() -> void:
 	state.wave += 1
 	state.phase = "prepare"
 	shop.open()
-	state.repaired = false
 	state.heat = data.rules.heat_start
-	message = "通关奖励已到账。可免费调位、交换、移除，或维修一次。"
+	message = "通关奖励与免费恢复已到账。购物完成后开始下一关。"
 
 func persist() -> bool:
 	if not persistence or state.phase != "prepare": return true

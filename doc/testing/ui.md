@@ -157,7 +157,6 @@ macOS、Apple M4、Godot 4.6.3 stable、Compatibility/OpenGL 4.1 Metal；逻辑 
 - 临时隔离 OpenGL 窗口脚本实际渲染八卡：热量 100 时包子／吐司明亮、布丁完整 CD、其余费用超过 100 的卡灰显。目视确认全部图文去色、费用与等级可读。对同卡费用牌同一像素采样，正常／不足／完整 CD 亮度为 0.929／0.647／0.380，顺序符合要求；实际切换热量与 CD 后复查通过。临时图 /tmp/fvm-gray-cards.png、脚本和日志不入库。
 - 此轮未重复真实鼠标及系统缩放验收；拖放、暂停和取消由既有输入事件回归验证。未重导安装包或重复全局平衡测试。
 
-
 ## 锅铲拿起与取消输入修复（2026-09-25）
 
 状态：已实现，导入、输入回归及原生模式专项通过；本次系统光标外观及窗口缩放目视复核未完成。属于「使用体验」局部修复，设计依据 [透明锅铲按钮与光标](../art/ui.md#透明锅铲按钮与光标2026-09-13)。保留工作区其他未提交改动。
@@ -183,6 +182,17 @@ macOS、Apple M4、Godot 4.6.3 stable、Compatibility/OpenGL 4.1 Metal；逻辑 
 - 环境：macOS、Apple M4、Godot 4.6.3.stable.official.7d41c59c4、Compatibility/OpenGL 4.1 Metal。编辑器无界面导入通过；`python3 tools/run_tests.py` 19 组全部 PASS；`git diff --check` 通过。
 - 原生运行：`/Applications/Godot.app/Contents/MacOS/Godot --path . --log-file /tmp/fvm_imgrep_native.log --script tests/test_shovel.gd -- --qa-test --capture-shovel`。专项 PASS，标准输出／错误未出现 `imgrep`；覆盖反复切换、右键／Esc、鼠标离开／返回、失焦／恢复、隐藏／显示和激活中释放。逐图查看 1280×720、1600×900 实际渲染，锅铲清晰可见且等比缩放。
 - 退出仍有既有 CanvasItem／ObjectDB／资源未释放诊断；未将这些诊断算作光标修复结果。没有复现旧版本的偶发系统分配失败，未执行真人鼠标操作、嵌入运行或发行包重导。旧进程需要停止后重新运行，旧导出包不会自动获得工作区修复。截图与日志保留于 `/tmp`，不入库。
+
+## 直接铲除与动画（2026-09-25）
+
+状态：已实现，导入、20 组自动回归及原生渲染通过，真实鼠标试玩未执行。设计依据 [直接铲除与动画](../art/ui.md#直接铲除与动画2026-09-25)，替代本页历史记录中的铲除确认规则；主菜单新局确认不变。环境：macOS Apple M4、Godot 4.6.3、Compatibility/OpenGL；工作区原有修改保留。
+
+- 移除专用确认窗口、遮罩、待确认坐标与业务 confirmed 参数。空地返回无操作成功且不发送 removed 信号；有食物时仍校验暂停和阶段。锅铲持续激活，无返还、无死亡统计变化。
+- 新增 `ShovelFeedback`，播放 0.42 游戏秒锅铲上挑、食物抬起缩小淡出与弧光；仅保存视觉快照，格子立即空出。切关／新局清理，暂停冻结，倍速同步。
+- `python3 tools/run_tests.py` 20 组全部 PASS，Godot 无界面编辑器导入无新增解析／引用错误。专项 `test_shovel_remove.gd` 覆盖直接移除、空地静默（含暂停）、重复点击仅一次动画、资源与统计不变、原格补位、连续三份动画、暂停／2×、取消后动画自然完成及切关清理。原模态输入用例改用开发弹窗，仍验证拖放、火苗和棋盘阻断。
+- 原生执行 `tests/test_shovel_remove.gd -- --qa-test --capture-remove` 通过，日志无 ERROR／WARNING。逐图检查 `/tmp/fvm_remove_start.png`、`middle.png`、`end.png`（后三者同 `fvm_remove_` 前缀）及 `/tmp/fvm_remove_large.png`：起始铲入、中段食物抬起与弧光、结束无残留；1280×720 和 1600×900 等比显示正常。
+- 尚未执行真人鼠标试玩、完整平衡／性能验收及重新导出发行包；不据此标记整个使用体验里程碑通过。
+
 
 ### 编辑器旧光标缓存复验（2026-09-25）
 

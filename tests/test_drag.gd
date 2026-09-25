@@ -114,17 +114,12 @@ func run_test() -> void:
 	assert(scene.drag_card.is_empty() and scene.run.state.units.size() == 1)
 	scene.run.state.phase = "prepare"
 	scene.rebuild()
-	scene.set_panel_open(false)
-	await begin("bun", cell(1, 0))
-	assert("战斗" in scene.drag_placement_error())
+	scene.begin_card_drag("bun")
+	assert(scene.shop_overlay.visible and scene.drag_card.is_empty())
+	assert(scene.run.board.placement_error("bun", 0, 1, false) != "")
 	mouse(cell(1, 0), false)
 	assert(scene.run.state.units.size() == 1 and scene.move_from == Vector2i(-1, -1))
-	await begin("bun", cell(1, 0))
-	scene.set_panel_open(true)
-	assert(scene.drag_card.is_empty())
-	mouse(cell(1, 0), false)
-	scene.set_panel_open(false)
-	scene.run.start()
+	scene.finish_shopping()
 	# Keep the existing click-to-select interaction with sub-threshold movement.
 	await process_frame
 	await process_frame
@@ -148,12 +143,14 @@ func run_test() -> void:
 	mouse(cell(5, 2), false)
 	assert(scene.run.state.units.size() == 8 and scene.run.state.heat == 300)
 	await begin("bun", cell(1, 0))
-	scene.restart.popup_centered()
+	scene.create_debug_panel()
+	scene.debug_window.popup_centered()
 	scene._process(0)
 	assert(scene.drag_card.is_empty() and not scene.drag_preview.visible)
-	scene.restart.hide()
+	scene.debug_window.hide()
 	mouse(cell(1, 0), false)
 	print("PASS drag: GUI events, atomic placement, live validation, bounds, cancel, focus, pause, phase, modal, click fallback")
 	scene.queue_free()
 	await process_frame
+	await create_timer(0.5).timeout
 	quit()

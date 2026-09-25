@@ -17,7 +17,7 @@
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
-| [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
+| [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 锅铲光标回归、两尺寸渲染及 macOS 编辑器旧光标缓存重载复验通过 |
 | [art/damage_feedback.md](art/damage_feedback.md) | 双方伤害数字、shader、事件及生命周期 | 已实现，原生画面通过 |
 | [testing/damage_feedback.md](testing/damage_feedback.md) | 伤害数值、暂停倍速、shader 与渲染验证 | 逻辑及原生渲染通过，真人压力待验 |
 | [art/projectiles.md](art/projectiles.md) | 五种美食弹体与高压蒸汽变体 | 已实现 |

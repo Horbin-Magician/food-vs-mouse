@@ -36,9 +36,12 @@ var move_from: Vector2i = Vector2i(-1, -1)
 var shovel: bool = false:
 	set(value):
 		shovel = value
+		if shovel_button != null: shovel_button.set_pressed_no_signal(value)
 		if is_node_ready(): update_shovel_cursor()
-var shovel_cursor: ImageTexture
+var shovel_cursor: TextureRect
 var shovel_cursor_active: bool = false
+var pointer_in_window: bool = true
+var window_focused: bool = true
 var pending_remove: Vector2i
 var heat_label: Label
 var heat_pickup_view: HeatPickupView
@@ -96,9 +99,30 @@ func _ready() -> void:
 	repair_button.custom_minimum_size = Vector2(132, 30)
 	toggle_button = button("收起小铺", Vector2(708, FOOTER_Y), func() -> void: set_panel_open(not panel_open))
 	toggle_button.custom_minimum_size = Vector2(116, 30)
-	var cursor_image: Image = preload("res://assets/ui/spatula.svg").get_image()
-	cursor_image.resize(32, 32, Image.INTERPOLATE_LANCZOS)
-	shovel_cursor = ImageTexture.create_from_image(cursor_image)
+	var cursor_layer := CanvasLayer.new()
+	cursor_layer.layer = 100
+	add_child(cursor_layer)
+	shovel_cursor = TextureRect.new()
+	shovel_cursor.texture = preload("res://assets/ui/spatula.svg")
+	shovel_cursor.size = Vector2(48, 48)
+	shovel_cursor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shovel_cursor.hide()
+	cursor_layer.add_child(shovel_cursor)
+	visibility_changed.connect(update_shovel_cursor)
+	get_window().mouse_exited.connect(func() -> void:
+		pointer_in_window = false
+		update_shovel_cursor())
+	get_window().mouse_entered.connect(func() -> void:
+		pointer_in_window = true
+		pointer = get_global_mouse_position()
+		update_shovel_cursor())
+	get_window().focus_exited.connect(func() -> void:
+		window_focused = false
+		update_shovel_cursor())
+	get_window().focus_entered.connect(func() -> void:
+		window_focused = true
+		pointer = get_global_mouse_position()
+		update_shovel_cursor())
 	shovel_button = button("", Vector2(1170, 6), func() -> void:
 		shovel = not shovel
 		selected = ""
@@ -116,7 +140,7 @@ func _ready() -> void:
 	shovel_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
 	shovel_button.expand_icon = true
 	shovel_button.add_theme_constant_override("icon_max_width", 34)
-	shovel_button.tooltip_text = "选中锅铲后点击美食铲除；右键或 Esc 取消。战斗中需确认，无返还。"
+	shovel_button.tooltip_text = "拿起锅铲后点击美食铲除；左键点击原处、右键或 Esc 放回。战斗中需确认，无返还。"
 	button("重新开局", Vector2(836, FOOTER_Y), func() -> void: restart.popup_centered(Vector2i(460, 190)))
 	cards = HBoxContainer.new()
 	cards.position = Vector2(190, 6)
@@ -566,17 +590,18 @@ func update_controls() -> void:
 
 func update_shovel_cursor() -> void:
 	if confirm == null or restart == null or shop_overlay == null: return
-	var active: bool = shovel and run.state.phase in ["prepare", "battle"] and not run.paused and not confirm.visible and not restart.visible and not shop_overlay.visible
+	var active: bool = shovel and run.state.phase in ["prepare", "battle"] and not run.paused and not placement_modal_visible() and pointer_in_window and window_focused and is_visible_in_tree()
+	shovel_cursor.position = pointer - Vector2(30, 8)
+	shovel_cursor.visible = active
 	if active == shovel_cursor_active: return
 	shovel_cursor_active = active
-	# Controls request the hand cursor; replace both shapes while the tool is active.
-	for shape: Input.CursorShape in [Input.CURSOR_ARROW, Input.CURSOR_POINTING_HAND]:
-		Input.set_custom_mouse_cursor(shovel_cursor if active else null, shape, Vector2(20, 5) if active else Vector2.ZERO)
+	# Keep tool artwork in CanvasLayer: native custom cursors can fail with
+	# ERR_FAIL_NULL(imgrep) on macOS (Godot 4.6.3). See doc/art/ui.md.
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if active else Input.MOUSE_MODE_VISIBLE
 
 func _exit_tree() -> void:
 	if not shovel_cursor_active: return
-	for shape: Input.CursorShape in [Input.CURSOR_ARROW, Input.CURSOR_POINTING_HAND]:
-		Input.set_custom_mouse_cursor(null, shape)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	shovel_cursor_active = false
 
 func card_status(id: String) -> String:
@@ -813,6 +838,7 @@ func create_debug_panel() -> void:
 	box.add_child(money)
 	debug_window.add_child(box)
 	ui.add_child(debug_window)
+	debug_window.visibility_changed.connect(update_shovel_cursor)
 
 func placement_modal_visible() -> bool:
 	return shop_overlay.visible or confirm.visible or restart.visible or (debug_window != null and debug_window.visible)
@@ -843,7 +869,16 @@ func drag_placement_error() -> String:
 	return run.board.placement_error(drag_card, cell.y, cell.x, run.paused)
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouse: pointer = event.position
+	if event is InputEventMouse:
+		pointer = event.position
+		update_shovel_cursor()
+	# Cancel before a hovered Control can consume right-click or Escape.
+	if shovel and event.is_action_pressed("cancel_selection") and not placement_modal_visible():
+		shovel = false
+		selected = ""
+		move_from = Vector2i(-1, -1)
+		get_viewport().set_input_as_handled()
+		return
 	if not drag_card.is_empty():
 		if event.is_action_pressed("cancel_selection") or placement_modal_visible() or run.state.phase != drag_phase or run.paused != drag_paused:
 			cancel_card_drag()

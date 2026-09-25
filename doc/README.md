@@ -18,6 +18,8 @@
 
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
+| [art/projectiles.md](art/projectiles.md) | 五种美食弹体与高压蒸汽变体 | 已实现 |
+| [testing/projectiles.md](testing/projectiles.md) | 弹体导入、暂停倍速、回归与渲染 | 自动和原生渲染通过，真人试玩未执行 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
 | [art/style_exploration.md](art/style_exploration.md) | 小笼包与灰鼠的现代 Q 版风格、造型与动作创意候选 | 已选择 F，历史候选保留 |
 | [art/f_animation_frames.md](art/f_animation_frames.md) | 已选 F 风格的小笼包与灰鼠完整动作图集 | 72 帧原稿已交付；运行时接入及检查见 F 专项记录 |

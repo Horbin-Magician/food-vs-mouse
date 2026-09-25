@@ -639,7 +639,7 @@ func _draw() -> void:
 		for shot: Dictionary in run.combat.projectiles:
 			if shot.row == row:
 				var pos: Vector2 = projection.foot(shot.x, row) - Vector2(0, 27 * projection.depth_scale(row))
-				draw_circle(pos, 5 * projection.depth_scale(row), Color("fff1b5"))
+				ProjectileArt.draw_shot(self, shot, pos, projection.depth_scale(row))
 	if run.state.phase == "battle":
 		for i: int in range(run.director.cursor,mini(run.director.cursor + 3,run.director.events.size())):
 			var event: Dictionary = run.director.events[i]

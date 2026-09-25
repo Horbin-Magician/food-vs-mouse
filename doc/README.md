@@ -15,7 +15,7 @@
 | [design/shop.md](design/shop.md) | 食谱与灵感统一商店购买、价格与存档兼容规则 | 已实现，经济平衡待验证 |
 | [testing/shop.md](testing/shop.md) | 统一商店的交易、购物完成开战、存档与窗口验收 | 最新流程自动／渲染通过，鼠标复验待完成 |
 | [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |
-| [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 回归及窗口拾取通过，缩放限制见正文 |
+| [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 拾取回归及上限调整验证通过，范围与限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |

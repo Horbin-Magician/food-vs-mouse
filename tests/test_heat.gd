@@ -51,18 +51,18 @@ func _init() -> void:
 	var second: Dictionary = run.combat.heat_pickups[0]
 	assert(run.board.remove(0, 0, false).is_empty())
 	assert(run.collect_heat(second.uid).is_empty(), "source removal does not discard production")
-	run.state.heat = 340
+	run.state.heat = run.data.rules.heat_cap - 10
 	var overflow: float = run.state.metrics.overflow
 	run.speed = 2
 	tick(run, 13)
-	assert(run.combat.heat_pickups.size() == 1 and run.state.heat < 341)
+	assert(run.combat.heat_pickups.size() == 1 and run.state.heat < run.data.rules.heat_cap - 9)
 	tick(run, 1)
-	assert(run.combat.heat_pickups.is_empty() and run.state.heat == 350)
+	assert(run.combat.heat_pickups.is_empty() and run.state.heat == run.data.rules.heat_cap)
 	assert(absf(run.state.metrics.overflow - overflow - (23 + 28.0 / 60.0 * 2.0 - 10)) < 0.001)
 	# Full heat does not prevent production; stars and recipes stay immutable.
 	run.state.cooldowns.clear()
 	assert(run.board.place("pudding", 1, 0, false).is_empty())
-	run.state.heat = 350
+	run.state.heat = run.data.rules.heat_cap
 	run.combat.produce_heat(run.state.units[0])
 	assert(run.combat.heat_pickups[0].amount == 23)
 	run.combat.damage_unit(run.state.units[0], 9999)

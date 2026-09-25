@@ -3,6 +3,7 @@ extends Node2D
 var projection: BoardProjection = BoardProjection.new()
 var art: ArtCatalog = ArtCatalog.new()
 var animator: UnitAnimator = UnitAnimator.new()
+var damage_feedback: DamageFeedback = DamageFeedback.new()
 const TOP_RECT := Rect2(12, -16, 1256, 100)
 const FOOTER_Y := 678.0
 const SHOP_RECT := Rect2(220, 82, 840, 556)
@@ -475,6 +476,10 @@ func row_content(node: Button, texture: Texture2D, title: String, description: S
 	if node.disabled: portrait.modulate.a = 0.45
 
 func _process(delta: float) -> void:
+	if damage_feedback.get_parent() == null:
+		add_child(damage_feedback)
+		move_child(damage_feedback, 0)
+	damage_feedback.bind(run, projection)
 	animator.bind(run, projection)
 	var before: float = run.state.elapsed
 	run.advance(delta)
@@ -486,6 +491,7 @@ func _process(delta: float) -> void:
 	if not run.paused:
 		visual_delta = run.state.elapsed - before if run.state.phase == "battle" else (minf(delta, 0.25) if run.state.phase == "prepare" else 0.0)
 	animator.advance(visual_delta, run.combat.enemies)
+	damage_feedback.advance(visual_delta)
 	heat_label.text = "%03d" % run.state.heat
 	heat_label.tooltip_text = "每关上限 %.0f；每秒恢复 %.0f，准备阶段不恢复。\n点击布丁冒出的火苗，飞入此处后获得热量。" % [run.data.rules.heat_cap, run.data.rules.heat_rate]
 	heat_pickup_view.queue_redraw()
@@ -664,13 +670,6 @@ func draw_kitchen() -> void:
 	draw_rect(Rect2(0,0,1280,720), GameTheme.BG)
 	draw_style_box(GameTheme.box(Color("0b1719"), 16), Rect2(BoardProjection.ORIGIN - Vector2(12, 6), BoardProjection.CANVAS_SIZE + Vector2(24, 18)))
 	draw_style_box(GameTheme.box(Color("51625a"), 12), Rect2(BoardProjection.ORIGIN - Vector2(8, 8), BoardProjection.CANVAS_SIZE + Vector2(16, 16)))
-	for row: int in range(RunState.ROWS):
-		var center: Vector2 = projection.foot(-48,row) - Vector2(0,16)
-		draw_circle(center,14,GameTheme.RAISED)
-		text_at(center + Vector2(-4,5),str(row+1),GameTheme.MUTED,12)
-		var entry: Vector2 = projection.foot(RunState.BOARD_WIDTH + 44,row) - Vector2(3,16)
-		draw_line(entry + Vector2(-3,-5),entry + Vector2(-8,0),GameTheme.BORDER,2,true)
-		draw_line(entry + Vector2(-8,0),entry + Vector2(-3,5),GameTheme.BORDER,2,true)
 
 func outline(points: PackedVector2Array, color: Color, width: float = 1.0) -> void:
 	var closed: PackedVector2Array = points.duplicate()
@@ -702,9 +701,9 @@ func draw_food(unit: Dictionary) -> void:
 	var pose: Dictionary = animator.bun_pose(unit, foot) if unit.id == "bun" else animator.pose(unit, foot)
 	foot = pose.foot
 	if unit.id == "bun":
-		draw_actor(art.bun_frame(animator.bun_frame(unit)), foot, Vector2(76, 76) * scale_value, unit.flash > 0 and not unit.has("death_age"), pose, scale_value)
+		draw_actor(art.bun_frame(animator.bun_frame(unit)), foot, Vector2(76, 76) * scale_value, unit.uid, pose, scale_value)
 	else:
-		draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.flash > 0, pose, scale_value)
+		draw_actor(art.food(unit.id), foot, Vector2(66, 76) * scale_value, unit.uid, pose, scale_value)
 	if unit.has("death_age"): return
 	var fraction: float = unit.hp / run.board.max_hp(unit.id)
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56, 4) * scale_value), Color("633f46"))
@@ -728,15 +727,16 @@ func draw_mouse_frame(enemy: Dictionary, foot: Vector2, size: Vector2, scale_val
 	# Articulated frames already contain anticipation, weight and recoil.
 	var pose: Dictionary = animator.mouse_pose(enemy, foot)
 	size.x = size.y
-	draw_actor(art.mouse_frame(enemy.id, animator.mouse_frame(enemy)), foot, size * scale_value, false, pose, scale_value)
+	draw_actor(art.mouse_frame(enemy.id, animator.mouse_frame(enemy)), foot, size * scale_value, enemy.uid, pose, scale_value)
 
-func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, hit: bool, pose: Dictionary, depth: float) -> void:
+func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, uid: int, pose: Dictionary, depth: float) -> void:
 	if texture == null: return
 	draw_set_transform(pose.shadow + Vector2(4, 0), -0.04, Vector2(1, 0.25))
 	draw_circle(Vector2.ZERO, size.x * 0.34, Color(0, 0, 0, 0.28))
 	draw_set_transform(Vector2.ZERO)
 	draw_set_transform(foot + pose.offset * depth, pose.angle, pose.scale)
-	draw_texture_rect(texture, Rect2(Vector2(-size.x * 0.5, -size.y * 0.86), size), false, Color(1.7, 1.7, 1.7) if hit else Color.WHITE)
+	draw_texture_rect(texture, Rect2(Vector2(-size.x * 0.5, -size.y * 0.86), size), false)
+	damage_feedback.capture_actor(uid, texture, foot, size, pose, depth)
 	draw_set_transform(Vector2.ZERO)
 
 func panel_button(title: String, action: Callable, tip: String = "") -> Button:

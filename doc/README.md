@@ -18,6 +18,8 @@
 
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 见实际记录 |
+| [art/damage_feedback.md](art/damage_feedback.md) | 双方伤害数字、shader、事件及生命周期 | 已实现，原生画面通过 |
+| [testing/damage_feedback.md](testing/damage_feedback.md) | 伤害数值、暂停倍速、shader 与渲染验证 | 逻辑及原生渲染通过，真人压力待验 |
 | [art/projectiles.md](art/projectiles.md) | 五种美食弹体与高压蒸汽变体 | 已实现 |
 | [testing/projectiles.md](testing/projectiles.md) | 弹体导入、暂停倍速、回归与渲染 | 自动和原生渲染通过，真人试玩未执行 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
@@ -28,7 +30,7 @@
 | [testing/f_restyle.md](testing/f_restyle.md) | F 替换的源图、处理与接入验收 | 15 组回归及原生渲染完成；窗口交互／缩放复验受限 |
 | [testing/mouse_animation.md](testing/mouse_animation.md) | 鼠群逐帧动作、回归与图集验收 | 14 组回归、全部帧渲染与原生窗口专项通过 |
 | [art/animation.md](art/animation.md) | 美食程序动画与鼠群四组逐帧动画规则及验收 | 鼠群专项通过，历史美食验收边界见正文 |
-| [art/perspective.md](art/perspective.md) | 正交棋盘、顶部卡牌、底部操作栏与鼠标命中 | 紧凑顶栏与棋盘再次扩展已实现，验证见专页 |
+| [art/perspective.md](art/perspective.md) | 正交棋盘、顶部卡牌、底部操作栏与鼠标命中 | 棋盘居中、左侧行号及右侧灰箭头移除已实现，验证见专页 |
 | [art/asset_pack.md](art/asset_pack.md) | 29 项美术内容、规格、映射与接入 | 已生成并接入 |
 | [art/generation_prompts.md](art/generation_prompts.md) | 四类资源的完整生成提示词 | 已记录 |
 | [testing/asset_edges.md](testing/asset_edges.md) | 图集透明边缘、跨格残片修复与验证 | 已修整；逐格对照、导入与原生渲染通过 |

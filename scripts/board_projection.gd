@@ -4,8 +4,8 @@ extends RefCounted
 const LOGICAL_SIZE: Vector2 = Vector2(RunState.BOARD_WIDTH, RunState.ROWS * RunState.CELL_WIDTH)
 const CELL_SIZE: Vector2 = Vector2(96, 96)
 # Orthogonal canvas bounds; logical combat coordinates remain unchanged.
-const ORIGIN: Vector2 = Vector2(190, 88)
 const CANVAS_SIZE: Vector2 = Vector2(738, 574)
+const ORIGIN: Vector2 = Vector2((1280.0 - CANVAS_SIZE.x) / 2.0, 88)
 var hit_cells: Array[PackedVector2Array] = []
 var tiles: Array[PackedVector2Array] = []
 

@@ -1,6 +1,7 @@
 class_name CombatController
 extends RefCounted
 
+signal damage_resolved(unit: Dictionary, actual: float, is_food: bool, direct: bool)
 signal acted(uid: int)
 signal spawned(unit: Dictionary)
 signal enemy_hurt(unit: Dictionary)
@@ -165,13 +166,14 @@ func nearest(row: int, x: float, reach: float) -> Dictionary:
 	return result
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool = true) -> void:
-	if not enemies.has(enemy): return
+	if not enemies.has(enemy) or amount <= 0.0 or not is_finite(amount): return
 	if direct and source == "pepper" and enemy.slow_time > 0: amount *= recipes.value("cold_spice","multiplier",1.0)
 	if direct and enemy.armor > 0:
 		amount = maxf(1.0, amount - data.enemies[enemy.id].stats.get("armor", 0))
 		enemy.armor -= 1
 	var actual: float = minf(enemy.hp, amount)
 	enemy.hp -= amount
+	damage_resolved.emit(enemy, actual, false, direct)
 	enemy.flash = 0.15
 	if enemy.hp > 0: enemy_hurt.emit(enemy)
 	state.metrics.damage[source] = state.metrics.damage.get(source, 0.0) + actual
@@ -191,9 +193,11 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 			add_heat(recipes.value("recycle","heat"))
 
 func damage_unit(unit: Dictionary, amount: float) -> void:
-	if not state.units.has(unit): return
+	if not state.units.has(unit) or amount <= 0.0 or not is_finite(amount): return
 	if unit.id == "toast": amount = maxf(1.0,amount-recipes.value("crust","armor"))
+	var actual: float = minf(unit.hp, amount)
 	unit.hp -= amount
+	damage_resolved.emit(unit, actual, true, true)
 	unit.flash = 0.15
 	if unit.hp > 0: food_hurt.emit(unit)
 	if unit.hp <= 0:

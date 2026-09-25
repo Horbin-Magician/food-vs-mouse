@@ -44,3 +44,7 @@ prepare → battle → prepare，最终进入 won/lost。关后结算金币与�
 ## 卡牌拖放接口（2026-09-13）
 
 已实现并通过相关回归：BoardController.placement_error(id, row, col, paused) 提供无副作用的放置合法性查询，返回空字符串或失败原因；place 在写入前复用该查询，保证预览与结算使用同一规则。主场景只持有临时拖动 ID、起点、阶段／暂停快照和阈值状态，不写 RunState。左键按下由卡牌 gui_input 发起，移动和松手由主场景 _input 接收；取消与生命周期清理不触发业务操作。规则见 [UI 规范](../art/ui.md#美食卡拖放2026-09-13)。
+
+## 伤害表现事件（2026-09-25）
+
+CombatController 在统一扣血入口新增 `damage_resolved(unit, actual, is_food, direct)`，减伤与过量伤害处理后发送。DamageFeedback 只订阅并展示，不反写运行状态；载荷语义、shader、飘字和清理规则统一见 [受击反馈](../art/damage_feedback.md)。原有受击与死亡信号保持原时点，继续驱动 UnitAnimator。

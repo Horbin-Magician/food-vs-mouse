@@ -2,14 +2,14 @@ extends SceneTree
 
 func _init() -> void:
 	var board: BoardProjection = BoardProjection.new()
-	assert(board.project(Vector2.ZERO).distance_to(Vector2(190, 88)) < 0.1)
-	assert(board.project(Vector2(864, 672)).distance_to(Vector2(928, 662)) < 0.1)
+	assert(board.project(Vector2.ZERO).distance_to(Vector2(271, 88)) < 0.1)
+	assert(board.project(Vector2(864, 672)).distance_to(Vector2(1009, 662)) < 0.1)
 	for row: int in range(7):
 		for col: int in range(9):
 			for offset: Vector2 in [Vector2(48,48), Vector2(1,1), Vector2(95,1), Vector2(1,95), Vector2(95,95)]:
 				var screen: Vector2 = board.project(Vector2(col * 96, row * 96) + offset)
 				assert(board.cell_at(screen) == Vector2i(col,row), "Projected cell hit mismatch")
-	for point: Vector2 in [Vector2(189,88),Vector2(929,88),Vector2(190,663),Vector2(929,662),Vector2(500,87),Vector2(500,663)]:
+	for point: Vector2 in [Vector2(270,88),Vector2(1010,88),Vector2(271,663),Vector2(1010,662),Vector2(500,87),Vector2(500,663)]:
 		assert(board.cell_at(point) == Vector2i(-1,-1))
 	for col: int in range(10):
 		assert(is_equal_approx(board.project(Vector2(col * 96,0)).x,board.project(Vector2(col * 96,672)).x))

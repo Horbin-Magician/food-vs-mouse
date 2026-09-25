@@ -204,7 +204,7 @@ func run_test() -> void:
 				if content is Control:
 					assert(content.position.x + content.size.x <= child.size.x)
 					assert(content.position.y + content.size.y <= child.size.y)
-	assert(scene.PANEL_RECT.position.x > scene.projection.ORIGIN.x + scene.projection.CANVAS_SIZE.x)
+	assert(is_equal_approx(scene.projection.ORIGIN.x + scene.projection.CANVAS_SIZE.x / 2.0, 640.0))
 	# Shop modal: transaction rebuilding, horizontal layout, closing and input isolation.
 	scene.run.new_run(25)
 	scene.set_panel_open(true)

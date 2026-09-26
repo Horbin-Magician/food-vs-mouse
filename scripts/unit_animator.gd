@@ -18,7 +18,9 @@ const ACTION_TIME: float = 0.25
 const MOUSE_ACTION_TIME: float = 0.48
 const HURT_TIME: float = 0.30
 const DEATH_TIME: float = 0.72
-const STRIDE_DISTANCE: float = 12.0
+const STRIDE_DISTANCE: float = 6.0
+const BUN_IDLE_FRAME_TIME: float = 0.1
+const HURT_INTERVAL: float = 0.45
 var corpses: Array[Dictionary] = []
 var food_corpses: Array[Dictionary] = []
 var entries: Dictionary = {}
@@ -47,7 +49,7 @@ func bind(run: RunController, board_projection: BoardProjection) -> void:
 
 func entry(unit: Dictionary) -> Dictionary:
 	if not entries.has(unit.uid):
-		entries[unit.uid] = {"drop": 0.0, "action": 0.0, "move": 0.0, "from": Vector2.ZERO, "x": unit.get("x", 0.0), "stride": 0.0, "walking": false, "hurt": 0.0, "mouse": unit.has("x")}
+		entries[unit.uid] = {"drop": 0.0, "action": 0.0, "move": 0.0, "from": Vector2.ZERO, "x": unit.get("x", 0.0), "stride": 0.0, "walking": false, "hurt": 0.0, "hurt_lock": 0.0, "mouse": unit.has("x")}
 	return entries[unit.uid]
 
 func appear(unit: Dictionary) -> void:
@@ -61,7 +63,11 @@ func act(uid: int) -> void:
 	if entries.has(uid): entries[uid].action = MOUSE_ACTION_TIME if entries[uid].mouse else ACTION_TIME
 
 func hurt(unit: Dictionary) -> void:
-	entry(unit).hurt = HURT_TIME
+	var value: Dictionary = entry(unit)
+	# Let the reaction finish and briefly return to the underlying action.
+	if value.hurt_lock > 0.0: return
+	value.hurt = HURT_TIME
+	value.hurt_lock = HURT_INTERVAL
 
 func fall(unit: Dictionary) -> void:
 	var snapshot: Dictionary = unit.duplicate(true)
@@ -69,7 +75,7 @@ func fall(unit: Dictionary) -> void:
 	corpses.append(snapshot)
 
 func food_hurt(unit: Dictionary) -> void:
-	if unit.id == "bun": hurt(unit)
+	if unit.id in ["bun", "toast"]: hurt(unit)
 
 func food_fall(unit: Dictionary) -> void:
 	if unit.id != "bun": return
@@ -89,7 +95,7 @@ func bun_frame(unit: Dictionary) -> Vector2i:
 		return Vector2i(sequence_frame(value.move, MOVE_TIME), 5)
 	if value.action > 0:
 		return Vector2i(sequence_frame(value.action, ACTION_TIME), 2)
-	return Vector2i(posmod(int(time / 0.2) + unit.uid, 6), 0)
+	return Vector2i(posmod(int(time / BUN_IDLE_FRAME_TIME) + unit.uid, 6), 0)
 
 func sequence_frame(remaining: float, duration: float) -> int:
 	return clampi(int((1.0 - remaining / duration) * 6), 0, 5)
@@ -151,6 +157,7 @@ func advance(delta: float, enemies: Array) -> void:
 			value.drop = 0.0
 			value.move = 0.0
 			value.hurt = 0.0
+			value.hurt_lock = 0.0
 		phase = state.phase
 	for corpse: Dictionary in corpses.duplicate():
 		corpse.death_age += delta
@@ -163,7 +170,7 @@ func advance(delta: float, enemies: Array) -> void:
 	for unit: Dictionary in state.units + enemies:
 		live[unit.uid] = true
 		var value: Dictionary = entry(unit)
-		for key: String in ["drop", "action", "move", "hurt"]:
+		for key: String in ["drop", "action", "move", "hurt", "hurt_lock"]:
 			value[key] = maxf(0.0, value[key] - delta)
 		if unit.has("x") and delta > 0:
 			var distance: float = absf(unit.x - value.x)
@@ -186,13 +193,13 @@ func pose(unit: Dictionary, target: Vector2) -> Dictionary:
 		angle = step * 0.045
 		stretch += Vector2(-absf(step), absf(step)) * 0.025
 	if value.action > 0:
-		var pulse: float = sin((1.0 - value.action / ACTION_TIME) * PI)
+		var pulse: float = action_pulse(value.action, MOUSE_ACTION_TIME if unit.has("x") else ACTION_TIME)
 		angle += profile.z * pulse
 		stretch += Vector2(0.10, -0.09) * pulse
 		offset.x += (-7.0 if unit.has("x") else (-5.0 if unit.id not in ["pepper", "garlic"] else 8.0)) * pulse
 		if unit.id == "pudding": offset.y -= 12.0 * pulse
-	if unit.id == "toast" and unit.get("flash", 0.0) > 0:
-		stretch += Vector2(0.08, -0.08) * unit.flash / 0.15
+	if unit.id == "toast" and value.hurt > 0:
+		stretch += Vector2(0.08, -0.08) * action_pulse(value.hurt, HURT_TIME)
 	if value.drop > 0:
 		var progress: float = 1.0 - value.drop / DROP_TIME
 		offset.y -= 30.0 * pow(1.0 - minf(progress / 0.6, 1.0), 2)
@@ -202,3 +209,7 @@ func pose(unit: Dictionary, target: Vector2) -> Dictionary:
 	if value.move > 0:
 		ground = value.from.lerp(target, smoothstep(0.0, 1.0, 1.0 - value.move / MOVE_TIME))
 	return {"shadow": ground, "foot": moving_foot(value, target), "offset": offset, "scale": stretch, "angle": angle}
+
+func action_pulse(remaining: float, duration: float) -> float:
+	var wave: float = sin(clampf(1.0 - remaining / duration, 0.0, 1.0) * PI)
+	return wave * wave

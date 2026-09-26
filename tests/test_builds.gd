@@ -28,14 +28,14 @@ func _init() -> void:
 	run.state.phase = "battle"
 	run.state.heat = 350
 	run.board.place("pudding",2,1,false)
-	assert(is_equal_approx(run.recipes.damage(run.state.units[0]),12*1.5*1.15))
+	assert(is_equal_approx(run.recipes.damage(run.state.units[0]),6*1.5*1.15))
 	run.combat.spawn("lid",2,run.data.waves[0])
 	var enemy: Dictionary = run.combat.enemies[0]
 	run.combat.damage_enemy(enemy,run.recipes.value("burn", "damage"),"pepper",false)
-	assert(enemy.armor == 3 and enemy.hp == 257)
+	assert(enemy.armor == 3 and enemy.hp == 258.5)
 	enemy.slow_time = 2
 	run.combat.damage_enemy(enemy,32,"pepper")
-	assert(enemy.hp == 221 and enemy.armor == 2)
+	assert(enemy.hp == 222.5 and enemy.armor == 2)
 	run.state.phase = "prepare"
 	run.state.recipes.clear()
 	run.recipes.offer(run.rng,[])

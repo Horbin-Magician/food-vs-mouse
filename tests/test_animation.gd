@@ -28,13 +28,56 @@ func _init() -> void:
 		assert(animator.entries[enemy.uid].walking)
 		assert(animator.pose(enemy, Vector2.ZERO).offset.y < 0)
 		animator.act(enemy.uid)
+	# Dense hits must not pin bun/mice to their first reaction frame.
+	for actor: Dictionary in [run.state.units[0], run.combat.enemies[0]]:
+		animator.hurt(actor)
+		animator.advance(0.1, run.combat.enemies)
+		var reaction: float = animator.entry(actor).hurt
+		animator.hurt(actor)
+		assert(is_equal_approx(animator.entry(actor).hurt, reaction))
+		animator.advance(0.21, run.combat.enemies)
+		animator.hurt(actor)
+		assert(animator.entry(actor).hurt == 0.0)
+		animator.advance(0.15, run.combat.enemies)
+		animator.hurt(actor)
+		assert(animator.entry(actor).hurt == UnitAnimator.HURT_TIME)
+	# Two normal ticks and one double-speed tick consume equal visual time.
+	var reaction_actor: Dictionary = run.combat.enemies[0]
+	var reaction_state: Dictionary = animator.entry(reaction_actor).duplicate(true)
+	animator.advance(0.05, run.combat.enemies)
+	animator.advance(0.05, run.combat.enemies)
+	var normal_remaining: float = animator.entry(reaction_actor).hurt
+	animator.entries[reaction_actor.uid] = reaction_state
+	animator.advance(0.1, run.combat.enemies)
+	assert(is_equal_approx(animator.entry(reaction_actor).hurt, normal_remaining))
+	# Toast starts undeformed, peaks halfway, and returns smoothly.
+	var toast: Dictionary = run.state.units[1]
+	var initial_scale: Vector2 = animator.pose(toast, Vector2.ZERO).scale
+	animator.food_hurt(toast)
+	assert(animator.pose(toast, Vector2.ZERO).scale.is_equal_approx(initial_scale))
+	assert(animator.action_pulse(UnitAnimator.HURT_TIME, UnitAnimator.HURT_TIME) == 0.0)
+	assert(is_equal_approx(animator.action_pulse(UnitAnimator.HURT_TIME * 0.5, UnitAnimator.HURT_TIME), 1.0))
+	assert(animator.action_pulse(0.0, UnitAnimator.HURT_TIME) < 0.00001)
+	assert(animator.action_pulse(UnitAnimator.HURT_TIME - 0.001, UnitAnimator.HURT_TIME) < 0.001)
+	# Known real speeds advance frames more often, but remain distance driven.
+	var walker: Dictionary = run.combat.enemies[0]
+	animator.advance(0.5, run.combat.enemies)
+	animator.entry(walker).stride = 0.0
+	walker.x -= 1.2
+	animator.advance(0.1, run.combat.enemies)
+	assert(animator.mouse_frame(walker) == Vector2i(1, 0))
+	var bun: Dictionary = run.state.units[0]
+	animator.time = 10.025
+	var idle_frame: Vector2i = animator.bun_frame(bun)
+	animator.advance(0.1, run.combat.enemies)
+	assert(animator.bun_frame(bun).x == (idle_frame.x + 1) % 6)
 	var saved: Dictionary = animator.entries.duplicate(true)
 	animator.advance(0, run.combat.enemies)
 	assert(saved == animator.entries)
 	# Real combat emits attacks and production without relying on presentation timers.
 	for enemy: Dictionary in run.combat.enemies: enemy.row = 0; enemy.x = 90
 	run.state.units[0].timer = 10
-	run.state.units[2].timer = 10
+	run.state.units[2].timer = run.data.foods["pudding"].stats.interval
 	run.combat.step(1.0 / 60.0)
 	assert(animator.entries[run.state.units[0].uid].action > 0)
 	assert(animator.entries[run.state.units[2].uid].action > 0)

@@ -14,7 +14,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "889ff0053403d93bc83f87152265fb9ae8645f474565b613215cc074270d1952",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_ironpot_skill.png",
@@ -31,7 +33,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "fe593802d057e243955ef261767127db4eab78a859dbe53ddf4006ac4c18a36c",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_ironpot_unarmored.png",
@@ -48,7 +52,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "fcdabc4be0c333c33eae6cd017d35d0ef48ecc90bac168aa796387b28ce7d880",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_ironpot_unarmored_skill.png",
@@ -65,7 +71,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "26e134b03c2386502c92728fe3b5e17769f57372ce2fe3690704086e2ac45635",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_quartermaster.png",
@@ -82,7 +90,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "dfc9a0945f64c54d261aec31a74a0932ed4c69dd5e0d95700f0eaccb90438b9f",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_quartermaster_skill.png",
@@ -99,7 +109,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "f0ae7a8b3d6c2982cc27d34e8422fc4d040c94da39eaa63669efcdbe61bdb709",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_starter.png",
@@ -116,7 +128,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "93e9a938e1533e669e73bf57bc4981df7038fda72cc16be3a19d48921686bbe7",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_starter_skill.png",
@@ -133,7 +147,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "e887482b90d8ef637ed2601bd23bd385092a030fdc528b7696f3618c2f3c0822",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_windwhistle.png",
@@ -150,7 +166,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "d6467dc4dbf0852a06627e12848277840e95348f277e3fb3dddf1db33a8af732",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/boss_windwhistle_skill.png",
@@ -167,7 +185,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "6b0c5a7f0750f203e834d34d6e0f964d90c2a9c0171db1ce629e6883a31e70ae",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/dough_rat.png",
@@ -184,7 +204,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "21209512242a6e724a6793792757ab217acf915a7ae27a596174ce88a72a11a9",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/dough_rat_skill.png",
@@ -201,7 +223,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "5cebabc31869d57c0636fe1a8ac58cdd94fc0e596e2d27497dc62b8e83d4452e",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/ration_keeper.png",
@@ -218,7 +242,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "9082ab6d483a914180184a87a4dc61a51adb3eaece8c9c0cb1f2e6ac8be88784",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/ration_keeper_skill.png",
@@ -235,7 +261,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "917379da6063c3d0b852c198d39b170209c01873d25f87e429c70fbe4b225345",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_foreman.png",
@@ -252,7 +280,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "fd33266e35195def9750c4f4cc8010dcfec66f811f7128377daf5a5605951039",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_foreman_skill.png",
@@ -269,7 +299,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "d532b651d0a6b1eb53ea4bc52e94aabd968099254e897126f7de7d63efa563d8",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_foreman_unarmored.png",
@@ -286,7 +318,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "97333db368f717ddefdf48607aa2fa2c0dfa8e9839595b31d7937940abfc3631",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_foreman_unarmored_skill.png",
@@ -303,7 +337,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "314971203899bde27e3e05fd017e26329fd4f3872ef9abf536759a686f50508f",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_guard.png",
@@ -320,7 +356,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "c9d1fe11b1f1a6a2f4cad505b3e7650320d36e9cf3fb7900656f3b89ef2edf27",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_guard_skill.png",
@@ -337,7 +375,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "60863af8cdfc9600bb2d83246ecf093593453617b97113831bfb8fed2d046ca8",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/rivet_guard_unarmored.png",
@@ -354,7 +394,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "888b366d96f11d49e4609f6daeef483bad0ce6abcc2ba9ae9be2ca90e44c57d0",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/skewer_lancer.png",
@@ -371,7 +413,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "1f66b1cdd3a6da257de6a01b9b698a0fa3a92dd3f60a7abb8100ba4d3d9ce3bc",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/skewer_lancer_skill.png",
@@ -388,7 +432,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "f1b7e3b0b6a4a49e93f343019bc315875578f58327c34f144c823a6a85509ba7",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/skewer_marshal.png",
@@ -405,7 +451,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "380c1462d0c6cc5282b5cec598ce8ea19a83aa60f2533cb7a40d26479fb5767a",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/skewer_marshal_skill.png",
@@ -422,7 +470,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "5e73589bbae8b961b195d8d229ffbd42a1f6909ccdcf85158566b6602e8481a9",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/spoon_captain.png",
@@ -439,7 +489,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "cfca97d1479f601c3a701575a905cb153fb40baac27bb42255fddcec38534f27",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/spoon_captain_skill.png",
@@ -456,7 +508,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "5c4685d7eec2451a56eea062ac6fbda97e58fe08f60e395c0410fe30a20b2484",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/spoon_skater.png",
@@ -473,7 +527,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "3a66ae465379b488f4f475f535f32f9f12a95dc819524959dc10091f8d596c15",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/spoon_skater_skill.png",
@@ -490,7 +546,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "21da0a555db5c5d5398996b2b10bad0cb3fca3c64f8f9bae31ad3c4ea8882654",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/tong_breaker.png",
@@ -507,7 +565,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "7a761acfb35ce734170cda068029c45278f190305b1031101b485053a5743c6e",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/tong_breaker_skill.png",
@@ -524,7 +584,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "67a0a7a573803618bbc1cb9af567daa7bb8c70fd5c515b0270d375bf38d69490",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/towel_scout.png",
@@ -541,7 +603,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "08e8f76b9d36cccfb2f8dc86bb3a5114296916c3eda4bbaa1d61c38ac56ac667",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/towel_scout_skill.png",
@@ -558,7 +622,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "34420abbaa4dca0b350e1acbe2210f5af9d284b0c75ccc1036dd69f2764ef2d9",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/vinegar_cellarer.png",
@@ -575,7 +641,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "fd15b8e5f215187e3c5422e4e13a565d05cc7275d026cca835e167b8f9303618",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/vinegar_cellarer_skill.png",
@@ -592,7 +660,9 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "da1f37341e556ab2e2a6f4590b72dbed156ef240c734805a7705674550693b98",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/vinegar_spitter.png",
@@ -609,7 +679,9 @@
       1536,
       1024
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "f1fe3caf91194adfe0630c47b2c5585811a3da82cbdc43a35cfa0f132e354edf",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   },
   {
     "source": "assets/art/source/chapter_enemies/vinegar_spitter_skill.png",
@@ -626,6 +698,8 @@
       1536,
       768
     ],
-    "status": "generated_unpacked"
+    "status": "packed_edges_verified",
+    "runtime_sha256": "83d0c86d5b3c906109cbe6be0e4a3f87bc8738686a305ff5b1bbebfb89a227ae",
+    "packing_report": "assets/art/chapter_enemy_packing_report.json"
   }
 ]

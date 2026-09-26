@@ -23,8 +23,9 @@ func _init() -> void:
 	check(run.state.heat == heat and run.director.elapsed == 0, "pause all clocks")
 	run.paused = false
 	run.combat.spawn("gray",2,run.data.waves[0])
-	run.combat.enemies[0].x = 200.0
-	for i: int in range(900): run.advance(1.0/60.0)
+	run.combat.enemies[0].x = 760.0
+	# Isolate projectile combat from wave spawns; slower attacks need a full firing lane.
+	for i: int in range(3300): run.combat.step(1.0/60.0)
 	check(run.state.metrics.kills >= 1, "projectile kills")
 	run.state.pantry = 1
 	run.combat.clear()

@@ -6,4 +6,4 @@
 script = ExtResource("1")
 id = "pudding"
 title = "焦糖布丁"
-stats = {"cost": 50, "cooldown": 12, "hp": 130, "damage": 0, "interval": 10, "reach": 0, "price": 3, "kind": "producer"}
+stats = {"cost": 50, "cooldown": 12, "hp": 130, "damage": 0, "interval": 15, "reach": 0, "price": 3, "kind": "producer"}

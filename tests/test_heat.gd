@@ -19,16 +19,16 @@ func _init() -> void:
 	run.start()
 	assert(run.board.place("pudding", 0, 0, false).is_empty())
 	run.state.heat = 0
-	tick(run, 599)
+	tick(run, 899)
 	assert(run.combat.heat_pickups.is_empty())
 	tick(run, 2)
-	assert(absf(run.state.heat - 601.0 / 60.0 * 2.0) < 0.001)
+	assert(absf(run.state.heat - 901.0 / 60.0 * 2.0) < 0.001)
 	assert(run.combat.heat_pickups.size() == 1)
 	var first: Dictionary = run.combat.heat_pickups[0]
 	assert(first.amount == 15 and first.flight == -1)
 	run.state.levels.pudding = 10
 	run.state.recipes = ["caramel"]
-	tick(run, 600)
+	tick(run, 900)
 	assert(run.combat.heat_pickups.size() == 1 and first.amount == 38, "merge snapshots 15 + 18 + 5")
 	var before: float = run.state.heat
 	run.paused = true

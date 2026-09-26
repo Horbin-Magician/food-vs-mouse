@@ -24,7 +24,7 @@ func _init() -> void:
 	run.paused = false
 	run.combat.spawn("gray",2,run.data.waves[0])
 	run.combat.enemies[0].x = 200.0
-	for i: int in range(600): run.advance(1.0/60.0)
+	for i: int in range(900): run.advance(1.0/60.0)
 	check(run.state.metrics.kills >= 1, "projectile kills")
 	run.state.pantry = 1
 	run.combat.clear()

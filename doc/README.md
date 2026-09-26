@@ -6,6 +6,7 @@
 
 | 文档 | 用途 | 状态 |
 |---|---|---|
+| [testing/food_damage.md](testing/food_damage.md) | 全部美食及食谱灼烧伤害减半的配置与回归验证 | 配置及七组回归通过；整局平衡未重验 |
 | [design/chapter_enemy_redesign.md](design/chapter_enemy_redesign.md) | 后四关 8 新普通鼠、4 精英、4 独立首领的设定、属性、技能、背景与反制 | 玩法已接入；原稿预览已接入，图集验收未通过 |
 | [design/chapter_encounters_v2.md](design/chapter_encounters_v2.md) | 后四关 32 小关组成、教学、选路与批次节奏 | 32 波次与排程检查通过；连续采样完成，真人平衡待验 |
 | [art/chapter_enemy_redesign.md](art/chapter_enemy_redesign.md) | 延续 F 画风的角色轮廓、概念图、技能表现与制作验收 | 全套原稿预览已接入；正式整理及细节验收待完成 |

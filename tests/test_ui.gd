@@ -122,7 +122,7 @@ func run_test() -> void:
 	scene.rebuild()
 	scene._process(0)
 	await process_frame
-	assert(scene.pause_button.disabled)
+	assert(not scene.settings_button.disabled)
 	assert(not scene.run.board.has_method("repair"))
 	assert("准备阶段" in scene.card_status("bun"))
 	assert(not scene.cards.get_child(0).get_node("Cooldown").visible)
@@ -134,8 +134,8 @@ func run_test() -> void:
 	scene.run.paused = true
 	scene._process(0)
 	assert(scene.card_status("bun") == "已暂停")
-	assert(not scene.pause_button.disabled)
-	assert(scene.pause_button.text == "继续")
+	assert(not scene.settings_button.disabled)
+	assert(scene.settings_button.text == "设置")
 	var mask: ColorRect = scene.cards.get_child(0).get_node("Cooldown")
 	assert(mask.size == scene.cards.get_child(0).size and mask.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	var frozen_ratio: float = mask.material.get_shader_parameter("remaining_ratio")

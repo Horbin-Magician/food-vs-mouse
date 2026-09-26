@@ -70,12 +70,27 @@ func _ready() -> void:
 	if not initial.is_empty(): set_context(initial)
 
 func _exit_tree() -> void:
+	_release_audio()
+
+func _release_audio() -> void:
+	_initialized = false
 	_disconnect_run()
 	bound_run = null
 	for player: AudioStreamPlayer in voices + music_players:
 		player.stop()
 		player.stream = null
 	_streams.clear()
+
+func shutdown() -> void:
+	# stop() releases playback on the mixer thread. Keep the main loop alive
+	# briefly so it can finish before the application tears down resources.
+	var references: Array[WeakRef] = []
+	for stream: AudioStream in _streams.values(): references.append(weakref(stream))
+	set_process(false)
+	_release_audio()
+	var deadline: int = Time.get_ticks_msec() + 1000
+	while references.any(func(reference: WeakRef) -> bool: return reference.get_ref() != null) and Time.get_ticks_msec() < deadline:
+		await get_tree().create_timer(0.01, true, false, true).timeout
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT: set_focus_ducked(true)

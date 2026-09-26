@@ -16,6 +16,8 @@
 
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
 | [design/screens.md](design/screens.md) | 主菜单、继续／新局与全屏胜败战报 | 已实现，窗口鼠标验收待完成 |
+| [design/settings.md](design/settings.md) | 热量下方倍速、统一设置、Esc 暂停及返回菜单／退出规则 | 已实现，验证边界见专项记录 |
+| [testing/settings.md](testing/settings.md) | 设置、暂停所有权、存档离开与双尺寸界面验收 | 36 项回归、原生输入与渲染通过，真实鼠标复验受限 |
 | [testing/screens.md](testing/screens.md) | 菜单与战报流程、存档及渲染验证 | 导入、16 组回归与原生渲染通过 |
 | [design/shop.md](design/shop.md) | 局内商店实现记录与新版只售食谱的变更入口 | 新版仅食谱已接入，历史记录保留 |
 | [testing/shop.md](testing/shop.md) | 统一商店的交易、购物完成开战、存档与窗口验收 | 最新流程自动／渲染通过，鼠标复验待完成 |

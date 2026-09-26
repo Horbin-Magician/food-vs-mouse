@@ -14,6 +14,8 @@ var hub: CardHub
 var sound: SoundService
 var audio_settings: AudioSettings
 var audio_button: Button
+var current_page: String = "menu"
+var quitting: bool = false
 
 func _ready() -> void:
 	get_viewport().gui_embed_subwindows = true
@@ -26,20 +28,22 @@ func _ready() -> void:
 	audio_settings = AudioSettings.new()
 	add_child(audio_settings)
 	audio_settings.setup(sound)
+	audio_settings.menu_requested.connect(func() -> void: leave_settings("menu"))
+	audio_settings.quit_requested.connect(func() -> void: leave_settings("quit"))
 	var audio_layer := CanvasLayer.new()
 	audio_layer.layer = 110
 	add_child(audio_layer)
 	audio_button = Button.new()
-	audio_button.name = "AudioButton"
-	audio_button.text = "声音"
-	audio_button.size = Vector2(104, 32)
+	audio_button.name = "SettingsButton"
+	audio_button.text = "设置"
+	audio_button.icon = preload("res://assets/ui/settings.svg")
+	audio_button.add_theme_constant_override("icon_max_width", 20)
+	audio_button.add_theme_constant_override("h_separation", 8)
+	audio_button.size = Vector2(104, 38)
 	audio_button.theme = GameTheme.create()
-	audio_button.tooltip_text = "音乐、音效与总音量"
-	audio_button.pressed.connect(func() -> void:
-		if is_instance_valid(game) and not showing_result:
-			game.cancel_card_drag()
-			audio_settings.open(game.run)
-		else: audio_settings.open())
+	audio_button.tooltip_text = "设置 / Esc · 声音与游戏选项"
+	audio_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	audio_button.pressed.connect(open_settings)
 	audio_layer.add_child(audio_button)
 	show_menu()
 
@@ -109,6 +113,8 @@ func show_menu() -> void:
 	sound.bind_run(null)
 	sound.set_context("menu")
 	audio_button.position = Vector2(1120, 20)
+	audio_button.show()
+	current_page = "menu"
 	if is_instance_valid(game):
 		remove_child(game)
 		game.queue_free()
@@ -129,7 +135,7 @@ func show_menu() -> void:
 	continue_button.disabled = snapshot.is_empty()
 	action("新的一局", Vector2(792, 366), request_new, snapshot.is_empty())
 	action("美食卡册 · 购卡与强化", Vector2(792, 430), func() -> void: show_hub("shop"))
-	action("退出游戏", Vector2(792, 494), func() -> void: get_tree().quit())
+	action("退出游戏", Vector2(792, 494), quit_game)
 	notice = text_line(load_error if not load_error.is_empty() else ("暂无可继续的守卫，开始新的一局吧。" if snapshot.is_empty() else "准备阶段自动保存。战斗中退出后，\n继续游戏会回到本关开战前。"), Vector2(792, 558), Vector2(356, 66), 15, GameTheme.MUTED)
 	overwrite = ConfirmationDialog.new()
 	overwrite.title = "开始新的一局？"
@@ -182,8 +188,11 @@ func prepare_new() -> void:
 	show_hub("loadout")
 
 func show_hub(initial_tab: String = "shop") -> void:
+	if audio_settings.visible: audio_settings.hide()
 	sound.set_context("shop")
 	audio_button.position = Vector2(930, 32)
+	audio_button.show()
+	current_page = "hub"
 	if is_instance_valid(page):
 		remove_child(page)
 		page.queue_free()
@@ -221,7 +230,8 @@ func enter_game(run: RunController) -> void:
 	game.sound = sound
 	game.audio_settings = audio_settings
 	add_child(game)
-	audio_button.position = Vector2(234, 678)
+	audio_button.hide()
+	current_page = "game"
 	page.hide()
 	showing_result = false
 
@@ -234,6 +244,9 @@ func show_result() -> void:
 	if audio_settings.visible: audio_settings.hide()
 	sound.sync_run()
 	audio_button.position = Vector2(1120, 20)
+	audio_button.show()
+	current_page = "result"
+	game.settings_button.hide()
 	game.cancel_card_drag()
 	game.shovel = false
 	game.update_shovel_cursor()
@@ -260,7 +273,7 @@ func leave_result(destination: String) -> void:
 		notice.text = saves.error
 		return
 	if destination == "quit":
-		get_tree().quit()
+		quit_game()
 		return
 	show_menu()
 	if destination == "new": prepare_new()
@@ -271,3 +284,46 @@ func run_inspiration(state: RunState) -> int:
 		for index: int in range(state.reward_floor,mini(int(state.metrics.passed),8)):
 			amount += state.inspiration_for_wave(index, data)
 	return amount
+
+func open_settings() -> void:
+	if audio_settings.visible: return
+	if is_instance_valid(game) and not showing_result:
+		game.open_settings()
+	else:
+		audio_settings.open(game.run if is_instance_valid(game) else null, current_page != "menu")
+
+func _input(event: InputEvent) -> void:
+	# Active games own selection cleanup; menu and result pages have no board input.
+	if is_instance_valid(game) and not showing_result: return
+	if event.is_action_pressed("open_settings") and not event.is_echo():
+		if audio_settings.visible: audio_settings.handle_escape()
+		else: open_settings()
+		get_viewport().set_input_as_handled()
+
+func leave_settings(destination: String) -> void:
+	if quitting or destination not in ["menu", "quit"]: return
+	if is_instance_valid(game):
+		if showing_result:
+			if not saves.settle(game.run.state, data):
+				audio_settings.show_error(saves.error)
+				return
+		elif not game.run.persist():
+			audio_settings.show_error(game.run.message)
+			return
+	if destination == "quit":
+		quit_game()
+	else:
+		show_menu()
+
+func quit_game() -> void:
+	if quitting: return
+	quitting = true
+	set_process(false)
+	set_process_input(false)
+	if is_instance_valid(game): game.process_mode = Node.PROCESS_MODE_DISABLED
+	if audio_settings.visible: audio_settings.hide()
+	audio_button.disabled = true
+	page.mouse_filter = Control.MOUSE_FILTER_STOP
+	page.process_mode = Node.PROCESS_MODE_DISABLED
+	await sound.shutdown()
+	get_tree().quit()

@@ -8,7 +8,6 @@ var shovel_feedback: ShovelFeedback = ShovelFeedback.new()
 var damage_feedback: DamageFeedback = DamageFeedback.new()
 var status_feedback: StatusFeedback = StatusFeedback.new()
 const TOP_RECT := Rect2(12, -16, 1256, 100)
-const FOOTER_Y := 678.0
 const SHOP_RECT := Rect2(220, 82, 840, 556)
 const PANEL_RECT := Rect2(974, 180, 282, 444)
 const CARD_DRAG_THRESHOLD := 6.0
@@ -18,7 +17,7 @@ var shop_surface: Panel
 var shop_items: HBoxContainer
 var shop_refresh: Button
 var ui: Control
-var pause_button: Button
+var settings_button: Button
 var speed_button: Button
 var panel_style: StyleBoxFlat
 var top_style: StyleBoxFlat
@@ -58,6 +57,7 @@ var feedback_text: String = ""
 var feedback_remaining: float = 0.0
 var debug_window: AcceptDialog
 var debug_enabled: bool = false
+var quitting: bool = false
 
 func _ready() -> void:
 	# Own the node before the first frame: menus can release this scene immediately.
@@ -84,20 +84,26 @@ func _ready() -> void:
 		audio_settings = AudioSettings.new()
 		add_child(audio_settings)
 		audio_settings.setup(sound)
-		var audio_layer := CanvasLayer.new()
-		audio_layer.layer = 110
-		add_child(audio_layer)
-		var audio_button := Button.new()
-		audio_button.text = "声音"
-		audio_button.position = Vector2(234, FOOTER_Y)
-		audio_button.size = Vector2(104, 32)
-		audio_button.theme = ui.theme
-		audio_button.pressed.connect(func() -> void:
-			cancel_card_drag()
-			audio_settings.open(run))
-		audio_layer.add_child(audio_button)
+		audio_settings.menu_requested.connect(func() -> void: leave_settings("menu"))
+		audio_settings.quit_requested.connect(func() -> void: leave_settings("quit"))
+	var settings_layer := CanvasLayer.new()
+	settings_layer.layer = 110
+	add_child(settings_layer)
+	settings_button = Button.new()
+	settings_button.name = "SettingsButton"
+	settings_button.text = "设置"
+	settings_button.icon = preload("res://assets/ui/settings.svg")
+	settings_button.add_theme_constant_override("icon_max_width", 20)
+	settings_button.add_theme_constant_override("h_separation", 8)
+	settings_button.position = Vector2(1104, 22)
+	settings_button.size = Vector2(96, 38)
+	settings_button.theme = ui.theme
+	settings_button.tooltip_text = "设置 / Esc · 暂停、声音与离开游戏"
+	settings_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	settings_button.pressed.connect(open_settings)
+	settings_layer.add_child(settings_button)
 	RenderingServer.set_default_clear_color(GameTheme.BG)
-	heat_label = label(Vector2(76, 14), 26)
+	heat_label = label(Vector2(70, 8), 26)
 	heat_label.add_theme_color_override("font_color", GameTheme.GOLD)
 	inspiration_label = label(Vector2(1008, 35), 21)
 	inspiration_label.size = Vector2(80, 30)
@@ -106,11 +112,13 @@ func _ready() -> void:
 	inspiration_label.tooltip_text = "本局已赚灵感，跨局保留，用于局外购卡与刷新。\n点击鼠群掉落的紫色灵感即可收集；过关自动收取余下灵感。"
 	header = label(Vector2(948, 674), 14)
 	header.tooltip_text = "进度表示计划鼠潮的生成比例；全部生成后仍需清除剩余敌人。"
-	pause_button = button("暂停", Vector2(24, FOOTER_Y), func() -> void:
-		if run.state.phase == "battle": run.paused = not run.paused)
-	pause_button.custom_minimum_size = Vector2(82, 30)
-	speed_button = button("1× 速度", Vector2(118, FOOTER_Y), func() -> void: run.speed = 3.0 - run.speed)
-	speed_button.custom_minimum_size = Vector2(96, 30)
+	speed_button = button("1× 速度", Vector2(34, 47), func() -> void:
+		if run.state.phase == "battle" and not placement_modal_visible(): run.speed = 3.0 - run.speed)
+	speed_button.name = "SpeedButton"
+	speed_button.custom_minimum_size = Vector2(124, 28)
+	speed_button.add_theme_font_size_override("font_size", 13)
+	speed_button.toggle_mode = true
+	speed_button.tooltip_text = "切换 1× / 2× 战斗速度"
 	var cursor_layer := CanvasLayer.new()
 	cursor_layer.layer = 100
 	add_child(cursor_layer)
@@ -137,11 +145,11 @@ func _ready() -> void:
 		window_focused = true
 		pointer = get_global_mouse_position()
 		update_shovel_cursor())
-	shovel_button = button("", Vector2(1170, 6), func() -> void:
+	shovel_button = button("", Vector2(1206, 14), func() -> void:
 		shovel = not shovel
 		selected = ""
 		move_from = Vector2i(-1,-1))
-	shovel_button.custom_minimum_size = Vector2(60, 60)
+	shovel_button.custom_minimum_size = Vector2(52, 52)
 	for state: String in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
 		shovel_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	shovel_button.add_theme_stylebox_override("focus", GameTheme.box(Color.TRANSPARENT, 4, GameTheme.GOLD))
@@ -154,7 +162,7 @@ func _ready() -> void:
 	shovel_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
 	shovel_button.expand_icon = true
 	shovel_button.add_theme_constant_override("icon_max_width", 34)
-	shovel_button.tooltip_text = "拿起锅铲后点击美食铲除；左键点击原处、右键或 Esc 放回。立即铲除，无返还。"
+	shovel_button.tooltip_text = "拿起锅铲后点击美食铲除；左键点击原处或右键放回。Esc 打开设置。立即铲除，无返还。"
 	cards = HBoxContainer.new()
 	cards.position = Vector2(190, 6)
 	cards.add_theme_constant_override("separation", 8)
@@ -220,6 +228,7 @@ func _ready() -> void:
 		if not save_error.is_empty(): run.message = save_error
 	if run.state == null:
 		ui.hide()
+		settings_button.hide()
 		var failure := Label.new()
 		failure.text = run.message
 		failure.position = Vector2(80,260)
@@ -547,10 +556,9 @@ func draw_wave_progress() -> void:
 func update_controls() -> void:
 	var phase: String = run.state.phase
 	sync_panel_visibility()
-	pause_button.disabled = phase != "battle"
-	pause_button.text = "继续" if run.paused else "暂停"
-	pause_button.tooltip_text = "暂停时可查看信息，不能执行战斗操作。"
 	speed_button.text = "%.0f× 速度" % run.speed
+	speed_button.disabled = phase != "battle" or placement_modal_visible()
+	speed_button.set_pressed_no_signal(run.speed == 2.0)
 	shovel_button.disabled = phase not in ["prepare", "battle"] or run.paused
 	if phase not in ["prepare", "battle"]: shovel = false
 	shovel_button.set_pressed_no_signal(shovel)
@@ -561,7 +569,7 @@ func update_controls() -> void:
 		card.set_pressed_no_signal(id == selected)
 		card.get_node("Selection").visible = id == selected
 		var remaining: float = run.state.cooldowns.get(id,0.0)
-		card.tooltip_text = "" if drag_active else "%s\n%s\n按住拖到格子放置 · 右键 / Esc 取消" % [card.get_meta("details"), card_status(id)]
+		card.tooltip_text = "" if drag_active else "%s\n%s\n按住拖到格子放置 · 右键取消 · Esc 设置" % [card.get_meta("details"), card_status(id)]
 		card.material.set_shader_parameter("unaffordable", run.state.heat < run.data.foods[id].stats.cost)
 		var cooldown: ColorRect = card.get_node("Cooldown")
 		var duration: float = run.data.foods[id].stats.cooldown
@@ -874,13 +882,19 @@ func drag_placement_error() -> String:
 	return run.board.placement_error(drag_card, cell.y, cell.x, run.paused)
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("open_settings") and not event.is_echo():
+		if debug_window != null and debug_window.visible: return
+		if audio_settings.visible: audio_settings.handle_escape()
+		else: open_settings()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventMouse:
 		pointer = event.position
 		update_shovel_cursor()
 	# A flying pickup can cross card controls; consume it before GUI selection.
 	if event is InputEventMouseButton and event.is_action_pressed("board_select"):
 		if collect_inspiration_at(event.position): return
-	# Cancel before a hovered Control can consume right-click or Escape.
+	# Cancel before a hovered Control can consume right-click.
 	if shovel and event.is_action_pressed("cancel_selection") and not placement_modal_visible():
 		sound.cue("ui_cancel")
 		shovel = false
@@ -913,3 +927,33 @@ func finish_shopping() -> void:
 	run.start()
 	if run.state.phase == "prepare": sound.cue("ui_error")
 	rebuild()
+
+func open_settings() -> void:
+	if audio_settings.visible or run.state == null: return
+	cancel_card_drag()
+	selected = ""
+	shovel = false
+	move_from = Vector2i(-1, -1)
+	feedback_remaining = 0.0
+	audio_settings.open(run, true)
+	update_controls()
+	update_inspector()
+
+func leave_settings(destination: String) -> void:
+	# Standalone scene entry uses the same snapshot rules as the front end.
+	if quitting or destination not in ["menu", "quit"]: return
+	if not run.persist():
+		audio_settings.show_error(run.message)
+		return
+	if run.state.phase in ["won", "lost"] and run.persistence and not run.saves.settle(run.state, run.data):
+		audio_settings.show_error(run.saves.error)
+		return
+	if destination == "quit":
+		quitting = true
+		process_mode = Node.PROCESS_MODE_DISABLED
+		audio_settings.hide()
+		await sound.shutdown()
+		get_tree().quit()
+	else:
+		audio_settings.hide()
+		get_tree().change_scene_to_file("res://scenes/front_end.tscn")

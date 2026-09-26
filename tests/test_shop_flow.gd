@@ -17,9 +17,9 @@ func check() -> void:
 	assert(not scene.run.data.rules.has("repair") and not scene.run.data.rules.has("repair_cost"))
 	var footer_count: int = 0
 	for node: Node in scene.ui.get_children():
-		if node is Button and node.position.y == scene.FOOTER_Y:
+		if node is Button and node.position.y >= 670.0:
 			footer_count += 1
-	assert(footer_count == 2)
+	assert(footer_count == 0)
 	var cancel := InputEventAction.new()
 	cancel.action = "cancel_selection"
 	cancel.pressed = true
@@ -54,14 +54,17 @@ func check() -> void:
 	assert(scene.run.state.wave == 2 and scene.shop_overlay.visible)
 	scene.shop_surface.get_node("Done").pressed.emit()
 	assert(scene.run.state.phase == "battle" and not scene.shop_overlay.visible)
-	scene.pause_button.pressed.emit()
-	assert(scene.run.paused)
+	scene.speed_button.pressed.emit()
+	assert(scene.run.speed == 2)
+	scene.settings_button.pressed.emit()
+	assert(scene.audio_settings.visible and scene.run.paused)
 	var elapsed: float = scene.run.state.elapsed
 	scene.run.advance(0.2)
 	assert(scene.run.state.elapsed == elapsed)
 	scene.speed_button.pressed.emit()
 	assert(scene.run.speed == 2)
-	scene.pause_button.pressed.emit()
+	scene.audio_settings.confirmed.emit()
+	assert(not scene.audio_settings.visible and not scene.run.paused)
 	scene.run.advance(0.1)
 	assert(scene.run.state.elapsed > elapsed + 0.18)
 	front.saves.delete_run()

@@ -26,7 +26,7 @@ func run_test() -> void:
 	await process_frame
 	await process_frame
 	var source: Vector2 = scene.shovel_button.get_global_rect().get_center()
-	var targets: Array[Vector2] = [source, scene.cards.get_child(0).get_global_rect().get_center(), scene.pause_button.get_global_rect().get_center(), Vector2(600, 400)]
+	var targets: Array[Vector2] = [source, scene.cards.get_child(0).get_global_rect().get_center(), scene.settings_button.get_global_rect().get_center(), Vector2(600, 400)]
 	for target: Vector2 in targets:
 		click(source)
 		assert(scene.shovel and scene.shovel_cursor_active and scene.shovel_button.button_pressed)
@@ -43,6 +43,11 @@ func run_test() -> void:
 		escape.pressed = false
 		root.push_input(escape, true)
 		assert(not scene.shovel and not scene.shovel_cursor_active and not scene.shovel_button.button_pressed)
+		assert(scene.audio_settings.visible and scene.run.paused)
+		scene.audio_settings.hide()
+		scene.update_controls()
+		await process_frame
+		assert(not scene.run.paused)
 	for repeat: int in range(20):
 		click(source)
 		assert(scene.shovel and scene.shovel_cursor_active)

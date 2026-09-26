@@ -4,23 +4,26 @@ func _init() -> void:
 	call_deferred("capture")
 
 func capture() -> void:
-	var game = load("res://scenes/main.tscn").instantiate()
-	game.run.new_run(42)
-	game.run.saves.folder = "user://qa_difficulty_gallery/"
-	DirAccess.make_dir_recursive_absolute(game.run.saves.folder)
-	root.add_child(game)
-	game.run.persistence = false
+	var front = load("res://scenes/front_end.tscn").instantiate()
+	root.add_child(front)
+	front.saves.folder = "user://qa_difficulty_gallery_%d/" % Time.get_ticks_usec()
+	DirAccess.make_dir_recursive_absolute(front.saves.folder)
+	front.show_hub("loadout")
 	await snap("easy")
-	game.shop_surface.get_node("Difficulty_hard").pressed.emit()
+	front.hub.find_child("Difficulty_hard",true,false).pressed.emit()
 	await snap("hard")
 	root.size = Vector2i(1600, 900)
 	await snap("large")
 	if "--manual" in OS.get_cmdline_user_args(): return
-	game.finish_shopping()
-	game.run.paused = true
+	front.hub.find_child("Launch",true,false).pressed.emit()
+	await snap("shop")
+	front.game.finish_shopping()
+	front.game.run.paused = true
 	await snap("battle")
-	game.queue_free()
-	await process_frame
+	front.game.run.finish_wave()
+	front.game.run.changed.emit()
+	await snap("next_shop")
+	await preload("res://tests/audio_cleanup.gd").release_scene(front, self)
 	print("PASS native difficulty gallery")
 	quit()
 

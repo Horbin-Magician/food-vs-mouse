@@ -8,13 +8,7 @@ func check() -> void:
 	var original := Catalog.new()
 	var schedules: Array = []
 	for difficulty: String in ["easy", "normal", "hard"]:
-		run.new_run(42)
-		var random_state: int = run.rng.state
-		var choices: Array = run.state.choices.duplicate()
-		assert(run.select_difficulty(difficulty).is_empty())
-		assert(run.select_difficulty(difficulty).is_empty())
-		assert(run.rng.state == random_state and run.state.choices == choices)
-		assert(not run.select_difficulty("missing").is_empty())
+		run.new_run(42, [], difficulty)
 		var factor: float = {"easy":1.0,"normal":1.25,"hard":1.5}[difficulty]
 		for wave: Resource in run.data.waves:
 			for id: String in run.data.enemies:
@@ -27,20 +21,26 @@ func check() -> void:
 		run.combat.summon_pair("gray")
 		assert(is_equal_approx(run.combat.enemies.back().hp, original.enemies.gray.stats.hp * run.data.waves[7].stats.hp_scale * factor))
 		run.start()
-		assert(not run.select_difficulty("easy").is_empty())
+		assert(not run.has_method("select_difficulty"))
 		run.paused = true
-		assert(not run.select_difficulty("hard").is_empty())
+		assert(run.state.difficulty == difficulty)
 		schedules.append(run.director.events.duplicate(true))
 		run.finish_wave()
 		assert(run.state.difficulty == difficulty and run.state.wave == 2)
-		assert(run.select_difficulty("normal").is_empty())
+		for next_wave: int in range(2, 9):
+			assert(run.state.difficulty == difficulty)
+			run.start()
+			run.finish_wave()
 	assert(schedules[0] == schedules[1] and schedules[1] == schedules[2])
 	run.new_run(42)
 	assert(run.state.difficulty == "easy")
 	run.saves.folder = "user://qa_difficulty_%d/" % Time.get_ticks_usec()
 	DirAccess.make_dir_recursive_absolute(run.saves.folder)
 	run.persistence = true
-	assert(run.select_difficulty("hard").is_empty())
+	run.new_run(42, [], "hard")
+	var before: RunState = run.state
+	run.new_run(99, [], "missing")
+	assert(run.state == before and run.message == "未知难度")
 	assert(run.resume_run() and run.state.difficulty == "hard")
 	var payload: Dictionary = run.saves.run_payload(run.state, run.rng)
 	payload.erase("difficulty")
@@ -49,22 +49,48 @@ func check() -> void:
 	for invalid: Variant in [null, 1, "unknown"]:
 		payload.difficulty = invalid
 		assert(not run.saves.validate(payload, run.data))
-	var blocker := FileAccess.open(run.saves.folder + "blocked", FileAccess.WRITE)
+	var front = load("res://scenes/front_end.tscn").instantiate()
+	root.add_child(front)
+	front.saves.folder = "user://qa_difficulty_ui_%d/" % Time.get_ticks_usec()
+	DirAccess.make_dir_recursive_absolute(front.saves.folder)
+	front.show_hub("loadout")
+	assert(front.hub.difficulty == "easy")
+	front.hub.find_child("Difficulty_normal",true,false).pressed.emit()
+	front.hub.find_child("Difficulty_normal",true,false).pressed.emit()
+	assert(front.hub.difficulty == "normal")
+	front.hub.tab = "shop"
+	front.hub.rebuild()
+	front.hub.tab = "loadout"
+	front.hub.rebuild()
+	assert(front.hub.find_child("Difficulty_normal",true,false).text.begins_with("✓"))
+	# Failed initial snapshot keeps the selection page available for retry.
+	var folder: String = front.saves.folder
+	var blocker := FileAccess.open(folder + "blocked", FileAccess.WRITE)
 	blocker.close()
-	run.saves.folder += "blocked/"
-	assert(not run.select_difficulty("easy").is_empty())
-	assert(run.state.difficulty == "hard")
-	run.persistence = false
-	var game = load("res://scenes/main.tscn").instantiate()
-	game.run = run
-	root.add_child(game)
-	run.persistence = false
-	game.shop_surface.get_node("Difficulty_normal").pressed.emit()
-	assert(run.state.difficulty == "normal")
-	assert(game.shop_surface.get_node("Difficulty_normal").text.begins_with("✓"))
+	front.saves.folder = folder + "blocked/"
+	front.hub.find_child("Launch",true,false).pressed.emit()
+	assert(front.game == null and front.hub.difficulty == "normal")
+	front.saves.folder = folder
+	front.hub.find_child("Launch",true,false).pressed.emit()
+	var game = front.game
+	assert(game.run.state.difficulty == "normal")
+	assert(game.shop_surface.find_child("Difficulty_normal",true,false) == null)
 	game.shop_surface.get_node("Done").pressed.emit()
-	assert(run.state.phase == "battle" and not game.shop_overlay.visible)
+	assert(game.run.state.phase == "battle" and not game.shop_overlay.visible)
+	game.run.finish_wave()
+	game.run.changed.emit()
+	assert(game.run.state.wave == 2 and game.run.state.difficulty == "normal")
+	assert(game.shop_surface.find_child("Difficulty_normal",true,false) == null)
+	assert(game.run.resume_run() and game.run.state.difficulty == "normal")
 	assert("普通" in game.wave_status())
-	await preload("res://tests/audio_cleanup.gd").release_scene(game, self)
-	print("PASS difficulty: formulas, summons, seed, stages, save compatibility, rollback, UI")
+	var readonly_hub := CardHub.new()
+	root.add_child(readonly_hub)
+	readonly_hub.setup(front.saves,front.data,"loadout")
+	assert(readonly_hub.difficulty == "normal")
+	assert(readonly_hub.find_child("Difficulty_hard",true,false).disabled)
+	readonly_hub.choose_difficulty("hard")
+	assert(readonly_hub.difficulty == "normal")
+	readonly_hub.queue_free()
+	await preload("res://tests/audio_cleanup.gd").release_scene(front, self)
+	print("PASS difficulty: formulas, summons, seed, fixed eight waves, legacy saves, invalid launch, UI selection and write retry")
 	quit()

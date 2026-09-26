@@ -8,6 +8,7 @@
 |---|---|---|
 | [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 首版代码已接入，真人与平衡验收待完成 |
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
+| [design/pvz_innovation_research.md](design/pvz_innovation_research.md) | PVZ 与相关策略游戏调研、十二项机制候选、优先级及验证建议 | 调研完成；新增机制均为拟议，未纳入首版排期 |
 | [design/meta_progression.md](design/meta_progression.md) | 灵感购卡、有限携卡、翻倍刷新与耗材概率强化 | 已接入，初始参数与验收边界见专项记录 |
 | [technical/card_progression.md](technical/card_progression.md) | 卡片参数、概率、经济、模块和 v2 迁移规格 | 已接入，数值待真人平衡 |
 | [decisions/ADR-001-profile-transactions.md](decisions/ADR-001-profile-transactions.md) | 卡片资产与对局单文件原子事务的取舍 | 已采用 |
@@ -51,8 +52,8 @@
 | [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 自动及渲染检查通过，鼠标复验待完成 |
 | [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |
 
-| [design/difficulty.md](design/difficulty.md) | 每关三级难度、倍率与兼容规则 | 已实现，整局平衡待试玩 |
-| [testing/difficulty.md](testing/difficulty.md) | 难度及收益、存档及界面验证 | 收益补充 27 组回归与双尺寸渲染通过；鼠标验证范围见正文 |
+| [design/difficulty.md](design/difficulty.md) | 开局统一难度、整局锁定、倍率与兼容规则 | 已实现，整局平衡待试玩 |
+| [testing/difficulty.md](testing/difficulty.md) | 难度及收益、存档及界面验证 | 整局锁定 31 组回归与双尺寸渲染通过；鼠标复验限制见正文 |
 | [design/waves.md](design/waves.md) | 组合波次、重点路线、后期生命及首领召唤调整 | 已实现，真人平衡待验 |
 | [testing/balance.md](testing/balance.md) | 压力测试、组合鼠潮回归和真人验收缺口 | 新波次回归及渲染通过，真人待验收 |
 

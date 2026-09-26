@@ -407,16 +407,8 @@ func build_shop() -> void:
 		card_label(item,run.data.recipes[id].stats.description,Vector2(20,166),Vector2(216,64),16,GameTheme.MUTED,true)
 		card_label(item,"%d 金 · %s" % [run.data.rules.recipe_price,"金币不足" if item.disabled else "购买食谱"],Vector2(20,234),Vector2(216,28),18,GameTheme.GOLD)
 		focus_buttons.append(item)
-	card_label(shop_surface, "本关难度", Vector2(24, 430), Vector2(92, 28), 16, GameTheme.MUTED)
-	for index: int in range(run.data.difficulties.size()):
-		var id: String = run.data.difficulties.keys()[index]
-		var definition: DifficultyDef = run.data.difficulties[id]
-		var option := shop_button("%s%s · 属性/收益 ×%s" % ["✓ " if run.state.difficulty == id else "", definition.title, str(definition.hp_multiplier)], Vector2(120 + index * 232, 428), Vector2(224, 32), func() -> void: report(run.select_difficulty(id), "ui_click"))
-		option.name = "Difficulty_" + id
-		option.add_theme_font_size_override("font_size", 14)
-		option.tooltip_text = "敌人生命、伤害与通关金币、灵感使用相同系数；收益四舍五入。开战后锁定，下关可重选。"
-		if run.state.difficulty == id: GameTheme.primary(option)
-		focus_buttons.append(option)
+	var definition: DifficultyDef = run.data.difficulties[run.state.difficulty]
+	card_label(shop_surface, "本局难度：%s · 属性/收益 ×%s · 整局固定" % [definition.title, str(definition.hp_multiplier)], Vector2(24, 430), Vector2(792, 28), 16, GameTheme.MUTED)
 	var feedback := card_label(shop_surface, run.message, Vector2(24, 465), Vector2(792, 22), 13, GameTheme.ACCENT)
 	feedback.clip_text = true
 	feedback.tooltip_text = run.message

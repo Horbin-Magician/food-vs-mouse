@@ -65,7 +65,7 @@ BoardController.remove(row, col, paused) 移除旧 confirmed 参数；成功移�
 
 ## 关前难度（2026-09-26）
 
-DifficultyDef 与 RunState.difficulty、RunController.select_difficulty、生成倍率和旧档默认值见 [难度设计](../design/difficulty.md)。准备阶段持久化选择，战斗拒绝修改；不改变随机源调用。
+DifficultyDef 与 RunState.difficulty、RunController.new_run 的整局难度参数、生成倍率和旧档默认值见 [难度设计](../design/difficulty.md)。创建新局时持久化选择，所有局内阶段均不可修改；不改变随机源调用。
 
 ## 音频表现服务（2026-09-26）
 

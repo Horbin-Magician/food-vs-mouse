@@ -2,7 +2,7 @@ class_name CardHub
 extends Control
 
 signal back_requested
-signal launch_requested(selected: Array)
+signal launch_requested(selected: Array, difficulty: String)
 
 var model: MetaProgression
 var sound: SoundService
@@ -11,6 +11,7 @@ var tab: String = "shop"
 var main_uid: String = ""
 var materials: Array = []
 var selected: Array = []
+var difficulty: String = "easy"
 var feedback: String = ""
 var scroll_offset: int = 0
 var inventory_scroll: ScrollContainer
@@ -19,7 +20,9 @@ var status: Label
 func setup(storage: SaveService, catalog: Catalog, initial_tab: String = "shop") -> void:
 	model = MetaProgression.new(storage, catalog)
 	tab = initial_tab
-	if model.reload(): selected = model.profile.meta.loadout.duplicate()
+	if model.reload():
+		selected = model.profile.meta.loadout.duplicate()
+		difficulty = model.profile.run.get("difficulty", "easy")
 	else: feedback = model.error
 	rebuild()
 
@@ -245,10 +248,24 @@ func build_loadout() -> void:
 	for uid: String in selected:
 		var item: Dictionary = MetaProgression.card(model.profile.meta,uid)
 		if not item.is_empty(): names.append("%s  +%d" % [model.data.foods[item.id].title,int(item.level)])
-	caption(panel,"\n".join(names),Vector2(24,128),Vector2(370,184),22)
-	caption(panel,"同类只携带一张，至少一种能攻击。\n局内保留热量费用与放置冷却；\n用金币买食谱，每过一关赚灵感。",Vector2(24,312),Vector2(370,80),16,GameTheme.MUTED)
+	caption(panel,"\n".join(names),Vector2(24,120),Vector2(370,140),19)
+	caption(panel,"本局难度 · 出发后八关固定",Vector2(24,264),Vector2(376,26),17,GameTheme.GOLD)
+	for index: int in range(model.data.difficulties.size()):
+		var id: String = model.data.difficulties.keys()[index]
+		var definition: DifficultyDef = model.data.difficulties[id]
+		var option := button(panel,"%s%s ×%s" % ["✓ " if difficulty == id else "",definition.title,str(definition.hp_multiplier)],Vector2(24+index*128,298),Vector2(120,38),func() -> void: choose_difficulty(id),difficulty == id)
+		option.name = "Difficulty_" + id
+		option.add_theme_font_size_override("font_size",14)
+		option.disabled = not model.editable()
+		option.tooltip_text = "敌人生命、伤害及通关金币、灵感的倍率；收益四舍五入。整局不能更改。"
+	caption(panel,"倍率影响敌人属性与通关收益。\n同类只带一张，至少一种能攻击。",Vector2(24,346),Vector2(376,48),16,GameTheme.MUTED)
 	var issue: String = MetaProgression.loadout_error(model.profile.meta,selected,model.data)
-	var launch := button(panel,"出发，守住今夜 →",Vector2(24,404),Vector2(376,42),func() -> void: launch_requested.emit(selected.duplicate()),true)
+	var launch := button(panel,"出发，守住今夜 →",Vector2(24,404),Vector2(376,42),func() -> void: launch_requested.emit(selected.duplicate(),difficulty),true)
 	launch.name = "Launch"
 	launch.disabled = not issue.is_empty() or not model.editable()
 	launch.tooltip_text = issue
+
+func choose_difficulty(id: String) -> void:
+	if not model.editable() or not model.data.difficulties.has(id): return
+	difficulty = id
+	rebuild()

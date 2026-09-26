@@ -197,7 +197,7 @@ func show_hub(initial_tab: String = "shop") -> void:
 	hub.launch_requested.connect(start_new)
 	hub.setup(saves,data,initial_tab)
 
-func start_new(selected: Array = []) -> void:
+func start_new(selected: Array = [], difficulty: String = "easy") -> void:
 	if is_instance_valid(game): return
 	var run := controller()
 	if not saves.load_run(data).is_empty() and not run.resume_run():
@@ -205,7 +205,7 @@ func start_new(selected: Array = []) -> void:
 		notice.text = run.message
 		return
 	var previous: RunState = run.state
-	run.new_run(int(Time.get_unix_time_from_system()), selected)
+	run.new_run(int(Time.get_unix_time_from_system()), selected, difficulty)
 	if run.state == previous or not saves.error.is_empty():
 		sound.cue("ui_error")
 		if is_instance_valid(hub) and hub.is_inside_tree():

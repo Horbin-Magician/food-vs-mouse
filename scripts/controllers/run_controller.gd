@@ -18,7 +18,10 @@ var speed: float = 1.0
 var accumulator: float = 0.0
 var message: String = "购物完成后自动开战，再选卡放置。"
 
-func new_run(seed_value: int = 1, selected: Array = []) -> void:
+func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "easy") -> void:
+	if not data.difficulties.has(difficulty):
+		message = "未知难度"
+		return
 	if persistence and state != null:
 		if not saves.settle(state,data):
 			message = saves.error
@@ -37,6 +40,7 @@ func new_run(seed_value: int = 1, selected: Array = []) -> void:
 		message = selection_error
 		return
 	state = RunState.new()
+	state.difficulty = difficulty
 	state.run_id = "%d_%d" % [Time.get_unix_time_from_system(),Time.get_ticks_usec()]
 	state.cards.clear()
 	state.levels.clear()
@@ -61,18 +65,6 @@ func new_run(seed_value: int = 1, selected: Array = []) -> void:
 	message = "购买食谱，购物完成后立即开战。"
 	persist()
 	changed.emit()
-
-func select_difficulty(id: String) -> String:
-	if state == null or state.phase != "prepare": return "只能在关卡开始前选择难度"
-	if not data.difficulties.has(id): return "未知难度"
-	if state.difficulty == id: return ""
-	var previous: String = state.difficulty
-	state.difficulty = id
-	if not persist():
-		state.difficulty = previous
-		return message
-	changed.emit()
-	return ""
 
 func start() -> void:
 	if state.phase != "prepare": return

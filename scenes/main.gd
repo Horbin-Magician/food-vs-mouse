@@ -49,14 +49,12 @@ var header: Label
 var cards: HBoxContainer
 var panel: VBoxContainer
 var sound: SoundService
+var audio_settings: AudioSettings
 var inspect: Label
 var feedback_text: String = ""
 var feedback_remaining: float = 0.0
 var debug_window: AcceptDialog
 var debug_enabled: bool = false
-var old_phase: String = ""
-var old_pantry: int = 10
-var old_units: int = 0
 
 func _ready() -> void:
 	# Own the node before the first frame: menus can release this scene immediately.
@@ -76,8 +74,25 @@ func _ready() -> void:
 	if run.state == null and ("--qa" in OS.get_cmdline_user_args() or "--qa-test" in OS.get_cmdline_user_args()):
 		run.saves.folder = "user://qa_automated/" if "--qa-test" in OS.get_cmdline_user_args() else "user://qa_visual/"
 		DirAccess.make_dir_recursive_absolute(run.saves.folder)
-	sound = SoundService.new()
-	add_child(sound)
+	if sound == null:
+		sound = SoundService.new()
+		sound.settings_path = run.saves.folder.path_join("audio.cfg")
+		add_child(sound)
+		audio_settings = AudioSettings.new()
+		add_child(audio_settings)
+		audio_settings.setup(sound)
+		var audio_layer := CanvasLayer.new()
+		audio_layer.layer = 110
+		add_child(audio_layer)
+		var audio_button := Button.new()
+		audio_button.text = "声音"
+		audio_button.position = Vector2(234, FOOTER_Y)
+		audio_button.size = Vector2(104, 32)
+		audio_button.theme = ui.theme
+		audio_button.pressed.connect(func() -> void:
+			cancel_card_drag()
+			audio_settings.open(run))
+		audio_layer.add_child(audio_button)
 	RenderingServer.set_default_clear_color(GameTheme.BG)
 	heat_label = label(Vector2(76, 14), 26)
 	heat_label.add_theme_color_override("font_color", GameTheme.GOLD)
@@ -215,12 +230,15 @@ func button(title: String, position_value: Vector2, action: Callable) -> Button:
 	var node: Button = Button.new()
 	node.text = title
 	node.position = position_value
+	node.pressed.connect(func() -> void: sound.cue("ui_click"))
 	node.pressed.connect(action)
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	ui.add_child(node)
 	return node
 
-func report(error: String) -> void:
+func report(error: String, success_cue: String = "") -> void:
+	if not error.is_empty(): sound.cue("ui_error")
+	elif not success_cue.is_empty(): sound.cue(success_cue)
 	feedback_text = error
 	feedback_remaining = 0.0 if error.is_empty() else 3.0
 	run.message = "操作完成" if error.is_empty() else error
@@ -228,6 +246,8 @@ func report(error: String) -> void:
 	rebuild()
 
 func rebuild() -> void:
+	if not is_inside_tree(): return
+	if sound != null: sound.bind_run(run)
 	shovel_feedback.bind(run, projection, art)
 	if cards == null: return
 	cancel_card_drag()
@@ -369,7 +389,7 @@ func build_shop() -> void:
 		card_label(shop_surface, "暂无可购食谱\n可以刷新，或完成购物直接开战。", Vector2(80, 210), Vector2(680, 100), 24, GameTheme.MUTED)
 	for index: int in range(run.state.choices.size()):
 		var id: String = run.state.choices[index]
-		var item := shop_button("", Vector2(24 + index * 268, 142), Vector2(256, 276), func() -> void: report(run.shop.buy_recipe(id)))
+		var item := shop_button("", Vector2(24 + index * 268, 142), Vector2(256, 276), func() -> void: report(run.shop.buy_recipe(id), "purchase"))
 		item.name = "Recipe_" + id
 		item.disabled = run.state.coins < run.data.rules.recipe_price
 		item.tooltip_text = run.data.recipes[id].stats.description
@@ -389,7 +409,7 @@ func build_shop() -> void:
 	for index: int in range(run.data.difficulties.size()):
 		var id: String = run.data.difficulties.keys()[index]
 		var definition: DifficultyDef = run.data.difficulties[id]
-		var option := shop_button("%s%s · 属性/收益 ×%s" % ["✓ " if run.state.difficulty == id else "", definition.title, str(definition.hp_multiplier)], Vector2(120 + index * 232, 428), Vector2(224, 32), func() -> void: report(run.select_difficulty(id)))
+		var option := shop_button("%s%s · 属性/收益 ×%s" % ["✓ " if run.state.difficulty == id else "", definition.title, str(definition.hp_multiplier)], Vector2(120 + index * 232, 428), Vector2(224, 32), func() -> void: report(run.select_difficulty(id), "ui_click"))
 		option.name = "Difficulty_" + id
 		option.add_theme_font_size_override("font_size", 14)
 		option.tooltip_text = "敌人生命、伤害与通关金币、灵感使用相同系数；收益四舍五入。开战后锁定，下关可重选。"
@@ -398,7 +418,7 @@ func build_shop() -> void:
 	var feedback := card_label(shop_surface, run.message, Vector2(24, 465), Vector2(792, 22), 13, GameTheme.ACCENT)
 	feedback.clip_text = true
 	feedback.tooltip_text = run.message
-	shop_refresh = shop_button("刷新 · %d 金    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 500), Vector2(240, 36), func() -> void: report(run.shop.refresh()))
+	shop_refresh = shop_button("刷新 · %d 金    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 500), Vector2(240, 36), func() -> void: report(run.shop.refresh(), "refresh"))
 	shop_refresh.disabled = run.state.refreshes >= run.data.rules.refresh_limit or run.state.coins < run.data.rules.refresh_cost
 	shop_refresh.tooltip_text = "刷新次数已用完" if run.state.refreshes >= run.data.rules.refresh_limit else ("金币不足" if shop_refresh.disabled else "更换食谱商品，消耗 %d 金币" % run.data.rules.refresh_cost)
 	var owned := card_label(shop_surface, "已购食谱 %02d · 悬停查看" % run.state.recipes.size(), Vector2(288, 507), Vector2(280, 24), 13, GameTheme.MUTED)
@@ -480,12 +500,6 @@ func _process(delta: float) -> void:
 	for id: String in run.state.recipes:
 		header.tooltip_text += "\n" + run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description
 	update_controls()
-	if run.state.phase != old_phase and run.state.phase in ["prepare","won"]: sound.cue("clear")
-	if run.state.pantry < old_pantry: sound.cue("danger")
-	if run.state.units.size() > old_units: sound.cue("place")
-	old_phase = run.state.phase
-	old_pantry = run.state.pantry
-	old_units = run.state.units.size()
 	feedback_remaining = maxf(0.0, feedback_remaining - delta)
 	update_inspector()
 	queue_redraw()
@@ -551,6 +565,8 @@ func update_shovel_cursor() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if active else Input.MOUSE_MODE_VISIBLE
 
 func _exit_tree() -> void:
+	# A queued old scene must not bind the persistent audio service to its run.
+	if run.changed.is_connected(rebuild): run.changed.disconnect(rebuild)
 	if not shovel_cursor_active: return
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	shovel_cursor_active = false
@@ -567,6 +583,7 @@ func card_status(id: String) -> String:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("cancel_selection"):
+		if not selected.is_empty() or not drag_card.is_empty() or shovel: sound.cue("ui_cancel")
 		cancel_card_drag()
 		selected = ""
 		shovel = false
@@ -781,10 +798,11 @@ func create_debug_panel() -> void:
 	debug_window.visibility_changed.connect(update_shovel_cursor)
 
 func placement_modal_visible() -> bool:
-	return shop_overlay.visible or (debug_window != null and debug_window.visible)
+	return shop_overlay.visible or (debug_window != null and debug_window.visible) or (audio_settings != null and audio_settings.visible)
 
 func begin_card_drag(id: String) -> void:
 	if placement_modal_visible(): return
+	sound.cue("ui_click")
 	cancel_card_drag()
 	selected = id
 	shovel = false
@@ -814,6 +832,7 @@ func _input(event: InputEvent) -> void:
 		update_shovel_cursor()
 	# Cancel before a hovered Control can consume right-click or Escape.
 	if shovel and event.is_action_pressed("cancel_selection") and not placement_modal_visible():
+		sound.cue("ui_cancel")
 		shovel = false
 		selected = ""
 		move_from = Vector2i(-1, -1)
@@ -821,6 +840,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if not drag_card.is_empty():
 		if event.is_action_pressed("cancel_selection") or placement_modal_visible() or run.state.phase != drag_phase or run.paused != drag_paused:
+			if event.is_action_pressed("cancel_selection"): sound.cue("ui_cancel")
 			cancel_card_drag()
 		elif event is InputEventMouseMotion:
 			if pointer.distance_to(drag_origin) >= CARD_DRAG_THRESHOLD: drag_active = true
@@ -841,4 +861,5 @@ func _input(event: InputEvent) -> void:
 func finish_shopping() -> void:
 	if run.state.phase != "prepare": return
 	run.start()
+	if run.state.phase == "prepare": sound.cue("ui_error")
 	rebuild()

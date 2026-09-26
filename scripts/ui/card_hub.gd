@@ -5,6 +5,7 @@ signal back_requested
 signal launch_requested(selected: Array)
 
 var model: MetaProgression
+var sound: SoundService
 var art := ArtCatalog.new()
 var tab: String = "shop"
 var main_uid: String = ""
@@ -34,12 +35,17 @@ func caption(parent: Control, value: String, pos: Vector2, bounds: Vector2, font
 	parent.add_child(label)
 	return label
 
-func button(parent: Control, value: String, pos: Vector2, bounds: Vector2, callback: Callable, primary: bool = false) -> Button:
+func play_cue(id: String) -> void:
+	if is_instance_valid(sound) and not id.is_empty(): sound.cue(id)
+
+func button(parent: Control, value: String, pos: Vector2, bounds: Vector2, callback: Callable, primary: bool = false, click_cue: String = "ui_click") -> Button:
 	var node := Button.new()
 	node.text = value
 	node.position = pos
 	node.size = bounds
-	node.pressed.connect(callback)
+	node.pressed.connect(func() -> void:
+		play_cue(click_cue)
+		callback.call())
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	if primary: GameTheme.primary(node)
 	parent.add_child(node)
@@ -76,7 +82,7 @@ func rebuild() -> void:
 	background.color = GameTheme.BG
 	add_child(background)
 	caption(self,"美食卡册",Vector2(40,24),Vector2(400,50),32)
-	button(self,"返回主菜单",Vector2(1050,28),Vector2(188,44),func() -> void: back_requested.emit())
+	button(self,"返回主菜单",Vector2(1050,28),Vector2(188,44),func() -> void: back_requested.emit(),false,"ui_cancel")
 	for index: int in range(3):
 		var key: String = ["shop","enhance","loadout"][index]
 		button(self,["灵感卡店","卡片强化","出战阵容"][index],Vector2(40+index*166,86),Vector2(152,42),func() -> void:
@@ -97,9 +103,12 @@ func rebuild() -> void:
 		else: build_loadout()
 	status = caption(self,feedback,Vector2(44,646),Vector2(1190, 60),17,GameTheme.ACCENT)
 
-func transact(result: String) -> void:
+func transact(result: String, success_cue: String = "ui_click") -> void:
 	feedback = result
-	if result.is_empty(): feedback = model.profile.meta.last_action.get("text","操作已保存")
+	if result.is_empty():
+		feedback = model.profile.meta.last_action.get("text","操作已保存")
+		play_cue(success_cue)
+	else: play_cue("ui_error")
 	rebuild()
 
 func build_shop() -> void:
@@ -112,13 +121,13 @@ func build_shop() -> void:
 		portrait(panel,offer.id,Vector2(22,18),Vector2(168,168))
 		caption(panel,model.data.foods[offer.id].title,Vector2(18,194),Vector2(180,34),23)
 		caption(panel,"强化 +0 · 独立卡片",Vector2(18,240),Vector2(180,28),15,GameTheme.MUTED)
-		var buy := button(panel,"已售罄" if offer.bought else "购买 · %d 灵感" % model.data.progression.card_price,Vector2(16,290),Vector2(180,42),func() -> void: transact(model.buy(index,revision)),true)
+		var buy := button(panel,"已售罄" if offer.bought else "购买 · %d 灵感" % model.data.progression.card_price,Vector2(16,290),Vector2(180,42),func() -> void: transact(model.buy(index,revision),"purchase"),true,"")
 		buy.name = "Buy_%d" % index
 		buy.disabled = offer.bought or not model.editable() or meta.inspiration < model.data.progression.card_price
 	var info: Panel = surface(Vector2(984,206),Vector2(252,352))
 	caption(info,"刷新卡店",Vector2(20,22),Vector2(210,40),24)
 	caption(info,"每局结束自动换货。\n手动刷新费用逐次翻倍，\n下局结算时重置。\n\n本周期已刷新 %d 次。" % int(meta.refreshes),Vector2(20,80),Vector2(214,164),17,GameTheme.MUTED)
-	var refresh := button(info,"刷新 · %d 灵感" % model.refresh_cost(),Vector2(16,290),Vector2(220,42),func() -> void: transact(model.refresh(revision)))
+	var refresh := button(info,"刷新 · %d 灵感" % model.refresh_cost(),Vector2(16,290),Vector2(220,42),func() -> void: transact(model.refresh(revision),"refresh"),false,"")
 	refresh.name = "Refresh"
 	refresh.disabled = not model.editable() or meta.inspiration < model.refresh_cost() or meta.refreshes >= model.data.progression.refresh_limit
 	caption(self,"通过关卡赚取灵感，失败保留收益。购买卡片后，在「出战阵容」选择本局携带的美食。",Vector2(44,590),Vector2(1150,38),18,GameTheme.MUTED)
@@ -145,7 +154,7 @@ func build_inventory() -> void:
 		caption(panel,model.data.foods[item.id].title + " +%d" % int(item.level),Vector2(10,91),Vector2(152,28),17)
 		caption(panel,"基础保护" if item.starter else ("已锁定" if item.locked else "可作材料"),Vector2(10,121),Vector2(152,22),13,GameTheme.MUTED)
 		if tab == "loadout":
-			var pick := button(panel,"已携带 ✓" if item.uid in selected else "携带",Vector2(10,160),Vector2(152,40),func() -> void: choose(item.uid),highlighted)
+			var pick := button(panel,"已携带 ✓" if item.uid in selected else "携带",Vector2(10,160),Vector2(152,40),func() -> void: choose(item.uid),highlighted,"")
 			pick.name = "Equip_" + item.uid
 			pick.disabled = not model.editable()
 		else:
@@ -154,34 +163,44 @@ func build_inventory() -> void:
 				materials.erase(main_uid)
 				feedback = ""
 				rebuild(),item.uid == main_uid)
-			var material := button(panel,"材料 ✓" if item.uid in materials else "材料",Vector2(88,154),Vector2(76,30),func() -> void: select_material(item.uid),item.uid in materials)
+			var material := button(panel,"材料 ✓" if item.uid in materials else "材料",Vector2(88,154),Vector2(76,30),func() -> void: select_material(item.uid),item.uid in materials,"")
 			material.name = "Material_" + item.uid
 			material.disabled = item.starter or item.locked or item.uid == main_uid or not model.editable()
 			if not item.starter:
 				var lock := button(panel,"解除锁定" if item.locked else "锁定保护",Vector2(8,189),Vector2(156,25),func() -> void:
 					materials.erase(item.uid)
-					transact(model.toggle_lock(item.uid,revision)))
+					transact(model.toggle_lock(item.uid,revision)),false,"")
 				lock.disabled = not model.editable()
 	inventory_scroll.set_deferred("scroll_vertical",scroll_offset)
 
 func choose(uid: String) -> void:
-	if uid in selected: selected.erase(uid)
+	if uid in selected:
+		selected.erase(uid)
+		play_cue("ui_cancel")
 	else:
 		var item: Dictionary = MetaProgression.card(model.profile.meta,uid)
 		for other: String in selected.duplicate():
 			if MetaProgression.card(model.profile.meta,other).id == item.id: selected.erase(other)
 		if selected.size() >= model.data.progression.loadout_limit:
 			feedback = "最多携带 %d 种美食，请先取消一张" % model.data.progression.loadout_limit
+			play_cue("ui_error")
 			rebuild()
 			return
 		selected.append(uid)
+		play_cue("ui_click")
 	feedback = ""
 	rebuild()
 
 func select_material(uid: String) -> void:
-	if uid in materials: materials.erase(uid)
-	elif materials.size() < 3: materials.append(uid)
-	else: feedback = "一次最多使用 3 张材料卡"
+	if uid in materials:
+		materials.erase(uid)
+		play_cue("ui_cancel")
+	elif materials.size() < 3:
+		materials.append(uid)
+		play_cue("ui_click")
+	else:
+		feedback = "一次最多使用 3 张材料卡"
+		play_cue("ui_error")
 	rebuild()
 
 func build_enhancement() -> void:
@@ -209,10 +228,12 @@ func build_enhancement() -> void:
 	var revision: int = int(model.profile.revision)
 	var enhance := button(panel,"强化" if preview.error.is_empty() else preview.error,Vector2(24,404),Vector2(376,42),func() -> void:
 		var result: String = model.enhance(main_uid,materials,revision)
+		var success_cue: String = ""
 		if result.is_empty():
 			for uid: String in materials: selected.erase(uid)
 			materials.clear()
-		transact(result),true)
+			success_cue = "upgrade_success" if str(model.profile.meta.last_action.get("text","")).begins_with("强化成功") else "upgrade_fail"
+		transact(result,success_cue),true,"")
 	enhance.name = "Enhance"
 	enhance.disabled = not preview.error.is_empty() or not model.editable()
 

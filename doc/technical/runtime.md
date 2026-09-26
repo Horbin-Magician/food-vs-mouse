@@ -34,7 +34,7 @@ prepare → battle → prepare，最终进入 won/lost。关后结算金币与�
 
 开发面板仅 `-- --dev` 且调试构建开启，允许指定种子、准备阶段跳到指定关、加资源，显示各路敌人生命总量。发行导出不接受此入口。压力验证独立场景，直接构造 40 个美食和 100 个敌人用于性能测量，不算正常通关。
 
-输入：`cancel_selection` 为 Esc／右键，`board_select` 为左键，`debug_panel` 为 F3；仅查看与速度／暂停控制在暂停时可用。主菜单覆盖旧局有确认；首关步骤式引导已取消，详情与反馈依据 [UI 规范](../art/ui.md#提示栏与引导移除2026-09-13)。当前角色采用 [F 风格生成资产](../art/f_restyle.md)，背景与食谱采用既有生成图集，UI 和状态由程序绘制，音效由项目内合成器生成；无外部素材依赖。真实美术质量与玩法可读性列入试玩验收。
+输入：`cancel_selection` 为 Esc／右键，`board_select` 为左键，`debug_panel` 为 F3；仅查看与速度／暂停控制在暂停时可用。主菜单覆盖旧局有确认；首关步骤式引导已取消，详情与反馈依据 [UI 规范](../art/ui.md#提示栏与引导移除2026-09-13)。当前角色采用 [F 风格生成资产](../art/f_restyle.md)，背景与食谱采用既有生成图集，UI 和状态由程序绘制，音乐与音效由项目内离线脚本生成；无外部音频素材依赖。真实美术质量与玩法可读性列入试玩验收。
 
 性能实现：每个模拟步在弹体伤害结算后收集鼓手来源，移动只查询该集合；已死亡或越界来源立即排除。UI 缓存两种格子 StyleBox，不在每帧创建 40 个 Resource。两项均不改变数值与随机源消费顺序。
 
@@ -62,3 +62,7 @@ BoardController.remove(row, col, paused) 移除旧 confirmed 参数；成功移�
 ## 关前难度（2026-09-26）
 
 DifficultyDef 与 RunState.difficulty、RunController.select_difficulty、生成倍率和旧档默认值见 [难度设计](../design/difficulty.md)。准备阶段持久化选择，战斗拒绝修改；不改变随机源调用。
+
+## 音频表现服务（2026-09-26）
+
+入口拥有 `SoundService` 并注入 main 与 CardHub，独立 main 运行时自行创建；不使用 Autoload。`bind_run` 管理业务信号的订阅和解绑，阶段变化驱动七种音乐场景。`CombatController.heat_collected(pickup)` 仅在火苗首次进入飞行时发送，飞行过程或重复点击不重发。音频只观察事件，不改写玩法和随机状态。AudioProfile／AudioCueDef 保存音频路径、混音、冷却与优先级；AudioSettings 独立保存音量，并在战斗中打开时暂停。完整配置、生命周期、暂停和速度边界见 [音频设计](../art/audio.md)。

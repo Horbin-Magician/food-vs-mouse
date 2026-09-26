@@ -65,7 +65,6 @@ func check() -> void:
 	game.shop_surface.get_node("Done").pressed.emit()
 	assert(run.state.phase == "battle" and not game.shop_overlay.visible)
 	assert("普通" in game.wave_status())
-	game.queue_free()
-	await process_frame
+	await preload("res://tests/audio_cleanup.gd").release_scene(game, self)
 	print("PASS difficulty: formulas, summons, seed, stages, save compatibility, rollback, UI")
 	quit()

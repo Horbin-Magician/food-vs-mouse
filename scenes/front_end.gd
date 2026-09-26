@@ -11,12 +11,36 @@ var continue_button: Button
 var overwrite: ConfirmationDialog
 var showing_result: bool = false
 var hub: CardHub
+var sound: SoundService
+var audio_settings: AudioSettings
+var audio_button: Button
 
 func _ready() -> void:
 	get_viewport().gui_embed_subwindows = true
 	if "--qa" in OS.get_cmdline_user_args() or "--qa-test" in OS.get_cmdline_user_args():
 		saves.folder = "user://qa_automated/" if "--qa-test" in OS.get_cmdline_user_args() else "user://qa_visual/"
 		DirAccess.make_dir_recursive_absolute(saves.folder)
+	sound = SoundService.new()
+	sound.settings_path = saves.folder.path_join("audio.cfg")
+	add_child(sound)
+	audio_settings = AudioSettings.new()
+	add_child(audio_settings)
+	audio_settings.setup(sound)
+	var audio_layer := CanvasLayer.new()
+	audio_layer.layer = 110
+	add_child(audio_layer)
+	audio_button = Button.new()
+	audio_button.name = "AudioButton"
+	audio_button.text = "声音"
+	audio_button.size = Vector2(104, 32)
+	audio_button.theme = GameTheme.create()
+	audio_button.tooltip_text = "音乐、音效与总音量"
+	audio_button.pressed.connect(func() -> void:
+		if is_instance_valid(game) and not showing_result:
+			game.cancel_card_drag()
+			audio_settings.open(game.run)
+		else: audio_settings.open())
+	audio_layer.add_child(audio_button)
 	show_menu()
 
 func clear_page() -> void:
@@ -64,6 +88,7 @@ func action(title: String, pos: Vector2, callback: Callable, primary: bool = fal
 	button.text = title
 	button.position = pos
 	button.size = Vector2(356, 54)
+	button.pressed.connect(func() -> void: sound.cue("ui_click"))
 	button.pressed.connect(callback)
 	if primary: GameTheme.primary(button)
 	page.add_child(button)
@@ -80,6 +105,10 @@ func portrait(texture: Texture2D, pos: Vector2, bounds: Vector2) -> void:
 	page.add_child(view)
 
 func show_menu() -> void:
+	if audio_settings.visible: audio_settings.hide()
+	sound.bind_run(null)
+	sound.set_context("menu")
+	audio_button.position = Vector2(1120, 20)
 	if is_instance_valid(game):
 		remove_child(game)
 		game.queue_free()
@@ -108,6 +137,7 @@ func show_menu() -> void:
 	overwrite.ok_button_text = "开始新局"
 	overwrite.cancel_button_text = "返回"
 	overwrite.confirmed.connect(prepare_new)
+	overwrite.canceled.connect(func() -> void: sound.cue("ui_cancel"))
 	page.add_child(overwrite)
 
 func controller() -> RunController:
@@ -120,6 +150,7 @@ func continue_run() -> void:
 	if is_instance_valid(game): return
 	var run := controller()
 	if not run.resume_run():
+		sound.cue("ui_error")
 		notice.text = run.message
 		return
 	enter_game(run)
@@ -134,20 +165,25 @@ func prepare_new() -> void:
 	var snapshot: Dictionary = saves.load_run(data)
 	if not snapshot.is_empty():
 		if not saves.settle(saves.restore(snapshot),data):
+			sound.cue("ui_error")
 			notice.text = saves.error
 			return
 	elif not saves.error.is_empty():
 		var profile: Dictionary = saves.load_profile(data)
 		if profile.is_empty():
+			sound.cue("ui_error")
 			notice.text = saves.error
 			return
 		profile.run = {}
 		if not saves.commit_profile(profile,int(profile.revision)):
+			sound.cue("ui_error")
 			notice.text = saves.error
 			return
 	show_hub("loadout")
 
 func show_hub(initial_tab: String = "shop") -> void:
+	sound.set_context("shop")
+	audio_button.position = Vector2(930, 32)
 	if is_instance_valid(page):
 		remove_child(page)
 		page.queue_free()
@@ -155,6 +191,7 @@ func show_hub(initial_tab: String = "shop") -> void:
 	page.size = Vector2(1280,720)
 	add_child(page)
 	hub = CardHub.new()
+	hub.sound = sound
 	page.add_child(hub)
 	hub.back_requested.connect(show_menu)
 	hub.launch_requested.connect(start_new)
@@ -164,11 +201,13 @@ func start_new(selected: Array = []) -> void:
 	if is_instance_valid(game): return
 	var run := controller()
 	if not saves.load_run(data).is_empty() and not run.resume_run():
+		sound.cue("ui_error")
 		notice.text = run.message
 		return
 	var previous: RunState = run.state
 	run.new_run(int(Time.get_unix_time_from_system()), selected)
 	if run.state == previous or not saves.error.is_empty():
+		sound.cue("ui_error")
 		if is_instance_valid(hub) and hub.is_inside_tree():
 			hub.feedback = run.message
 			hub.rebuild()
@@ -179,7 +218,10 @@ func start_new(selected: Array = []) -> void:
 func enter_game(run: RunController) -> void:
 	game = GAME.instantiate()
 	game.run = run
+	game.sound = sound
+	game.audio_settings = audio_settings
 	add_child(game)
+	audio_button.position = Vector2(234, 678)
 	page.hide()
 	showing_result = false
 
@@ -189,6 +231,9 @@ func _process(_delta: float) -> void:
 
 func show_result() -> void:
 	showing_result = true
+	if audio_settings.visible: audio_settings.hide()
+	sound.sync_run()
+	audio_button.position = Vector2(1120, 20)
 	game.cancel_card_drag()
 	game.shovel = false
 	game.update_shovel_cursor()
@@ -211,6 +256,7 @@ func leave_result(destination: String) -> void:
 	if not is_instance_valid(game) or not showing_result: return
 	# Idempotent settlement also retries a failed write before discarding the run.
 	if not saves.settle(game.run.state, data):
+		sound.cue("ui_error")
 		notice.text = saves.error
 		return
 	if destination == "quit":

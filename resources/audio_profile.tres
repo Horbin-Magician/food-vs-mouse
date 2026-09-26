@@ -1,0 +1,279 @@
+[gd_resource type="Resource" script_class="AudioProfile" load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/audio_profile.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/audio_cue_def.gd" id="2"]
+
+[sub_resource type="Resource" id="Cue_ui_click"]
+script = ExtResource("2")
+id = "ui_click"
+path = "res://assets/audio/sfx/ui_click.wav"
+gain_db = -10.0
+cooldown = 0.07
+priority = 2
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_ui_cancel"]
+script = ExtResource("2")
+id = "ui_cancel"
+path = "res://assets/audio/sfx/ui_cancel.wav"
+gain_db = -11.0
+cooldown = 0.1
+priority = 2
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_ui_error"]
+script = ExtResource("2")
+id = "ui_error"
+path = "res://assets/audio/sfx/ui_error.wav"
+gain_db = -8.0
+cooldown = 0.18
+priority = 4
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_place"]
+script = ExtResource("2")
+id = "place"
+path = "res://assets/audio/sfx/place.wav"
+gain_db = -7.0
+cooldown = 0.06
+priority = 3
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_remove"]
+script = ExtResource("2")
+id = "remove"
+path = "res://assets/audio/sfx/remove.wav"
+gain_db = -7.0
+cooldown = 0.1
+priority = 3
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_heat_spawn"]
+script = ExtResource("2")
+id = "heat_spawn"
+path = "res://assets/audio/sfx/heat_spawn.wav"
+gain_db = -12.0
+cooldown = 0.2
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_heat_collect"]
+script = ExtResource("2")
+id = "heat_collect"
+path = "res://assets/audio/sfx/heat_collect.wav"
+gain_db = -8.0
+cooldown = 0.06
+priority = 3
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_bun"]
+script = ExtResource("2")
+id = "bun"
+path = "res://assets/audio/sfx/bun.wav"
+gain_db = -14.0
+cooldown = 0.1
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_tea"]
+script = ExtResource("2")
+id = "tea"
+path = "res://assets/audio/sfx/tea.wav"
+gain_db = -14.0
+cooldown = 0.12
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_pepper"]
+script = ExtResource("2")
+id = "pepper"
+path = "res://assets/audio/sfx/pepper.wav"
+gain_db = -14.0
+cooldown = 0.12
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_popcorn"]
+script = ExtResource("2")
+id = "popcorn"
+path = "res://assets/audio/sfx/popcorn.wav"
+gain_db = -13.0
+cooldown = 0.13
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_noodles"]
+script = ExtResource("2")
+id = "noodles"
+path = "res://assets/audio/sfx/noodles.wav"
+gain_db = -14.0
+cooldown = 0.12
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_garlic"]
+script = ExtResource("2")
+id = "garlic"
+path = "res://assets/audio/sfx/garlic.wav"
+gain_db = -14.0
+cooldown = 0.12
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_hit"]
+script = ExtResource("2")
+id = "hit"
+path = "res://assets/audio/sfx/hit.wav"
+gain_db = -18.0
+cooldown = 0.085
+priority = 0
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_armor"]
+script = ExtResource("2")
+id = "armor"
+path = "res://assets/audio/sfx/armor.wav"
+gain_db = -14.0
+cooldown = 0.1
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_bite"]
+script = ExtResource("2")
+id = "bite"
+path = "res://assets/audio/sfx/bite.wav"
+gain_db = -17.0
+cooldown = 0.13
+priority = 0
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_enemy_down"]
+script = ExtResource("2")
+id = "enemy_down"
+path = "res://assets/audio/sfx/enemy_down.wav"
+gain_db = -14.0
+cooldown = 0.11
+priority = 1
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_food_down"]
+script = ExtResource("2")
+id = "food_down"
+path = "res://assets/audio/sfx/food_down.wav"
+gain_db = -6.0
+cooldown = 0.18
+priority = 4
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_flour"]
+script = ExtResource("2")
+id = "flour"
+path = "res://assets/audio/sfx/flour.wav"
+gain_db = -10.0
+cooldown = 0.2
+priority = 2
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_summon"]
+script = ExtResource("2")
+id = "summon"
+path = "res://assets/audio/sfx/summon.wav"
+gain_db = -7.0
+cooldown = 0.45
+priority = 4
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_rage"]
+script = ExtResource("2")
+id = "rage"
+path = "res://assets/audio/sfx/rage.wav"
+gain_db = -5.0
+cooldown = 0.5
+priority = 5
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_danger"]
+script = ExtResource("2")
+id = "danger"
+path = "res://assets/audio/sfx/danger.wav"
+gain_db = -5.0
+cooldown = 0.4
+priority = 5
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_wave_start"]
+script = ExtResource("2")
+id = "wave_start"
+path = "res://assets/audio/sfx/wave_start.wav"
+gain_db = -6.0
+cooldown = 0.4
+priority = 5
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_clear"]
+script = ExtResource("2")
+id = "clear"
+path = "res://assets/audio/sfx/clear.wav"
+gain_db = -7.0
+cooldown = 0.4
+priority = 5
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_purchase"]
+script = ExtResource("2")
+id = "purchase"
+path = "res://assets/audio/sfx/purchase.wav"
+gain_db = -7.0
+cooldown = 0.12
+priority = 3
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_refresh"]
+script = ExtResource("2")
+id = "refresh"
+path = "res://assets/audio/sfx/refresh.wav"
+gain_db = -9.0
+cooldown = 0.16
+priority = 3
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_upgrade_success"]
+script = ExtResource("2")
+id = "upgrade_success"
+path = "res://assets/audio/sfx/upgrade_success.wav"
+gain_db = -6.0
+cooldown = 0.3
+priority = 4
+gameplay = false
+
+[sub_resource type="Resource" id="Cue_upgrade_fail"]
+script = ExtResource("2")
+id = "upgrade_fail"
+path = "res://assets/audio/sfx/upgrade_fail.wav"
+gain_db = -8.0
+cooldown = 0.3
+priority = 4
+gameplay = false
+
+[resource]
+script = ExtResource("1")
+cues = Array[ExtResource("2")]([SubResource("Cue_ui_click"), SubResource("Cue_ui_cancel"), SubResource("Cue_ui_error"), SubResource("Cue_place"), SubResource("Cue_remove"), SubResource("Cue_heat_spawn"), SubResource("Cue_heat_collect"), SubResource("Cue_bun"), SubResource("Cue_tea"), SubResource("Cue_pepper"), SubResource("Cue_popcorn"), SubResource("Cue_noodles"), SubResource("Cue_garlic"), SubResource("Cue_hit"), SubResource("Cue_armor"), SubResource("Cue_bite"), SubResource("Cue_enemy_down"), SubResource("Cue_food_down"), SubResource("Cue_flour"), SubResource("Cue_summon"), SubResource("Cue_rage"), SubResource("Cue_danger"), SubResource("Cue_wave_start"), SubResource("Cue_clear"), SubResource("Cue_purchase"), SubResource("Cue_refresh"), SubResource("Cue_upgrade_success"), SubResource("Cue_upgrade_fail")])
+music = Dictionary[String, String]({
+"menu": "res://assets/audio/music/menu.ogg",
+"shop": "res://assets/audio/music/shop.ogg",
+"battle": "res://assets/audio/music/battle.ogg",
+"elite": "res://assets/audio/music/elite.ogg",
+"boss": "res://assets/audio/music/boss.ogg",
+"won": "res://assets/audio/music/won.ogg",
+"lost": "res://assets/audio/music/lost.ogg"
+})
+music_gain_db = -3.0
+crossfade_seconds = 0.75
+max_voices = 12
+limiter_ceiling_db = -1.0
+transition_keep_priority = 4
+pause_gain_db = -9.0
+focus_gain_db = -12.0
+default_master = 0.8
+default_music = 0.7
+default_sfx = 0.85

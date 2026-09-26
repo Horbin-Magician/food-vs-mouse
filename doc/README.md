@@ -31,6 +31,9 @@
 | [art/projectiles.md](art/projectiles.md) | 五种美食弹体与高压蒸汽变体 | 已实现 |
 | [testing/projectiles.md](testing/projectiles.md) | 弹体导入、暂停倍速、回归与渲染 | 自动和原生渲染通过，真人试玩未执行 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |
+| [art/audio.md](art/audio.md) | 七种场景音乐、事件音效、混音、暂停与声音设置 | 已接入 |
+| [art/audio_assets.md](art/audio_assets.md) | 原创旋律、音色、生成工具、资产规格与来源 | 7 首音乐与 28 音效生成、解码及确定性检查通过 |
+| [testing/audio.md](testing/audio.md) | 音频资产、流程、混音、音量设置及原生交互验收 | 31 组回归、双尺寸画面及鼠标检查通过；听感边界见正文 |
 | [art/style_exploration.md](art/style_exploration.md) | 小笼包与灰鼠的现代 Q 版风格、造型与动作创意候选 | 已选择 F，历史候选保留 |
 | [art/f_animation_frames.md](art/f_animation_frames.md) | 已选 F 风格的小笼包与灰鼠完整动作图集 | 72 帧原稿已交付；运行时接入及检查见 F 专项记录 |
 | [art/f_restyle.md](art/f_restyle.md) | F 风格全角色造型及正式资源替换 | 全部 16 角色已正式替换，小笼包及鼠群逐帧已接入 |

@@ -8,6 +8,8 @@ signal enemy_hurt(unit: Dictionary)
 signal enemy_fallen(unit: Dictionary)
 signal food_hurt(unit: Dictionary)
 signal food_fallen(unit: Dictionary)
+signal skill_used(effect_id: String, source: Dictionary, targets: Array)
+signal heat_collected(pickup: Dictionary)
 
 signal unit_died(food_id: String)
 signal enemy_leaked(damage: int)
@@ -56,6 +58,7 @@ func add_heat(amount: float) -> void:
 	state.heat = minf(data.rules.heat_cap, state.heat + amount)
 
 func produce_heat(unit: Dictionary) -> void:
+	skill_used.emit("produce", unit, [])
 	var amount: float = data.rules.production * state.production_multiplier(unit.id, data) + recipes.value("caramel", "heat")
 	for pickup: Dictionary in heat_pickups:
 		if pickup.source_uid == unit.uid and pickup.flight < 0.0:
@@ -68,6 +71,7 @@ func collect_heat(uid: int) -> bool:
 	for pickup: Dictionary in heat_pickups:
 		if pickup.uid == uid and pickup.flight < 0.0:
 			pickup.flight = 0.0
+			heat_collected.emit(pickup)
 			return true
 	return false
 
@@ -139,7 +143,7 @@ func step(delta: float) -> void:
 			var summon_interval: float = data.rules.boss_rage_summon_interval if enemy.rage else data.rules.boss_summon_interval
 			if enemy.summon >= summon_interval:
 				enemy.summon -= summon_interval
-				summon_pair("gray")
+				summon_pair("gray", enemy)
 		var blocker: Dictionary = {}
 		for unit: Dictionary in state.units:
 			var x: float = unit.col * 96.0 + 48.0
@@ -184,9 +188,13 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 	if enemy.id == "boss" and not enemy.rage and enemy.hp > 0 and enemy.hp < enemy.max_hp * data.rules.boss_rage_threshold:
 		enemy.rage = true
 		enemy.summon *= data.rules.boss_rage_summon_interval / data.rules.boss_summon_interval
-		summon_pair("lid")
+		skill_used.emit("rage", enemy, [])
+		summon_pair("lid", enemy)
 	if enemy.hp <= 0:
 		if enemy.id == "flour":
+			var cloud: Dictionary = enemy.duplicate()
+			cloud["radius"] = data.rules.flour_radius
+			skill_used.emit("flour", cloud, [])
 			for unit: Dictionary in state.units:
 				if unit.row == enemy.row and absf(unit.col * 96.0 + 48.0-enemy.x) <= data.rules.flour_radius:
 					unit.flour = data.rules.flour_duration
@@ -226,12 +234,15 @@ func hit(projectile: Dictionary, target: Dictionary) -> void:
 			if enemy.burn_time <= 0: enemy.burn_tick = 0.0
 			enemy.burn_time = recipes.value("burn","duration")
 
-func summon_pair(id: String) -> void:
+func summon_pair(id: String, caster: Dictionary = {}) -> void:
 	var first: int = rng.randi_range(0,RunState.ROWS-1)
 	var second: int = rng.randi_range(0,RunState.ROWS-2)
 	if second >= first: second += 1
 	spawn(id,first,current_wave)
+	var first_unit: Dictionary = enemies[-1]
 	spawn(id,second,current_wave)
+	if not caster.is_empty():
+		skill_used.emit("reinforce" if id == "lid" else "summon", caster, [first_unit, enemies[-1]])
 
 func movement_multiplier(enemy: Dictionary, sources: Array) -> float:
 	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)

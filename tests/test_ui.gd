@@ -268,6 +268,5 @@ func run_test() -> void:
 	scene.update_controls()
 	assert(not scene.shovel and not scene.shovel_cursor_active)
 	print("PASS UI: placement, pause, animation time, shovel cursor lifecycle and direct removal, cancel, eight-card bounds, overlay input")
-	scene.queue_free()
-	await process_frame
+	await preload("res://tests/audio_cleanup.gd").release_scene(scene, self)
 	quit()

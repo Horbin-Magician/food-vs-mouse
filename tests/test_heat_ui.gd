@@ -56,6 +56,5 @@ func run_test() -> void:
 	scene._process(0)
 	assert(scene.heat_label.text == "115" and "每秒恢复 2" in scene.heat_label.tooltip_text)
 	print("PASS heat UI: real GUI events, pause, modal, selected card, shovel, duplicate, flight target and counter")
-	scene.queue_free()
-	await process_frame
+	await preload("res://tests/audio_cleanup.gd").release_scene(scene, self)
 	quit()

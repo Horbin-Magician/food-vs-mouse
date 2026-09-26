@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_4_3"
-title = "锅盖扬尘"
-stats = {"duration": 100, "composition": ["lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.72, "damage_scale": 1.8, "batches": [{"time": 5.0, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.619, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 20.238, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.856, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 35.475, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 43.094, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 50.713, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 58.331, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 65.95, "gap": 1.35, "lanes": [0, 1, 2, 0]}]}
+title = "酸前面后"
+spawn_rate = 1.5
+stats = {"hint": "看清酸格和盾条，先保护最靠前的受损美食。", "duration": 100.0, "composition": ["vinegar_spitter", "dough_rat", "gray", "dough_rat", "vinegar_spitter", "gray", "dough_rat", "vinegar_spitter", "vinegar_spitter", "dough_rat", "gray", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "vinegar_spitter", "vinegar_spitter", "dough_rat", "gray", "dough_rat", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "gray", "dough_rat", "vinegar_spitter", "gray", "dough_rat"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.72, "damage_scale": 1.8, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.6, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 42.4, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 54.4, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}, {"time": 65.2, "gap": 1.2, "lanes": [0, 1, 2, 0, 2]}]}

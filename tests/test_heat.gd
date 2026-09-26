@@ -4,6 +4,7 @@ func tick(run: RunController, frames: int) -> void:
 	for frame: int in range(frames): run.advance(1.0 / 60.0)
 
 func _init() -> void:
+	test_wave_carry()
 	var run := RunController.new()
 	run.new_run(42)
 	for stage: int in range(8):
@@ -74,8 +75,10 @@ func _init() -> void:
 	run.combat.damage_unit(run.state.units[0], 9999)
 	assert(run.combat.heat_pickups.size() == 1)
 	run.finish_wave()
-	assert(run.combat.heat_pickups.is_empty())
+	assert(run.combat.heat_pickups.size() == 1, "uncollected heat survives a wave and source death")
 	assert(not run.collect_heat(second.uid).is_empty())
+	run.advance(0.0)
+	assert(run.combat.heat_pickups.size() == 1, "starting the next wave retains heat")
 	run.new_run(44)
 	run.start()
 	run.board.place("pudding", 0, 0, false)
@@ -105,3 +108,42 @@ func _init() -> void:
 	assert(run.state.phase == "prepare" and run.combat.heat_pickups.is_empty() and run.state.units.is_empty())
 	print("PASS heat: rate, production snapshot, merge, click, duplicate, flight, pause, speed, cap, death and lifecycle")
 	quit()
+
+func test_wave_carry() -> void:
+	for timeout: bool in [false, true]:
+		var run := RunController.new()
+		run.new_run(57)
+		run.start()
+		assert(run.board.place("pudding", 0, 0, false).is_empty())
+		run.combat.produce_heat(run.state.units[0])
+		var flying: Dictionary = run.combat.heat_pickups[0]
+		run.collect_heat(flying.uid)
+		run.combat.produce_heat(run.state.units[0])
+		var waiting: Dictionary = run.combat.heat_pickups[1]
+		if timeout:
+			run.combat.spawn("gray", 2, run.data.waves[0])
+			run.director.elapsed = run.director.duration
+		else:
+			run.director.cursor = run.director.events.size()
+		tick(run, 1)
+		assert(run.state.phase == "prepare" and run.combat.heat_pickups.size() == 2)
+		var frozen: Array = run.combat.heat_pickups.duplicate(true)
+		run.advance(0.0)
+		assert(run.combat.heat_pickups == frozen)
+		var before: float = run.state.heat
+		tick(run, 30)
+		assert(is_equal_approx(run.state.heat, before + flying.amount + 1.0))
+		assert(run.combat.heat_pickups.size() == 1 and waiting.flight < 0)
+		run.combat.produce_heat(run.state.units[0])
+		assert(waiting.amount == 30, "retained source merges future production")
+		run.state.wave = 8
+		run.finish_wave()
+		assert(run.shop.is_open() and run.combat.heat_pickups.size() == 1)
+		frozen = run.combat.heat_pickups.duplicate(true)
+		tick(run, 60)
+		assert(run.combat.heat_pickups == frozen, "shop freezes heat")
+		run.start()
+		assert(run.collect_heat(waiting.uid).is_empty())
+		assert(not run.combat.collect_heat(waiting.uid), "repeat click cannot collect twice")
+		tick(run, 30)
+		assert(run.combat.heat_pickups.is_empty())

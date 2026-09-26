@@ -35,7 +35,7 @@ func check() -> void:
 	sound.set_process(false)
 	sound.cue_played.connect(func(id: String) -> void: played.append(id))
 	assert(sound.voices.size() == 3 and sound.music_players.size() == 2)
-	assert(sound._cue_defs.size() == 28 and sound.profile.music.size() == 7)
+	assert(sound._cue_defs.size() == 32 and sound.profile.music.size() == 7)
 	var buses: int = AudioServer.bus_count
 	var effects: int = AudioServer.get_bus_effect_count(AudioServer.get_bus_index("Master"))
 	assert(AudioServer.get_bus_effect(AudioServer.get_bus_index("Master"), effects - 1) is AudioEffectHardLimiter)
@@ -97,6 +97,11 @@ func check() -> void:
 	run.combat.acted.emit(run.state.units[0].uid)
 	assert(played == ["bun"])
 	assert(run.rng.state == random_state)
+	for pair: Array in [["dash", "enemy_whistle"], ["switch", "enemy_whistle"], ["heavy", "enemy_iron"], ["armor_break", "enemy_iron"], ["acid", "enemy_ferment"], ["proof", "enemy_ferment"], ["order", "enemy_abacus"], ["ration", "enemy_abacus"], ["order_failed", "enemy_abacus"]]:
+		clear_cues(sound)
+		run.combat.skill_used.emit(pair[0], {}, [])
+		assert(played == [pair[1]], str(pair))
+		assert(run.rng.state == random_state)
 	run.speed = 2.0
 	assert(sound.voices.all(func(player: AudioStreamPlayer) -> bool: return player.pitch_scale == 1.0))
 	assert(sound.music_players.all(func(player: AudioStreamPlayer) -> bool: return player.pitch_scale == 1.0))
@@ -248,7 +253,7 @@ func check() -> void:
 	production.settings_path = folder.path_join("production.cfg")
 	root.add_child(production)
 	production.set_process(false)
-	assert(production._streams.size() == 35)
+	assert(production._streams.size() == 39)
 	for id: String in production._streams:
 		assert(production._streams[id].get_length() > 0.0)
 	for id: String in production.profile.music:

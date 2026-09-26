@@ -14,9 +14,9 @@
 [resource]
 script = ExtResource("1")
 id = "kitchen_3"
-title = "锅盖重围"
+title = "铁锅围城"
 order = 3
-strategy = "沿用食谱与火力，交替破解重装主路，保护受损前排。"
+strategy = "持续拆开铆壳，在夹钳重咬前后保护前排，抓住首领露腹窗口。"
 first_clear_reward = 12
 available = true
 waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8")])

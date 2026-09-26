@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "rivet_foreman"
+title = "铆钳监工"
+rank = "elite"
+behavior_id = "breaker"
+art_id = "rivet_foreman"
+hint = "有限铆壳与夹钳重击并用"
+description = "有限铆壳与夹钳重击并用；破甲不会重置正在进行的蓄力。"
+story = "炉底修缮队的监工，钢片与烤夹都来自同一次翻锅事故。"
+stats = {"hp": 420, "speed": 8, "dps": 26, "leak": 2, "armor_hits": 6, "armor": 8}
+skills = {"interval": 4, "windup": 2.5, "damage": 72, "recovery": 3, "unarmored_speed": 11}

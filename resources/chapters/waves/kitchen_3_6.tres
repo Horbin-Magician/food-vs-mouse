@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_3_6"
-title = "前后夹攻"
-stats = {"duration": 115, "composition": ["lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer", "flour", "gnawer", "lid", "runner", "lid", "gnawer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.52, "damage_scale": 1.7, "batches": [{"time": 5.0, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.25, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 21.5, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 29.75, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 38.0, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 46.25, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 54.5, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 62.75, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 71.0, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 79.25, "gap": 1.25, "lanes": [0, 1]}]}
+title = "空壳追击"
+spawn_rate = 1.5
+stats = {"hint": "空壳鼠突然加速，趁夹钳停顿完成补位。", "duration": 115.0, "composition": ["rivet_guard", "tong_breaker", "gray", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "gray", "tong_breaker", "rivet_guard", "rivet_guard", "tong_breaker", "tong_breaker", "rivet_guard", "tong_breaker", "tong_breaker", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "gray", "rivet_guard", "rivet_guard"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.52, "damage_scale": 1.7, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 33.025, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 45.25, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 58.675, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 72.1, "gap": 1.2, "lanes": [0, 1, 2, 1, 2, 0, 2, 1]}]}

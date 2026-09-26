@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "rivet_guard"
+title = "铆壳鼠"
+rank = "normal"
+behavior_id = "rivet"
+art_id = "rivet_guard"
+hint = "六次直接命中逐步卸掉薄甲"
+description = "六次直接命中逐步卸掉薄甲；卸甲后移动更快。"
+story = "炉底通道的修补工，扁方钢罐片挡住前几次打击，卸下后步履轻快。"
+stats = {"hp": 220, "speed": 9, "dps": 24, "leak": 1, "armor_hits": 6, "armor": 8}
+skills = {"unarmored_speed": 13}

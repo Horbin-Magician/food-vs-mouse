@@ -4,4 +4,7 @@
 script = ExtResource("1")
 id = "boss"
 title = "鼠大厨"
+rank = "boss"
+behavior_id = "legacy"
+art_id = "boss"
 stats = {"hp": 2600, "speed": 6, "dps": 60, "leak": 10}

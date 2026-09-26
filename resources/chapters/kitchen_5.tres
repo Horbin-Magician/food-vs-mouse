@@ -14,9 +14,9 @@
 [resource]
 script = ExtResource("1")
 id = "kitchen_5"
-title = "黎明守宴"
+title = "黎明粮道"
 order = 5
-strategy = "带着整局阵地迎接混合鼠潮，辨认主路轮转，守过终章首领。"
+strategy = "看清支援对象并留出前后间距，截断三张固定订单后的援军。"
 first_clear_reward = 12
 available = true
 waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8")])

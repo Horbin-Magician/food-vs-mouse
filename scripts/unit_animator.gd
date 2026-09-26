@@ -175,7 +175,7 @@ func advance(delta: float, enemies: Array) -> void:
 
 func pose(unit: Dictionary, target: Vector2) -> Dictionary:
 	var value: Dictionary = entry(unit)
-	var profile: Vector3 = PROFILES[unit.id]
+	var profile: Vector3 = PROFILES.get(unit.id, PROFILES.gray)
 	var breath: float = sin(time * profile.y + unit.uid * 1.7) * profile.x
 	var stretch: Vector2 = Vector2(1.0 - breath * 0.5, 1.0 + breath)
 	var offset: Vector2 = Vector2.ZERO

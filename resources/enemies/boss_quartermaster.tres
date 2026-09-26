@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "boss_quartermaster"
+title = "铁算盘·粮道总管"
+rank = "boss"
+behavior_id = "quartermaster"
+art_id = "boss_quartermaster"
+hint = "只发三张固定订单"
+description = "只发三张固定订单；击败护送鼠可断单，逼迫总管停步重算。"
+story = "铁算盘并非力气最大的鼠，却记得哪条粮道还能走、哪一窝已经断粮。它在竹签背面刻下食堂的清扫时刻，把前四支队伍当作一次搬运中的不同班次。天亮将近，所有路都被堵住，它决定用最后三份库存掩护运粮。它的弱点也来自这套账本：一张落空的订单会让它停下来重新核算。"
+stats = {"hp": 3000, "speed": 6, "dps": 46, "leak": 10}
+skills = {"initial_delay": 6, "thresholds": [0.65, 0.3], "windup": 5, "order_gap": 5, "observation": 14, "failure_duration": 5, "exposed": 1.25, "shield": 240, "shield_duration": 8, "rows": [2, 4], "order_ids": ["spoon_skater", "rivet_guard", "dough_rat"]}

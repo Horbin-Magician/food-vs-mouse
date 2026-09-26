@@ -6,8 +6,19 @@
 
 | 文档 | 用途 | 状态 |
 |---|---|---|
-| [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 连续四十关已接入；40 项回归通过，未更新发布包 |
-| [design/campaign.md](design/campaign.md) | 场景内五大关连续推进、后四关重设、全局进度与 v4 迁移 | 已实现；40 项回归、双尺寸画面及鼠标流程通过 |
+| [design/chapter_enemy_redesign.md](design/chapter_enemy_redesign.md) | 后四关 8 新普通鼠、4 精英、4 独立首领的设定、属性、技能、背景与反制 | 玩法已接入；原稿预览已接入，图集验收未通过 |
+| [design/chapter_encounters_v2.md](design/chapter_encounters_v2.md) | 后四关 32 小关组成、教学、选路与批次节奏 | 32 波次与排程检查通过；连续采样完成，真人平衡待验 |
+| [art/chapter_enemy_redesign.md](art/chapter_enemy_redesign.md) | 延续 F 画风的角色轮廓、概念图、技能表现与制作验收 | 全套原稿预览已接入；正式整理及细节验收待完成 |
+| [art/chapter_enemy_assets.md](art/chapter_enemy_assets.md) | 16 角色、卸壳变体、独立技能帧与实际来源、接口、整理记录 | 37 原稿／780 格已接入；隔离带、脚点及最终验收未通过 |
+| [art/chapter_enemy_redesign_prompts.md](art/chapter_enemy_redesign_prompts.md) | 四首领概念图的完整提示词、来源与画风修订 | 已归档，最终参考图已入库 |
+| [technical/enemy_abilities.md](technical/enemy_abilities.md) | 新鼠与独立首领状态、计时、护盾、伤害及取消接口 | 已接入；专项回归通过 |
+| [technical/enemy_presentation.md](technical/enemy_presentation.md) | 技能预警、地面状态、首领面板、悬停与生命周期 | 已接入；全套原稿原生专项通过，正式图集未验收 |
+| [art/chapter_enemy_audio.md](art/chapter_enemy_audio.md) | 新鼠四类原创合成音效、事件映射与资产校验 | 已生成并接入；听感待检查 |
+| [testing/chapter_enemy_redesign.md](testing/chapter_enemy_redesign.md) | 本次设计文档静态检查、交叉评审与后续验证边界 | 设计检查记录；不代表实现通过 |
+| [testing/chapter_enemy_implementation.md](testing/chapter_enemy_implementation.md) | 新鼠群技能、表现、音效、原生画面与当前验收边界 | 44 项回归及原生专项通过；2 项图集未通过，整理等待授权 |
+| [testing/chapter_enemy_balance.md](testing/chapter_enemy_balance.md) | 三难度三构筑三种子的基线，以及两关编排修正后的连续补采 | 基线 27 场 24 胜；新版普通 5 场全胜，分版本记录 |
+| [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 连续四十关与新鼠群已接入；部分图集待整理，未更新发布包 |
+| [design/campaign.md](design/campaign.md) | 场景内五大关连续推进、后四关重设、全局进度与 v4 迁移 | 连续流程已实现；新鼠群验证与剩余项分项记录 |
 | [testing/continuous_campaign.md](testing/continuous_campaign.md) | 连续四十关、跨大关继承、迁移防重、原生界面及正常战斗采样 | 本轮验证记录 |
 | [testing/continuous_campaign_autoplay.json](testing/continuous_campaign_autoplay.json) | 六个连续场景战斗样本 | 自动证据，含失败样本 |
 | [testing/continuous_campaign_growth.json](testing/continuous_campaign_growth.json) | 零资产三卡连续挑战与逐关读档 | 实际5-7失败，保留真实结果 |
@@ -32,7 +43,7 @@
 | [testing/shop.md](testing/shop.md) | 大关小铺的交易、连续开战、存档重试与窗口验收 | 41 项回归及双尺寸渲染通过；真实鼠标复验受限 |
 | [design/economy.md](design/economy.md) | 热量购食谱、跨关保留与鼠群灵感拾取、防重复存档 | 已实现；用户指定掉落率与价格已更新，整局平衡待验 |
 | [testing/economy.md](testing/economy.md) | 新经济逻辑、迁移、拾取和窗口验收 | 初次 35 项、本次数值调整九项及双尺寸渲染通过；真实鼠标复验受限 |
-| [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |
+| [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗、点击飞行收取与跨关保留 | 已实现，验证边界见专页 |
 | [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 拾取回归及上限调整验证通过，范围与限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
@@ -71,7 +82,9 @@
 
 | [design/difficulty.md](design/difficulty.md) | 开局统一难度、整局锁定、倍率与兼容规则 | 已实现，整局平衡待试玩 |
 | [testing/difficulty.md](testing/difficulty.md) | 难度及收益、存档及界面验证 | 整局锁定 31 组回归与双尺寸渲染通过；鼠标复验限制见正文 |
-| [design/waves.md](design/waves.md) | 组合波次、重点路线、后期生命及首领召唤调整 | 已实现，真人平衡待验 |
+| [testing/spawn_rate.md](testing/spawn_rate.md) | 全部 40 小关出兵频率提高 50% 的排程、回归及原生画面验证 | 已通过专项检查，整局平衡未重采 |
+| [design/waves.md](design/waves.md) | 组合波次、重点路线、生命与召唤，以及计时或清场通关 | 已实现，计时制整局平衡待验 |
+| [testing/wave_completion.md](testing/wave_completion.md) | 计时或清场、自动衔接、失败优先及倒计时界面 | 7 组回归、导入与双尺寸原生画面通过 |
 | [testing/balance.md](testing/balance.md) | 压力测试、组合鼠潮回归和真人验收缺口 | 新波次回归及渲染通过，真人待验收 |
 
 ## 后续文档归档

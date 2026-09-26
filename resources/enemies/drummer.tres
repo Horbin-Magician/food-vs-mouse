@@ -4,4 +4,7 @@
 script = ExtResource("1")
 id = "drummer"
 title = "鼓手鼠"
+rank = "normal"
+behavior_id = "legacy"
+art_id = "drummer"
 stats = {"hp": 170, "speed": 10, "dps": 15, "leak": 1}

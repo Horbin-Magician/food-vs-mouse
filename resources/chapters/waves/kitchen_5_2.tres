@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_5_2"
-title = "锅盖佯攻"
-stats = {"duration": 100, "composition": ["drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner", "gnawer", "gray", "drummer", "gnawer", "runner", "runner"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.0, "damage_scale": 1.94, "batches": [{"time": 5.0, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.637, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 20.275, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.912, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 35.55, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 43.188, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 50.825, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 58.462, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 66.1, "gap": 1.3, "lanes": [0, 1, 2, 0]}]}
+title = "竹签长影"
+spawn_rate = 1.5
+stats = {"hint": "竹签会伤到紧贴前排的美食，留一格间距。", "duration": 100.0, "composition": ["skewer_lancer", "gray", "gray", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "ration_keeper", "gray", "skewer_lancer", "skewer_lancer", "gray", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "gray", "skewer_lancer", "ration_keeper", "ration_keeper", "skewer_lancer", "gray", "skewer_lancer", "ration_keeper", "skewer_lancer", "gray", "gray"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.0, "damage_scale": 1.94, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.6, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 42.4, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 54.4, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}, {"time": 65.2, "gap": 1.2, "lanes": [0, 1, 2, 0, 2]}]}

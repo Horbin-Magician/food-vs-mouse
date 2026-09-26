@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_3_2"
-title = "硬壳尖牙"
-stats = {"duration": 95, "composition": ["lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.36, "damage_scale": 1.62, "batches": [{"time": 5.0, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.571, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 22.143, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 30.714, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 39.286, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 47.857, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 56.429, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 65.0, "gap": 1.5, "lanes": [0, 1]}]}
+title = "烤夹停顿"
+spawn_rate = 1.5
+stats = {"hint": "夹钳重咬前会蓄力，恢复时正是输出窗口。", "duration": 95.0, "composition": ["tong_breaker", "gray", "gray", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "gray", "gray", "rivet_guard", "gray", "tong_breaker", "rivet_guard", "tong_breaker", "tong_breaker", "rivet_guard", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "gray", "tong_breaker", "tong_breaker"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.36, "damage_scale": 1.62, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.325, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 41.85, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 53.575, "gap": 1.2, "lanes": [0, 1, 2, 0, 2]}, {"time": 62.9, "gap": 1.2, "lanes": [0, 1, 2, 1]}]}

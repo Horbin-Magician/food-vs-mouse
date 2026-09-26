@@ -70,7 +70,7 @@ func refresh() -> void:
 		var attacking: bool = combat.data.foods[unit.id].stats.kind in ["shot", "melee"]
 		if attacking and recipes.adjacent(unit, "garlic"): active.append("haste")
 		if attacking and recipes.has("breakfast") and recipes.adjacent(unit, "pudding"): active.append("power")
-		if unit.flour > 0: active.append("flour")
+		if unit.flour > 0 or unit.get("proof_time", 0.0) > 0: active.append("flour")
 		if unit.id == "toast" and recipes.has("crust"): active.append("crust")
 		if unit.id == "bun" and recipes.has("pressure") and (unit.attacks + 1) % int(recipes.value("pressure", "every")) == 0: active.append("pressure")
 		statuses[unit.uid] = active
@@ -91,9 +91,12 @@ func description(unit: Dictionary) -> String:
 	if unit.id == "drummer": names.append("鼓舞光环来源")
 	for id: String in statuses.get(unit.uid, []):
 		var title: String = NAMES[id]
-		if id == "armor": title += " ×%d" % unit.armor
+		if id == "armor": title = "护甲 ×%d" % unit.armor
 		if id in ["slow", "burn", "flour"]:
 			var remaining: float = unit.get(id + "_time", unit.get("flour", 0.0))
+			if id == "flour":
+				remaining = maxf(remaining, float(unit.get("proof_time", 0.0)))
+				if unit.get("proof_time", 0.0) > 0: title = "醒面攻速 -25%"
 			title += " %.1fs" % remaining
 		names.append(title)
 	return " · ".join(names)

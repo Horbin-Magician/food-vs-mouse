@@ -318,6 +318,10 @@ func _on_skill(id: String, _source: Dictionary, _targets: Array) -> void:
 		"flour": cue("flour")
 		"summon", "reinforce": cue("summon")
 		"rage": cue("rage")
+		"dash", "switch": cue("enemy_whistle")
+		"heavy", "armor_break": cue("enemy_iron")
+		"acid", "proof": cue("enemy_ferment")
+		"order", "order_success", "order_failed", "ration": cue("enemy_abacus")
 
 func get_level(bus: String) -> float:
 	return levels.get(bus, 1.0)

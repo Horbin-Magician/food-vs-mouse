@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_2_5"
-title = "快慢交锋"
-stats = {"duration": 100, "composition": ["lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner", "lid", "drummer", "runner", "runner", "gray", "runner"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.16, "damage_scale": 1.52, "batches": [{"time": 5.0, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.643, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 22.286, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 30.929, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 39.571, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 48.214, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 56.857, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 65.5, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}]}
+title = "外侧绕餐"
+spawn_rate = 1.5
+stats = {"hint": "折巾落点有预告，别把所有热量都花在入场行。", "duration": 100.0, "composition": ["spoon_skater", "towel_scout", "runner", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "towel_scout", "runner", "spoon_skater", "spoon_skater", "towel_scout", "runner", "spoon_skater", "towel_scout", "towel_scout", "spoon_skater", "towel_scout", "runner", "towel_scout", "towel_scout", "spoon_skater", "towel_scout", "towel_scout", "spoon_skater", "runner", "spoon_skater", "runner", "towel_scout", "towel_scout"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.16, "damage_scale": 1.52, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.0, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 41.2, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 52.6, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 64.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}]}

@@ -14,9 +14,9 @@ func check() -> void:
 			for id: String in run.data.enemies:
 				run.combat.spawn(id, 0, wave)
 				var enemy: Dictionary = run.combat.enemies.back()
-				assert(is_equal_approx(enemy.hp, original.enemies[id].stats.hp * (1.0 if id == "boss" else wave.stats.hp_scale) * factor))
+				assert(is_equal_approx(enemy.hp, original.enemies[id].stats.hp * (1.0 if original.is_boss(id) else wave.stats.hp_scale) * factor))
 				assert(enemy.hp == enemy.max_hp)
-				assert(is_equal_approx(enemy.dps, original.enemies[id].stats.dps * (1.0 if id == "boss" else wave.stats.damage_scale) * factor))
+				assert(is_equal_approx(enemy.dps, original.enemies[id].stats.dps * (1.0 if original.is_boss(id) else wave.stats.damage_scale) * factor))
 				assert(run.data.enemies[id].stats == original.enemies[id].stats)
 		run.combat.summon_pair("gray")
 		assert(is_equal_approx(run.combat.enemies.back().hp, original.enemies.gray.stats.hp * run.data.waves[7].stats.hp_scale * factor))

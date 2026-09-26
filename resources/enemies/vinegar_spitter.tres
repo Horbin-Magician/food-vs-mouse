@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "vinegar_spitter"
+title = "醋瓶鼠"
+rank = "normal"
+behavior_id = "acid"
+art_id = "vinegar_spitter"
+hint = "锁定近处前排格子，预告后落酸并留下短暂残液。"
+description = "锁定近处前排格子，预告后落酸并留下短暂残液。"
+story = "来自腌菜角，背着青瓷醋瓶，用嘴衔滴嘴软化食物边缘。"
+stats = {"hp": 125, "speed": 10, "dps": 10, "leak": 1}
+skills = {"interval": 8, "windup": 2, "reach": 240, "damage": 24, "tick_damage": 6, "tick_interval": 1, "ground_duration": 3, "max_rows": 1}

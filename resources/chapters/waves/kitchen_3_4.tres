@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_3_4"
-title = "铁盖哨兵"
-stats = {"duration": 110, "composition": ["lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "lid", "gray", "lid", "lid", "runner", "gnawer", "elite"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.44, "damage_scale": 1.66, "batches": [{"time": 5.0, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.25, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 21.5, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 29.75, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 38.0, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 46.25, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 54.5, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 62.75, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 71.0, "gap": 1.5, "lanes": [0, 1, 2, 0, 1]}]}
+title = "铆钳监工"
+spawn_rate = 1.5
+stats = {"hint": "监工破甲后仍会重咬，别忽略夹钳蓄力。", "duration": 110.0, "composition": ["rivet_guard", "tong_breaker", "gray", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "gray", "tong_breaker", "tong_breaker", "rivet_guard", "gray", "tong_breaker", "gray", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "gray", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "gray", "tong_breaker", "rivet_guard", "gray", "rivet_foreman"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.44, "damage_scale": 1.66, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 30.75, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 40.7, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 51.85, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 63.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}, {"time": 77.0, "gap": 1.2, "lanes": [0], "avoid_previous_ids": ["tong_breaker"]}], "elite_id": "rivet_foreman"}

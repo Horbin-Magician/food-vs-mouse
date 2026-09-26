@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_3_8"
-title = "铁锅大厨"
-stats = {"duration": 150, "composition": ["lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "drummer", "gnawer", "lid", "gnawer", "gray", "lid", "boss"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.6, "damage_scale": 1.74, "batches": [{"time": 5.0, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 18.571, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 32.143, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 45.714, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 59.286, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 72.857, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 86.429, "gap": 1.25, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 100.0, "gap": 1.25, "lanes": [0, 1, 2, 0, 1]}], "boss": {"title": "铁锅大厨", "normal_id": "lid", "rage_id": "gnawer", "burst_id": "lid", "interval": 16.0, "rage_interval": 12.0, "warning_seconds": 2.5, "rows": [2, 4]}}
+title = "铁釜开盖"
+spawn_rate = 1.5
+stats = {"hint": "铁釜破壳会露腹；让健康前排接住重砸。", "duration": 150.0, "composition": ["rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "rivet_guard", "rivet_guard", "rivet_guard", "tong_breaker", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "rivet_guard", "gray", "gray", "gray", "gray", "boss_ironpot"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.6, "damage_scale": 1.74, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 43.4, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 66.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 89.8, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2], "exclude_rows": [3]}, {"time": 105.0, "gap": 1.2, "lanes": [0]}], "boss_id": "boss_ironpot"}

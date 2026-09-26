@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "boss_starter"
+title = "白酵·醒面老祖"
+rank = "boss"
+behavior_id = "starter"
+art_id = "boss_starter"
+hint = "标记近处有限格子，醒面后爆开"
+description = "标记近处有限格子，醒面后爆开；面种回缩时本体更脆弱。"
+story = "白酵栖在厨房多年不用的老面缸，靠一小块活面团度过数次断粮。它把“只要还能发起来，就不会挨饿”当作信条，误把食堂的所有暖角落都当成育种地。听说鼠群前锋受阻，它背着保存最久的面种亲自出缸，试图让守备阵地变成它的醒面房。"
+stats = {"hp": 2600, "speed": 6, "dps": 36, "leak": 10}
+skills = {"interval": 8, "reach": 240, "windup": 2.5, "ground_duration": 4, "damage": 48, "recovery": 4, "exposed": 1.15, "threshold": 0.5, "max_targets": 2, "rage_max_targets": 3, "slow_penalty": 0.25}

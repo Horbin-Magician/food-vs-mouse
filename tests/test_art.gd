@@ -24,7 +24,8 @@ func _init() -> void:
 					visible = visible or alpha > 0.0
 			assert(visible, "Atlas cell cannot be empty")
 			count += 1
-	assert(count == 28)
+	var expected := ArtCatalog.FOOD_IDS.size() + ArtCatalog.MOUSE_IDS.size() + ArtCatalog.CHAPTER_MOUSE_IDS.size() + ArtCatalog.RECIPE_IDS.size()
+	assert(count == expected)
 	assert(catalog.food("unknown") == null and catalog.mouse("unknown") == null and catalog.recipe("unknown") == null)
-	print("PASS art: 28 imported sprites with transparent gutters and valid ID mapping")
+	print("PASS art: %d imported sprites with transparent gutters and valid ID mapping" % count)
 	quit()

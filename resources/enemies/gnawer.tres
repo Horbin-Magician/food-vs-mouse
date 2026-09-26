@@ -4,4 +4,7 @@
 script = ExtResource("1")
 id = "gnawer"
 title = "啃骨鼠"
+rank = "normal"
+behavior_id = "legacy"
+art_id = "gnawer"
 stats = {"hp": 150, "speed": 13, "dps": 45, "leak": 1}

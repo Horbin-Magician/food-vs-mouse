@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "ration_keeper"
+title = "点心匣鼠"
+rank = "normal"
+behavior_id = "ration"
+art_id = "ration_keeper"
+hint = "给同行前方的合法友军配给有限护盾"
+description = "给同行前方的合法友军配给有限护盾；补给和受援次数均有限。"
+story = "地下粮道的配给员，用尾巴轻推木匣盒扣，只给前行的同伴发口粮。"
+stats = {"hp": 145, "speed": 10, "dps": 14, "leak": 1}
+skills = {"interval": 10, "windup": 1.5, "reach": 144, "shield": 45, "shield_duration": 8, "supplies": 3}

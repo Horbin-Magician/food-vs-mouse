@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "boss_ironpot"
+title = "铁釜·炉心堡垒"
+rank = "boss"
+behavior_id = "ironpot"
+art_id = "boss_ironpot"
+hint = "开场有限锅壳，蓄力重砸"
+description = "开场有限锅壳，蓄力重砸；破壳后露腹，半血后永久卸壳。"
+story = "多年前一口废锅坠下，铁釜护住了炉底的鼠窝。从此它相信最安全的路就是把一口锅顶到尽头。它给小鼠铆装甲，把通往粮仓的狭路当作撤离通道；它打得慢，是因为每次发力都怕震坏背上最后的庇护所。"
+stats = {"hp": 2800, "speed": 5, "dps": 48, "leak": 10}
+skills = {"shield": 400, "interval": 6, "rage_interval": 4, "threshold": 0.5, "windup": 2.5, "damage": 90, "recovery": 3, "exposure_duration": 4, "exposed": 1.25}

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "dough_rat"
+title = "酵团鼠"
+rank = "normal"
+behavior_id = "dough"
+art_id = "dough_rat"
+hint = "入场后仅醒面一次，获得会自然消散的有限护盾。"
+description = "入场后仅醒面一次，获得会自然消散的有限护盾。"
+story = "白酵派出的试温学徒，背上小搪瓷杯盛着一团仍在生长的面种。"
+stats = {"hp": 150, "speed": 11, "dps": 18, "leak": 1}
+skills = {"interval": 8, "windup": 2, "shield": 60, "shield_duration": 6}

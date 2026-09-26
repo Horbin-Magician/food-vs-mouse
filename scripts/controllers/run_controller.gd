@@ -86,7 +86,7 @@ func start() -> void:
 	state.cooldowns.clear()
 	state.leaks = 0
 	accumulator = 0.0
-	combat.clear()
+	combat.clear(true)
 	director.begin(data.chapter_waves(state.chapter_id)[state.wave - 1], rng)
 	message = "鼠潮来袭！左键选卡再点格子，右键取消。"
 	changed.emit()
@@ -131,10 +131,10 @@ func advance(delta: float) -> void:
 			state.phase = "lost"
 			message = "粮仓失守。调整阵型，再试一次。"
 			settle()
-		elif director.finished() and combat.enemies.is_empty():
+		elif director.can_complete(combat.enemies.size()):
 			finish_wave()
 		if state.phase != "battle":
-			combat.clear()
+			combat.clear(state.phase == "prepare")
 			changed.emit()
 
 func finish_wave() -> void:
@@ -148,7 +148,6 @@ func finish_wave() -> void:
 				paused = true
 				changed.emit()
 				return
-	combat.heat_pickups.clear()
 	state.metrics.passed = state.global_wave()
 	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
 	state.inspiration_earned[str(state.global_wave())] = difficulty.reward(data.progression.inspiration_rewards[state.wave - 1]) if state.rewards_enabled else 0
@@ -157,6 +156,7 @@ func finish_wave() -> void:
 		var chapters: Array[String] = data.scene_chapters(state.scene_id)
 		var chapter_index: int = chapters.find(state.chapter_id)
 		if chapter_index == chapters.size() - 1:
+			combat.clear()
 			state.phase = "won"
 			message = "五大关全部守住，厨房迎来黎明！"
 			settle()
@@ -165,7 +165,7 @@ func finish_wave() -> void:
 		state.wave = 1
 	else:
 		state.wave += 1
-	combat.clear()
+	combat.clear(true)
 	state.phase = "prepare"
 	if shop.is_open():
 		shop.open()

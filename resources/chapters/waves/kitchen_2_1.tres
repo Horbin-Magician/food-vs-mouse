@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_2_1"
-title = "夜路急脚"
-stats = {"duration": 85, "composition": ["runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray", "runner", "gray"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.0, "damage_scale": 1.44, "batches": [{"time": 5.0, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 14.8, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 24.6, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 34.4, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 44.2, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 54.0, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}]}
+title = "汤匙擦地"
+spawn_rate = 1.5
+stats = {"hint": "溜勺起跑前会停下；挡住它，趁疲劳输出。", "duration": 85.0, "composition": ["spoon_skater", "gray", "gray", "spoon_skater", "spoon_skater", "gray", "gray", "gray", "spoon_skater", "spoon_skater", "spoon_skater", "spoon_skater", "gray", "spoon_skater", "spoon_skater", "gray", "spoon_skater", "spoon_skater", "spoon_skater", "gray", "spoon_skater", "gray", "spoon_skater", "gray", "gray", "spoon_skater", "gray", "spoon_skater"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.0, "damage_scale": 1.44, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 30.9, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 41.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 52.3, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}]}

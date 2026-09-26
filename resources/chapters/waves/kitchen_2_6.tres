@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_2_6"
-title = "追风扬尘"
-stats = {"duration": 110, "composition": ["flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner", "drummer", "gray", "flour", "runner", "runner", "runner"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.2, "damage_scale": 1.54, "batches": [{"time": 5.0, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.662, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 22.325, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 30.987, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 39.65, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 48.312, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 56.975, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 65.637, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 74.3, "gap": 0.9, "lanes": [0, 1, 2, 0]}]}
+title = "冲刺接力"
+spawn_rate = 1.5
+stats = {"hint": "趁一条路的溜勺疲劳，补好另一条路。", "duration": 110.0, "composition": ["spoon_skater", "towel_scout", "gray", "spoon_skater", "spoon_skater", "towel_scout", "gray", "spoon_skater", "spoon_skater", "spoon_skater", "towel_scout", "towel_scout", "gray", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "towel_scout", "towel_scout", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "spoon_skater", "gray", "towel_scout", "spoon_skater", "spoon_skater", "towel_scout", "spoon_skater", "gray", "spoon_skater", "towel_scout", "towel_scout", "gray", "spoon_skater"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.2, "damage_scale": 1.54, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 32.15, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 43.5, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 56.05, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 68.6, "gap": 1.2, "lanes": [0, 1, 2, 1, 2, 0, 2, 1]}]}

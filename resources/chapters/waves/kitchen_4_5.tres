@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_4_5"
-title = "鼓风来袭"
-stats = {"duration": 105, "composition": ["flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.8, "damage_scale": 1.84, "batches": [{"time": 5.0, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.489, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 19.978, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.467, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 34.956, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 42.444, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 49.933, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 57.422, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 64.911, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 72.4, "gap": 1.1, "lanes": [0, 1]}]}
+title = "粉袋旁路"
+spawn_rate = 1.5
+stats = {"hint": "粉袋死亡才扬尘，醋瓶会提前标格，别混淆来源。", "duration": 105.0, "composition": ["vinegar_spitter", "dough_rat", "flour", "vinegar_spitter", "vinegar_spitter", "flour", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "flour", "dough_rat", "dough_rat", "vinegar_spitter", "vinegar_spitter", "dough_rat", "flour", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "flour", "dough_rat", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "flour", "dough_rat", "dough_rat", "dough_rat"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.8, "damage_scale": 1.84, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.875, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 42.95, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 55.225, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 67.5, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}]}

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "skewer_marshal"
+title = "红签督运"
+rank = "elite"
+behavior_id = "skewer"
+art_id = "skewer_marshal"
+hint = "串线攻击压迫紧邻后排"
+description = "串线攻击压迫紧邻后排；首次低于半血时领取一次自身携带的护盾。"
+story = "粮道押运的红签是它的凭证，最后一份应急口粮一直藏在签筒里。"
+stats = {"hp": 360, "speed": 9, "dps": 32, "leak": 2}
+skills = {"splash_reach": 105.6, "splash_ratio": 0.3, "threshold": 0.5, "windup": 2, "shield": 90, "shield_duration": 6}

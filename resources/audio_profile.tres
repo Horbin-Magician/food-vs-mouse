@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AudioProfile" load_steps=31 format=3]
+[gd_resource type="Resource" script_class="AudioProfile" load_steps=35 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/audio_profile.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/data/audio_cue_def.gd" id="2"]
@@ -255,9 +255,45 @@ cooldown = 0.3
 priority = 4
 gameplay = false
 
+[sub_resource type="Resource" id="Cue_enemy_whistle"]
+script = ExtResource("2")
+id = "enemy_whistle"
+path = "res://assets/audio/sfx/enemy_whistle.wav"
+gain_db = -8.0
+cooldown = 0.22
+priority = 4
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_enemy_iron"]
+script = ExtResource("2")
+id = "enemy_iron"
+path = "res://assets/audio/sfx/enemy_iron.wav"
+gain_db = -8.0
+cooldown = 0.22
+priority = 4
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_enemy_ferment"]
+script = ExtResource("2")
+id = "enemy_ferment"
+path = "res://assets/audio/sfx/enemy_ferment.wav"
+gain_db = -8.0
+cooldown = 0.22
+priority = 4
+gameplay = true
+
+[sub_resource type="Resource" id="Cue_enemy_abacus"]
+script = ExtResource("2")
+id = "enemy_abacus"
+path = "res://assets/audio/sfx/enemy_abacus.wav"
+gain_db = -8.0
+cooldown = 0.22
+priority = 4
+gameplay = true
+
 [resource]
 script = ExtResource("1")
-cues = Array[ExtResource("2")]([SubResource("Cue_ui_click"), SubResource("Cue_ui_cancel"), SubResource("Cue_ui_error"), SubResource("Cue_place"), SubResource("Cue_remove"), SubResource("Cue_heat_spawn"), SubResource("Cue_heat_collect"), SubResource("Cue_bun"), SubResource("Cue_tea"), SubResource("Cue_pepper"), SubResource("Cue_popcorn"), SubResource("Cue_noodles"), SubResource("Cue_garlic"), SubResource("Cue_hit"), SubResource("Cue_armor"), SubResource("Cue_bite"), SubResource("Cue_enemy_down"), SubResource("Cue_food_down"), SubResource("Cue_flour"), SubResource("Cue_summon"), SubResource("Cue_rage"), SubResource("Cue_danger"), SubResource("Cue_wave_start"), SubResource("Cue_clear"), SubResource("Cue_purchase"), SubResource("Cue_refresh"), SubResource("Cue_upgrade_success"), SubResource("Cue_upgrade_fail")])
+cues = Array[ExtResource("2")]([SubResource("Cue_ui_click"), SubResource("Cue_ui_cancel"), SubResource("Cue_ui_error"), SubResource("Cue_place"), SubResource("Cue_remove"), SubResource("Cue_heat_spawn"), SubResource("Cue_heat_collect"), SubResource("Cue_bun"), SubResource("Cue_tea"), SubResource("Cue_pepper"), SubResource("Cue_popcorn"), SubResource("Cue_noodles"), SubResource("Cue_garlic"), SubResource("Cue_hit"), SubResource("Cue_armor"), SubResource("Cue_bite"), SubResource("Cue_enemy_down"), SubResource("Cue_food_down"), SubResource("Cue_flour"), SubResource("Cue_summon"), SubResource("Cue_rage"), SubResource("Cue_danger"), SubResource("Cue_wave_start"), SubResource("Cue_clear"), SubResource("Cue_purchase"), SubResource("Cue_refresh"), SubResource("Cue_upgrade_success"), SubResource("Cue_upgrade_fail"), SubResource("Cue_enemy_whistle"), SubResource("Cue_enemy_iron"), SubResource("Cue_enemy_ferment"), SubResource("Cue_enemy_abacus")])
 music = Dictionary[String, String]({
 "menu": "res://assets/audio/music/menu.ogg",
 "shop": "res://assets/audio/music/shop.ogg",

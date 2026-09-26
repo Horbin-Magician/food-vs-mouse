@@ -12,7 +12,7 @@
 
 生产火苗作为 CombatController 临时状态，由 RunController.collect_heat(uid) 接收 UI 拾取请求并校验阶段／暂停；固定步长推进飞行，到达后统一结算热量。表现节点 HeatPickupView 只读取火苗状态，坐标命中与绘制共享投影。数据、合并、清理和完整边界的权威说明见 [热量设计](../design/heat.md)。
 
-每帧以同一游戏 delta（真实 delta × 1 或 2）推进，暂停 delta 为零；以 1/60 秒固定步长执行模拟。伤害先处理死亡、后检查漏怪，步末先判粮仓归零，再判生成结束且无存活敌人。死亡和漏怪从集合移除，每个实体只结算一次。弹体不追踪死亡目标，普通弹命中沿路径首个敌人；穿透记录已命中 ID。攻击计时首次等待完整间隔，生产亦然。
+每帧以同一游戏 delta（真实 delta × 1 或 2）推进，暂停 delta 为零；以 1/60 秒固定步长执行模拟。伤害先处理死亡、后检查漏怪，步末先判粮仓归零，再按 [小关结束条件](../design/waves.md#小关结束条件2026-09-26) 判计时到或生成结束且无存活敌人。死亡和漏怪从集合移除，每个实体只结算一次。弹体不追踪死亡目标，普通弹命中沿路径首个敌人；穿透记录已命中 ID。攻击计时首次等待完整间隔，生产亦然。
 
 定义使用带稳定 ID 的自定义 Resource，stats 存放可调参数；实例加载后只读。运行实体为独立字典，uid 仅局内身份。运行状态保存基础数据，不保存对象引用。跨模块通过显式方法和信号：CombatController.unit_died(food_id)、enemy_leaked(damage)、enemy_killed(enemy_id)；RunController.changed 通知 UI，阶段只由 RunController 切换。
 

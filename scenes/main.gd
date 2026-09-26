@@ -7,6 +7,7 @@ var battle_art: BattleArt = BattleArt.new()
 var shovel_feedback: ShovelFeedback = ShovelFeedback.new()
 var damage_feedback: DamageFeedback = DamageFeedback.new()
 var status_feedback: StatusFeedback = StatusFeedback.new()
+var enemy_skill_feedback: EnemySkillFeedback = EnemySkillFeedback.new()
 const TOP_RECT := Rect2(12, -16, 1256, 100)
 const SHOP_RECT := Rect2(220, 82, 840, 556)
 const PANEL_RECT := Rect2(974, 180, 282, 444)
@@ -293,6 +294,7 @@ func rebuild() -> void:
 	if sound != null: sound.bind_run(run)
 	shovel_feedback.bind(run, projection, art)
 	status_feedback.bind(run, projection)
+	enemy_skill_feedback.bind(run, projection)
 	if cards == null: return
 	cancel_card_drag()
 	for child: Node in cards.get_children():
@@ -479,6 +481,9 @@ func build_shop() -> void:
 	if wave.stats.has("boss"):
 		var boss: Dictionary = wave.stats.boss
 		preview.tooltip_text += "\n%s：第 %d、%d 行增援，预警 %.1f 秒；常态 %s，狂暴 %s，半血 %s。" % [boss.title, int(boss.rows[0])+1, int(boss.rows[1])+1, boss.warning_seconds, run.data.enemies[boss.normal_id].title, run.data.enemies[boss.rage_id].title, run.data.enemies[boss.burst_id].title]
+	elif wave.stats.has("boss_id"):
+		var definition_enemy: EnemyDef = run.data.enemies[wave.stats.boss_id]
+		preview.tooltip_text += "\n%s：%s" % [definition_enemy.title, definition_enemy.description]
 	var budget := card_label(shop_surface, "%d 热量" % run.state.heat, Vector2(572, 35), Vector2(244, 36), 26, GameTheme.GOLD)
 	budget.name = "Budget"
 	budget.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -602,6 +607,7 @@ func _process(delta: float) -> void:
 		move_child(damage_feedback, 0)
 	damage_feedback.bind(run, projection)
 	status_feedback.bind(run, projection)
+	enemy_skill_feedback.bind(run, projection)
 	animator.bind(run, projection)
 	var before: float = run.state.elapsed
 	run.advance(delta)
@@ -615,6 +621,7 @@ func _process(delta: float) -> void:
 	animator.advance(visual_delta, run.combat.enemies)
 	damage_feedback.advance(visual_delta)
 	status_feedback.advance(visual_delta)
+	enemy_skill_feedback.advance(visual_delta)
 	shovel_feedback.advance(visual_delta)
 	heat_label.text = "%03d" % run.state.heat
 	heat_label.tooltip_text = "热量上限 %.0f；每秒恢复 %.0f，准备阶段不恢复。\n用于布阵、购买食谱与刷新，剩余量跨关保留。\n点击布丁冒出的火苗，飞入此处后获得热量。" % [run.data.rules.heat_cap, run.data.rules.heat_rate]
@@ -654,6 +661,9 @@ func operation_status() -> String:
 	if shovel: return "锅铲已拿起 · 点击立即铲除，无返还 · 右键放回"
 	if not selected.is_empty():
 		return "%s · %d 热量 · %s" % [run.data.foods[selected].title, run.data.foods[selected].stats.cost, card_status(selected)]
+	var wave: Resource = run.data.chapter_waves(run.state.chapter_id)[run.state.wave - 1]
+	if run.director.elapsed < 22.0 and wave.stats.has("hint"):
+		return str(wave.stats.hint)
 	return "选美食，守住粮仓  ·  点击火苗与灵感收取"
 
 func wave_progress() -> float:
@@ -664,7 +674,7 @@ func wave_progress() -> float:
 func wave_status() -> String:
 	var status: String = {"prepare":"大关间购物" if run.shop.is_open() else "准备开战", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
 	if run.state.phase == "battle":
-		status = "清理余鼠 %d" % run.combat.enemies.size() if wave_progress() >= 1.0 else "鼠潮 %d%% · 余鼠 %d" % [roundi(wave_progress() * 100), run.combat.enemies.size()]
+		status = "剩余 %d 秒 · 余鼠 %d" % [ceili(maxf(0.0, run.director.duration - run.director.elapsed)), run.combat.enemies.size()]
 		if run.paused: status = "暂停 · " + status
 	return "%d-%d · 总 %02d/%d · %s\n%s" % [run.data.chapters[run.state.chapter_id].order,run.state.wave,run.state.global_wave(),run.data.scene_wave_count(run.state.scene_id),run.data.difficulties[run.state.difficulty].title,status]
 
@@ -784,6 +794,7 @@ func _draw() -> void:
 	if run.state == null: return
 	draw_kitchen()
 	draw_board()
+	enemy_skill_feedback.draw_ground(self)
 	var hovered: Dictionary = hovered_unit()
 	if not hovered.is_empty():
 		var start_x: float = hovered.col * 96 + 48
@@ -813,7 +824,9 @@ func _draw() -> void:
 				text_at(projection.foot(RunState.BOARD_WIDTH + 7, row) + Vector2(0, -12), "增援 %.1fs" % maxf(0, warning.remaining), Color("ffce83"), 13)
 	shovel_feedback.draw(self)
 	status_feedback.draw_effects(self)
+	enemy_skill_feedback.draw_effects(self)
 	battle_art.hud(self, run.state, run.paused)
+	enemy_skill_feedback.draw_boss_panel(self)
 	if panel.visible: draw_style_box(panel_style, PANEL_RECT)
 	draw_wave_progress()
 	if drag_active:
@@ -870,26 +883,39 @@ func draw_mouse(enemy: Dictionary) -> void:
 	var scale_value: float = projection.depth_scale(enemy.row)
 	var foot: Vector2 = projection.foot(enemy.x, enemy.row)
 	var size: Vector2 = Vector2(58, 72)
-	if enemy.id == "elite": size = Vector2(68, 82)
-	if enemy.id == "boss": size = Vector2(82, 98)
+	var rank: String = run.data.enemy_rank(enemy.id)
+	if rank == "elite": size = Vector2(68, 82)
+	if rank == "boss": size = Vector2(82, 98)
 	status_feedback.draw_ground(self, enemy, foot)
 	draw_mouse_frame(enemy, foot, size, scale_value)
 	if enemy.has("death_age"): return
 	var status_pos: Vector2 = foot - Vector2(22, size.y * 0.8) * scale_value
-	if enemy.id in ["boss", "elite"]:
+	if rank == "elite" or enemy.id == "boss":
 		var caption: String = run.combat.enemy_title(enemy.id)
-		var label_pos: Vector2 = status_pos + Vector2(0, -14)
+		var label_pos: Vector2 = status_pos + Vector2(0, -24)
+		var caption_width: float = ThemeDB.fallback_font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
+		label_pos.x = clampf(foot.x - caption_width * 0.5, BoardProjection.ORIGIN.x + 4.0, BoardProjection.ORIGIN.x + BoardProjection.CANVAS_SIZE.x - caption_width - 4.0)
+		label_pos.y = projection.project(Vector2(0, enemy.row * 96)).y + 14.0
 		draw_string_outline(ThemeDB.fallback_font, label_pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 4, Color("26392f"))
 		text_at(label_pos, caption, Color("ffe1a1"), 12)
 	draw_rect(Rect2(foot + Vector2(-23, 4) * scale_value,Vector2(46 * enemy.hp / enemy.max_hp, 4) * scale_value),Color("ed8796"))
 	status_feedback.draw_status(self, enemy, foot, size.y * scale_value)
+	enemy_skill_feedback.draw_unit(self, enemy, foot, size.y * scale_value)
 
 func draw_mouse_frame(enemy: Dictionary, foot: Vector2, size: Vector2, scale_value: float) -> void:
 	# Articulated frames already contain anticipation, weight and recoil.
 	var pose: Dictionary = animator.mouse_pose(enemy, foot)
 	if not enemy.has("death_age"): pose = status_feedback.cast_pose(enemy, pose)
+	pose = enemy_skill_feedback.cast_pose(enemy, pose)
 	size.x = size.y
-	draw_actor(art.mouse_frame(enemy.id, animator.mouse_frame(enemy)), foot, size * scale_value, enemy.uid, pose, scale_value)
+	var art_id: String = str(enemy.get("art_id", enemy.id))
+	var unarmored: bool = (enemy.id in ["rivet_guard", "rivet_foreman"] and enemy.armor <= 0) or (enemy.id == "boss_ironpot" and enemy.get("shell_broken", false))
+	var texture: Texture2D = art.mouse_frame_for_state(art_id, animator.mouse_frame(enemy), unarmored)
+	var skill_frame: Vector2i = enemy_skill_feedback.skill_frame(enemy)
+	if skill_frame.x >= 0 and not enemy.has("death_age") and animator.entry(enemy).hurt <= 0:
+		var skill_texture: Texture2D = art.skill_frame(art_id, skill_frame, unarmored)
+		if skill_texture != null: texture = skill_texture
+	draw_actor(texture, foot, size * scale_value, enemy.uid, pose, scale_value)
 
 func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, uid: int, pose: Dictionary, depth: float) -> void:
 	if texture == null: return
@@ -932,12 +958,12 @@ func update_inspector() -> void:
 		inspect.text = "暂停中 · 恢复后点击收集灵感" if run.paused else "点击紫色灵感 · 跨局保留，用于局外购卡"
 	elif heat_pickup_view.pickup_at(pointer) >= 0:
 		inspect.text = "暂停中 · 恢复后点击火苗收取热量" if run.paused else "点击火苗 · 飞入左上角后获得热量"
+	elif not inspected_enemy.is_empty():
+		inspect.text = enemy_description(inspected_enemy)
 	elif not unit.is_empty():
 		inspect.text = "%s +%d   生命 %.0f / %.0f\n伤害 %.1f · 间隔 %.2f秒 · 射程 %.1f格" % [run.data.foods[unit.id].title,run.state.level(unit.id),unit.hp,run.board.max_hp(unit.id),run.recipes.damage(unit),run.recipes.interval(unit),run.recipes.reach(unit.id)]
 		var description: String = status_feedback.description(unit)
 		if not description.is_empty(): inspect.text += "\n" + description
-	elif not inspected_enemy.is_empty():
-		inspect.text = "%s   生命 %.0f / %.0f\n%s" % [run.combat.enemy_title(inspected_enemy.id), inspected_enemy.hp, inspected_enemy.max_hp, status_feedback.description(inspected_enemy)]
 	elif debug_enabled and run.state.phase == "battle":
 		inspect.text = "F3 开发面板 · 各行压力"
 		for row: int in range(RunState.ROWS):
@@ -951,11 +977,65 @@ func update_inspector() -> void:
 
 func hovered_enemy() -> Dictionary:
 	if drag_active or shop_overlay.visible or (panel.visible and PANEL_RECT.has_point(pointer)): return {}
-	for enemy: Dictionary in run.combat.enemies:
-		var foot: Vector2 = projection.foot(enemy.x, enemy.row)
-		var height: float = (98 if enemy.id == "boss" else 82 if enemy.id == "elite" else 72) * projection.depth_scale(enemy.row)
-		if Rect2(foot - Vector2(height * 0.5, height * 0.86), Vector2(height, height)).has_point(pointer): return enemy
+	# Reverse the renderer's lane and insertion order so the visible mouse wins.
+	for row: int in range(RunState.ROWS - 1, -1, -1):
+		for index: int in range(run.combat.enemies.size() - 1, -1, -1):
+			var enemy: Dictionary = run.combat.enemies[index]
+			if enemy.row != row: continue
+			var foot: Vector2 = projection.foot(enemy.x, enemy.row)
+			var rank: String = run.data.enemy_rank(enemy.id)
+			var height: float = (98 if rank == "boss" else 82 if rank == "elite" else 72) * projection.depth_scale(enemy.row)
+			if Rect2(foot - Vector2(height * 0.5, height * 0.86), Vector2(height, height)).has_point(pointer): return enemy
 	return {}
+
+func enemy_description(enemy: Dictionary) -> String:
+	var definition: EnemyDef = run.data.enemies[enemy.id]
+	var lines: PackedStringArray = ["%s   生命 %.0f / %.0f" % [run.combat.enemy_title(enemy.id), enemy.hp, enemy.max_hp], "普攻 %.1f / 秒 · 漏粮 %d" % [enemy.dps, definition.stats.leak]]
+	var status: String = status_feedback.description(enemy)
+	if not status.is_empty(): lines.append(status)
+	if not definition.description.is_empty(): lines.append(definition.description)
+	var values: String = enemy_skill_values(enemy, definition)
+	if not values.is_empty(): lines.append(values)
+	if definition.stats.has("armor_hits") and definition.skills.has("unarmored_speed"):
+		lines.append("每次护甲减伤 %.0f（最低受伤 1） · 卸壳后速度 %.0f" % [definition.stats.armor, definition.skills.unarmored_speed])
+	if definition.skills.has("exposed"):
+		lines.append("破绽期间承伤 +%.0f%%" % [(float(definition.skills.exposed) - 1.0) * 100.0])
+	if float(enemy.get("shield", 0.0)) > 0:
+		lines.append("护盾 %.0f%s" % [enemy.shield, " · 余 %.1f 秒" % enemy.shield_time if float(enemy.get("shield_time", 0.0)) > 0 else ""])
+	if enemy.has("ration_stock") and definition.behavior_id == "ration":
+		lines.append("配给剩余 %d 份" % enemy.ration_stock)
+	if enemy.get("ration_received", false): lines.append("本关已领取配给")
+	if str(enemy.get("ability_phase", "normal")) != "normal":
+		lines.append("%s · 余 %.1f 秒" % [enemy.get("ability_title", "技能"), enemy.get("ability_remaining", 0.0)])
+	if float(enemy.get("exposed_time", 0.0)) > 0:
+		lines.append("暴露 · 余 %.1f 秒" % enemy.exposed_time)
+	if not definition.story.is_empty(): lines.append("\n" + definition.story)
+	return "\n".join(lines)
+
+func enemy_skill_values(enemy: Dictionary, definition: EnemyDef) -> String:
+	var skill: Dictionary = definition.skills
+	var damage_scale: float = float(enemy.get("damage_scale", 1.0))
+	var hp_scale: float = float(enemy.get("hp_scale", 1.0))
+	match definition.behavior_id:
+		"breaker", "ironpot", "windwhistle":
+			return "技能伤害 %.0f · 预警 %.1f 秒" % [float(skill.damage) * damage_scale, skill.windup]
+		"acid":
+			return "酸滴 %.0f · 残液每秒 %.0f，持续 %.0f 秒" % [float(skill.damage) * damage_scale, float(skill.tick_damage) * damage_scale, skill.ground_duration]
+		"starter":
+			return "醒面攻速 -25%%，持续 %.0f 秒 · 结束伤害 %.0f" % [skill.ground_duration, float(skill.damage) * damage_scale]
+		"dough", "ration":
+			return "技能护盾 %.0f · 持续 %.0f 秒" % [float(skill.shield) * hp_scale, skill.shield_duration]
+		"skewer":
+			var value: String = "后排穿刺 %.1f / 秒 · 最多一名目标" % [enemy.dps * float(skill.splash_ratio)]
+			if skill.has("shield"): value += "\n半血护盾 %.0f · 持续 %.0f 秒" % [float(skill.shield) * hp_scale, skill.shield_duration]
+			return value
+		"quartermaster":
+			return "签收护盾 %.0f / %.0f 秒 · 断单破绽 %.0f 秒" % [float(skill.shield) * hp_scale, skill.shield_duration, skill.failure_duration]
+		"skater":
+			return "起跑预警 %.1f 秒 · 冲刺 %.0f 像素 / 秒" % [skill.windup, skill.dash_speed]
+		"scout":
+			return "换路预警 %.1f 秒 · 每只仅一次" % skill.windup
+	return ""
 
 
 func create_debug_panel() -> void:

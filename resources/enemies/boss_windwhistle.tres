@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "boss_windwhistle"
+title = "风哨·漏勺飞盗"
+rank = "boss"
+behavior_id = "windwhistle"
+art_id = "boss_windwhistle"
+hint = "听哨起跑、碰撞停步、喘气露出破绽"
+description = "听哨起跑、碰撞停步、喘气露出破绽；半血后冲刺更勤，疲劳更长。"
+story = "风哨曾在食堂收桌后替幼鼠捡回温热的碎屑。它熟记每次端盘的间隔，认为只要足够快，就不必与守卫正面冲突。鼠大厨被挡住后，它带着传菜道的跑腿队赶来，试图抢在最后一盏灯熄灭前送回宵夜。漏勺上的孔是沿途刮出的记号，尾哨用于提醒同伴“等下一趟”。"
+stats = {"hp": 2400, "speed": 7, "dps": 40, "leak": 10}
+skills = {"interval": 8, "rage_interval": 6, "threshold": 0.5, "windup": 2, "dash_speed": 24, "dash_duration": 3, "damage": 60, "recovery": 3, "rage_recovery": 4, "exposed": 1.2}

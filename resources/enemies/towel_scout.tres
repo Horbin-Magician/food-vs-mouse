@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "towel_scout"
+title = "折巾鼠"
+rank = "normal"
+behavior_id = "scout"
+art_id = "towel_scout"
+hint = "只在右侧入口尝试一次相邻换路"
+description = "只在右侧入口尝试一次相邻换路；沿箭头补位可使换路取消。"
+story = "它背着箭头形餐巾，沿收桌次序寻找未被看守的边路。"
+stats = {"hp": 95, "speed": 17, "dps": 16, "leak": 1}
+skills = {"windup": 2, "entrance_min": 768, "entrance_max": 864, "clearance": 48}

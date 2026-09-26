@@ -4,4 +4,7 @@
 script = ExtResource("1")
 id = "elite"
 title = "精英锅盖鼠"
+rank = "elite"
+behavior_id = "legacy"
+art_id = "elite"
 stats = {"hp": 520, "speed": 9, "dps": 37.5, "leak": 2, "armor_hits": 3, "armor": 12}

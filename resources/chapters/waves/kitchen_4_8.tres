@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_4_8"
-title = "白尘大厨"
-stats = {"duration": 150, "composition": ["flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "gray", "flour", "gnawer", "lid", "flour", "drummer", "boss"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.92, "damage_scale": 1.9, "batches": [{"time": 5.0, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 17.225, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 29.45, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 41.675, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 53.9, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 66.125, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 78.35, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 90.575, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 102.8, "gap": 1.1, "lanes": [0, 1, 2]}], "boss": {"title": "白尘大厨", "normal_id": "flour", "rage_id": "flour", "burst_id": "gnawer", "interval": 13.0, "rage_interval": 10.0, "warning_seconds": 2.5, "rows": [1, 5]}}
+title = "老面醒来"
+spawn_rate = 1.5
+stats = {"hint": "白酵醒面结束才爆开，回缩时本体更容易受伤。", "duration": 150.0, "composition": ["vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "vinegar_spitter", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "gray", "gray", "gray", "gray", "boss_starter"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.92, "damage_scale": 1.9, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 43.4, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 66.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 89.8, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2], "exclude_rows": [3]}, {"time": 105.0, "gap": 1.2, "lanes": [0]}], "boss_id": "boss_starter"}

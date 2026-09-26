@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "tong_breaker"
+title = "夹钳鼠"
+rank = "normal"
+behavior_id = "breaker"
+art_id = "tong_breaker"
+hint = "接敌后蓄力夹断前排，重击与恢复期间停止普攻。"
+description = "接敌后蓄力夹断前排，重击与恢复期间停止普攻。"
+story = "它曾负责剪断食物包装绳，如今用短烤夹拆开守备阵地。"
+stats = {"hp": 180, "speed": 10, "dps": 22, "leak": 1}
+skills = {"interval": 4, "windup": 2, "damage": 60, "recovery": 2}

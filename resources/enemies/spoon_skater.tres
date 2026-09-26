@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "spoon_skater"
+title = "溜勺鼠"
+rank = "normal"
+behavior_id = "skater"
+art_id = "spoon_skater"
+hint = "借勺蓄势后冲刺，碰到美食便停下，随后短暂疲劳。"
+description = "借勺蓄势后冲刺，碰到美食便停下，随后短暂疲劳。"
+story = "洗碗区的残羹搬运工，把旧量勺扣在腹侧，借沾油勺背赶路。"
+stats = {"hp": 80, "speed": 14, "dps": 18, "leak": 1}
+skills = {"interval": 6, "windup": 2, "dash_speed": 24, "dash_duration": 3, "recovery_speed": 8, "recovery": 3, "segments": 1, "segment_pause": 0}

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "spoon_captain"
+title = "双勺急先锋"
+rank = "elite"
+behavior_id = "skater"
+art_id = "spoon_captain"
+hint = "预告后分两段冲刺"
+description = "预告后分两段冲刺；任一段撞到美食就取消剩余冲刺。"
+story = "风哨的领跑者，把两段传菜路线刻进一双磨亮的量勺。"
+stats = {"hp": 190, "speed": 14, "dps": 24, "leak": 2}
+skills = {"interval": 6, "windup": 2, "dash_speed": 24, "dash_duration": 1.5, "recovery_speed": 8, "recovery": 4, "segments": 2, "segment_pause": 1}

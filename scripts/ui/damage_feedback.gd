@@ -42,7 +42,7 @@ func on_damage(unit: Dictionary, amount: float, is_food: bool, direct: bool) -> 
 	var x: float = unit.col * 96.0 + 48.0 if is_food else unit.x
 	var foot: Vector2 = projection.foot(x, unit.row)
 	var height: float = 52.0
-	var side_offset: float = 48.0 if unit.id in ["boss", "elite"] else 0.0
+	var side_offset: float = 48.0 if not is_food and combat.data.enemy_rank(unit.id) in ["boss", "elite"] else 0.0
 	var overlap: int = 0
 	for number: Dictionary in numbers:
 		if number.uid == unit.uid and number.age < 0.3: overlap += 1

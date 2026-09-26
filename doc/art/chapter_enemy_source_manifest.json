@@ -1,0 +1,631 @@
+[
+  {
+    "source": "assets/art/source/chapter_enemies/boss_ironpot.png",
+    "runtime": "assets/art/mouse_frames/boss_ironpot.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "f2e66c24172a80fcb0a99234ad8d818b84a2dd3c4d8c743b95c30f61ae7212b6",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_ironpot_skill.png",
+    "runtime": "assets/art/enemy_skills/boss_ironpot.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "590356abcfb434a321bca98d250df1eb5297035e724361a6e1cadc99b2b8873a",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_ironpot_unarmored.png",
+    "runtime": "assets/art/mouse_frames/boss_ironpot_unarmored.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "91ec0dd4af34c6409df70a23e2d819c5a7468c5c84a61f6f006fca52da7dc6ea",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_ironpot_unarmored_skill.png",
+    "runtime": "assets/art/enemy_skills/boss_ironpot_unarmored.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "58093243965168ad1f45376d40b6fe87a0297653428cab062d37e33b37f3e2db",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_quartermaster.png",
+    "runtime": "assets/art/mouse_frames/boss_quartermaster.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "0bdc4b4dfe6eb79dba23aaad89cbcfb8f9dff5cc052649365f86cc487337218c",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_quartermaster_skill.png",
+    "runtime": "assets/art/enemy_skills/boss_quartermaster.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "400b2344e47a3010665c62d4fa29696c40500d9c8db228196592335a0a7bb5a1",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_starter.png",
+    "runtime": "assets/art/mouse_frames/boss_starter.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "905efa866429548e804dc8ec61b9b3f990d517cb434fe2fb501ef8c401d9170f",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_starter_skill.png",
+    "runtime": "assets/art/enemy_skills/boss_starter.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "175c2e0183710372531e57a45087cda19ed321bacf29808b974d56a4719f3f03",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_windwhistle.png",
+    "runtime": "assets/art/mouse_frames/boss_windwhistle.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "dd7bade2caa6e0ae4ad3c691d717d21ceaca2dc633a3975e8c97dc74f476d8aa",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/boss_windwhistle_skill.png",
+    "runtime": "assets/art/enemy_skills/boss_windwhistle.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "3c2e32d52fa9d656f32fe048fc7c4f3b7d18549911ef35e8b27d8ec53cd36f4d",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/dough_rat.png",
+    "runtime": "assets/art/mouse_frames/dough_rat.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "27b746fbe6b25e7f1216bdada32499af1d89d465bf7b3e625d150a05d90a6095",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/dough_rat_skill.png",
+    "runtime": "assets/art/enemy_skills/dough_rat.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "c33b0e11cc37cfcbe82ad741cbc6de67388a81365b6b184f8f0f20307b3e689b",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/ration_keeper.png",
+    "runtime": "assets/art/mouse_frames/ration_keeper.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "be1dfc93c3f96e126b5e59f4282730381363c227fb47c6e64e722f9b84157631",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/ration_keeper_skill.png",
+    "runtime": "assets/art/enemy_skills/ration_keeper.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "7924e7bcaf450eb09456bc04b121745b3e339893c86cb79e1d367f541f93f63e",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_foreman.png",
+    "runtime": "assets/art/mouse_frames/rivet_foreman.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "26ef9fb2627c21e934017a1dc54400b6a0db481a99c390e1cd09da8fdbb35bc4",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_foreman_skill.png",
+    "runtime": "assets/art/enemy_skills/rivet_foreman.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "ed08f14ccff338b9f81d3b7b2e3ad29d3a79fd38a1a5ce48b2a940dfe312711d",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_foreman_unarmored.png",
+    "runtime": "assets/art/mouse_frames/rivet_foreman_unarmored.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "c65cc84a1fabf1855a58180adbdfb01ac18451cefa07d7d03ab4209ade68bd49",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_foreman_unarmored_skill.png",
+    "runtime": "assets/art/enemy_skills/rivet_foreman_unarmored.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "6cf9d2d5f94b4b630c6156aea4b0e29a460f83029c98020bc93cd1fb650b9f5b",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_guard.png",
+    "runtime": "assets/art/mouse_frames/rivet_guard.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "dc73125e87946bfd64d89cc5de513afa3c3064c7fe7d07518d4acc4e19f9af7a",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_guard_skill.png",
+    "runtime": "assets/art/enemy_skills/rivet_guard.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "f3da9f5f5334ef37ca02c73361fa110d2dec420b44d2a4ee257128fac52b7588",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/rivet_guard_unarmored.png",
+    "runtime": "assets/art/mouse_frames/rivet_guard_unarmored.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "8ddbb47cadf4b7bfb7f4e465c0c8a3ffbcdd029722ca14b3e57173ecb7ce124e",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/skewer_lancer.png",
+    "runtime": "assets/art/mouse_frames/skewer_lancer.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "9205f283f1913afb7245f63095236373429a8f01a0a36ceca1534715d18de67a",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/skewer_lancer_skill.png",
+    "runtime": "assets/art/enemy_skills/skewer_lancer.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "dcfca68a410c9d942cb8a4123c28742fefbc00ea2f2bf829a7b01ec8c33b33f2",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/skewer_marshal.png",
+    "runtime": "assets/art/mouse_frames/skewer_marshal.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "96cab613496856f86ef33e3bf685c6a7a11b96cb8506916ba73d42ed1b5aa884",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/skewer_marshal_skill.png",
+    "runtime": "assets/art/enemy_skills/skewer_marshal.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "8c59169fed5bc24cb990997ec48e6ff62d6fcfe127e331071e1fb41f53cf45e6",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/spoon_captain.png",
+    "runtime": "assets/art/mouse_frames/spoon_captain.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "2f414ab788a495ad534cae6999ee46783109618246547ffe57dfb9f7f56cfe1b",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/spoon_captain_skill.png",
+    "runtime": "assets/art/enemy_skills/spoon_captain.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "f35ba5087a59b2a24233e617ce6786cd4d22431be40dcf915f47abbc01537e1c",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/spoon_skater.png",
+    "runtime": "assets/art/mouse_frames/spoon_skater.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "2e9064a655b2eb6a85c7c6faa060531b4787ee2b76d140762090325d0a2559c2",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/spoon_skater_skill.png",
+    "runtime": "assets/art/enemy_skills/spoon_skater.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "9ec387b99f82080505cf1f4922142d5c0e0cb7c69f5be65757c105bd42993b65",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/tong_breaker.png",
+    "runtime": "assets/art/mouse_frames/tong_breaker.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "e0372cfb7e2a3842985613d81351ff286d792cd36ac110fcd92bed7c58643879",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/tong_breaker_skill.png",
+    "runtime": "assets/art/enemy_skills/tong_breaker.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "9475d295b3318684a05331d38dd7dd6fbcc896becd358ca0b8a1714850538d0c",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/towel_scout.png",
+    "runtime": "assets/art/mouse_frames/towel_scout.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "1fe2b7c2c5399da7b80305429c77da18876d3b402fed4c414fb042bf642d2518",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/towel_scout_skill.png",
+    "runtime": "assets/art/enemy_skills/towel_scout.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "81746acf1ecf455f818ff4c6b5d8b894a8e1400c27a406c9566f950f7062c873",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/vinegar_cellarer.png",
+    "runtime": "assets/art/mouse_frames/vinegar_cellarer.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "9626d77784092aefb1e462c5279be3329f2531856ba49edbcdef10a47c03f1c3",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/vinegar_cellarer_skill.png",
+    "runtime": "assets/art/enemy_skills/vinegar_cellarer.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "6f65bd6ff201a14617b2adad5b42799da07659c18ab9142b81fe11a8d34251db",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/vinegar_spitter.png",
+    "runtime": "assets/art/mouse_frames/vinegar_spitter.png",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_sha256": "98ae339b886de466a3705075b79660cce12b06dfc7638f8b651d9551a3a094c4",
+    "columns": 6,
+    "rows": 4,
+    "expected_frames": 24,
+    "target_size": [
+      1536,
+      1024
+    ],
+    "status": "generated_unpacked"
+  },
+  {
+    "source": "assets/art/source/chapter_enemies/vinegar_spitter_skill.png",
+    "runtime": "assets/art/enemy_skills/vinegar_spitter.png",
+    "source_size": [
+      1774,
+      887
+    ],
+    "source_sha256": "50634ebdf0439fcffa02b4e7af2e32129c12dc5c21efe021b13f7ed6d02f62a9",
+    "columns": 6,
+    "rows": 3,
+    "expected_frames": 18,
+    "target_size": [
+      1536,
+      768
+    ],
+    "status": "generated_unpacked"
+  }
+]

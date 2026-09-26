@@ -1,0 +1,26 @@
+{
+  "source": "Original synthesis: tools/generate_enemy_audio.py",
+  "sample_rate": 44100,
+  "cues": {
+    "enemy_whistle": {
+      "seconds": 0.46,
+      "sha256": "91e97a25190764ae7136768dd346777621759f154b01405e3eb823d5863e9d21",
+      "peak_dbfs": -8
+    },
+    "enemy_iron": {
+      "seconds": 0.62,
+      "sha256": "9814fad704dbff92edba26b0d600a8eba277df3f3cae5fd317fffc9c31781067",
+      "peak_dbfs": -8
+    },
+    "enemy_ferment": {
+      "seconds": 0.6,
+      "sha256": "bd51d6238e3611f6291d26a1d02c1d1011b75b41d92aeb13cbaf6022dab49475",
+      "peak_dbfs": -8
+    },
+    "enemy_abacus": {
+      "seconds": 0.4,
+      "sha256": "579cf37f516cdadee844450312d12b70bba69428856941d8974a5a6f4766e46b",
+      "peak_dbfs": -8
+    }
+  }
+}

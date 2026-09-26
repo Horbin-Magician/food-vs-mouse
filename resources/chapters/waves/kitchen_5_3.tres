@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+
 [ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 id = "kitchen_5_3"
-title = "粉袋回流"
-stats = {"duration": 105, "composition": ["lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour", "runner", "gnawer", "lid", "flour", "lid", "flour"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.04, "damage_scale": 1.96, "batches": [{"time": 5.0, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.467, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 19.933, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.4, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 34.867, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 42.333, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 49.8, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 57.267, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 64.733, "gap": 1.3, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 72.2, "gap": 1.3, "lanes": [0, 1]}]}
+title = "铆壳旧账"
+spawn_rate = 1.5
+stats = {"hint": "铆壳与临时盾不同；点心匣的补给次数有限。", "duration": 105.0, "composition": ["ration_keeper", "skewer_lancer", "skewer_lancer", "rivet_guard", "rivet_guard", "skewer_lancer", "skewer_lancer", "ration_keeper", "rivet_guard", "skewer_lancer", "rivet_guard", "skewer_lancer", "skewer_lancer", "skewer_lancer", "rivet_guard", "ration_keeper", "rivet_guard", "skewer_lancer", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "ration_keeper", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "ration_keeper", "skewer_lancer", "ration_keeper"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.04, "damage_scale": 1.96, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.875, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 42.95, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 55.225, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 67.5, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}]}

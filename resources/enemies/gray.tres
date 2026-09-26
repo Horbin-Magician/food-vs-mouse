@@ -6,4 +6,7 @@
 script = ExtResource("1")
 id = "gray"
 title = "灰鼠"
+rank = "normal"
+behavior_id = "legacy"
+art_id = "gray"
 stats = {"hp": 100, "speed": 12, "dps": 20, "leak": 1}

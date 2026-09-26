@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "vinegar_cellarer"
+title = "封醋大师"
+rank = "elite"
+behavior_id = "acid"
+art_id = "vinegar_cellarer"
+hint = "同时预告本行与一条相邻行的酸格"
+description = "同时预告本行与一条相邻行的酸格；没有合法目标就不落酸。"
+story = "守着腌菜窖的老手，背瓶双滴嘴分流，但不会向整片厨房泼酸。"
+stats = {"hp": 300, "speed": 9, "dps": 16, "leak": 2}
+skills = {"interval": 12, "windup": 2.5, "reach": 240, "damage": 24, "tick_damage": 6, "tick_interval": 1, "ground_duration": 3, "max_rows": 2}

@@ -39,7 +39,9 @@ func interval(unit: Dictionary) -> float:
 	if stats.kind == "producer": return stats.interval
 	var bonus: float = 0.0
 	if adjacent(unit,"garlic"): bonus += data.foods.garlic.stats.aura
-	if unit.flour > 0: bonus -= data.rules.flour_penalty
+	var penalty: float = float(data.rules.flour_penalty) if unit.flour > 0 else 0.0
+	if float(unit.get("proof_time", 0.0)) > 0: penalty = maxf(penalty, float(unit.get("proof_penalty", 0.0)))
+	bonus -= penalty
 	return maxf(data.rules.min_interval,stats.interval / (1.0 + bonus))
 
 func damage(unit: Dictionary) -> float:

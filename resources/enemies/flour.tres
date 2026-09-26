@@ -4,4 +4,7 @@
 script = ExtResource("1")
 id = "flour"
 title = "面粉鼠"
+rank = "normal"
+behavior_id = "legacy"
+art_id = "flour"
 stats = {"hp": 110, "speed": 14, "dps": 20, "leak": 1}

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "skewer_lancer"
+title = "竹签鼠"
+rank = "normal"
+behavior_id = "skewer"
+art_id = "skewer_lancer"
+hint = "刺中前排时还会伤到紧贴其后的一个美食"
+description = "刺中前排时还会伤到紧贴其后的一个美食；留出间距可避开。"
+story = "点心搬运工口衔红签竹签，习惯沿一道缝同时挑起前后两块食物。"
+stats = {"hp": 170, "speed": 11, "dps": 26, "leak": 1}
+skills = {"splash_reach": 105.6, "splash_ratio": 0.3}

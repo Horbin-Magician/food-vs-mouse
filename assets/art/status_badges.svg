@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="32" viewBox="0 0 320 32">
+  <!-- Original in-project state glyph atlas, 32 px cells. -->
+  <g transform="translate(16 16)" stroke="#78f3c2" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M-6 0L0-6L6 0M-6 8L0 2L6 8"/>
+  </g>
+  <g transform="translate(48 16)" stroke="#ffd478" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M-6 8L6-8M-8 0L2 6"/>
+  </g>
+  <g transform="translate(80 16)" stroke="#d8a1ff" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M0-6L-6 0L0 6M8-6L2 0L8 6"/>
+  </g>
+  <g transform="translate(112 16)" stroke="#8ce7ff" fill="none" stroke-width="2.8" stroke-linecap="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M-9 0H9M-4.5-7.8L4.5 7.8M-4.5 7.8L4.5-7.8"/>
+  </g>
+  <g transform="translate(144 16)">
+    <circle r="14.5" fill="#193b40" stroke="#ff934d" stroke-width="2"/>
+    <path d="M0-10L8 2L4 8H-4L-8 2Z" fill="#ff934d"/>
+    <circle cy="4" r="3" fill="#ffe5a7"/>
+  </g>
+  <g transform="translate(176 16)" stroke="#eee4ce" fill="none" stroke-width="2.8" stroke-linejoin="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M-6-8H6L-6 8H6Z"/>
+  </g>
+  <g transform="translate(208 16)" fill="#b0d8ed">
+    <circle r="14.5" fill="#193b40" stroke="#b0d8ed" stroke-width="2"/>
+    <path d="M-8-6H8L6 4L0 10L-6 4Z"/>
+  </g>
+  <g transform="translate(240 16)" fill="#ffe0a0">
+    <circle r="14.5" fill="#193b40" stroke="#ffe0a0" stroke-width="2"/>
+    <path d="M-8-6H8L6 4L0 10L-6 4Z"/>
+  </g>
+  <g transform="translate(272 16)" stroke="#ff6c75" fill="none" stroke-width="3.5" stroke-linejoin="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M-8 6V-6L0 0L8-6V6"/>
+  </g>
+  <g transform="translate(304 16)" stroke="#c0f9ff" fill="none" stroke-width="3" stroke-linecap="round">
+    <circle r="14.5" fill="#193b40" stroke-width="2"/>
+    <path d="M4-7A8 8 0 1 0 8 3"/>
+    <circle r="3" fill="#c0f9ff" stroke="none"/>
+  </g>
+</svg>

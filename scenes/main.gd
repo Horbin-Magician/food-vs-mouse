@@ -6,6 +6,7 @@ var animator: UnitAnimator = UnitAnimator.new()
 var battle_art: BattleArt = BattleArt.new()
 var shovel_feedback: ShovelFeedback = ShovelFeedback.new()
 var damage_feedback: DamageFeedback = DamageFeedback.new()
+var status_feedback: StatusFeedback = StatusFeedback.new()
 const TOP_RECT := Rect2(12, -16, 1256, 100)
 const FOOTER_Y := 678.0
 const SHOP_RECT := Rect2(220, 82, 840, 556)
@@ -249,6 +250,7 @@ func rebuild() -> void:
 	if not is_inside_tree(): return
 	if sound != null: sound.bind_run(run)
 	shovel_feedback.bind(run, projection, art)
+	status_feedback.bind(run, projection)
 	if cards == null: return
 	cancel_card_drag()
 	for child: Node in cards.get_children():
@@ -479,6 +481,7 @@ func _process(delta: float) -> void:
 		add_child(damage_feedback)
 		move_child(damage_feedback, 0)
 	damage_feedback.bind(run, projection)
+	status_feedback.bind(run, projection)
 	animator.bind(run, projection)
 	var before: float = run.state.elapsed
 	run.advance(delta)
@@ -491,6 +494,7 @@ func _process(delta: float) -> void:
 		visual_delta = run.state.elapsed - before if run.state.phase == "battle" else (minf(delta, 0.25) if run.state.phase == "prepare" else 0.0)
 	animator.advance(visual_delta, run.combat.enemies)
 	damage_feedback.advance(visual_delta)
+	status_feedback.advance(visual_delta)
 	shovel_feedback.advance(visual_delta)
 	heat_label.text = "%03d" % run.state.heat
 	heat_label.tooltip_text = "每关上限 %.0f；每秒恢复 %.0f，准备阶段不恢复。\n点击布丁冒出的火苗，飞入此处后获得热量。" % [run.data.rules.heat_cap, run.data.rules.heat_rate]
@@ -640,6 +644,7 @@ func _draw() -> void:
 		for row: int in run.director.warning_rows():
 			text_at(projection.foot(RunState.BOARD_WIDTH + 7, row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
 	shovel_feedback.draw(self)
+	status_feedback.draw_effects(self)
 	battle_art.hud(self, run.state, run.paused)
 	if panel.visible: draw_style_box(panel_style, PANEL_RECT)
 	draw_wave_progress()
@@ -682,6 +687,7 @@ func draw_food(unit: Dictionary) -> void:
 	var foot: Vector2 = projection.foot(unit.col * 96 + 48, unit.row)
 	var pose: Dictionary = animator.bun_pose(unit, foot) if unit.id == "bun" else animator.pose(unit, foot)
 	foot = pose.foot
+	status_feedback.draw_ground(self, unit, pose.shadow)
 	if unit.id == "bun":
 		draw_actor(art.bun_frame(animator.bun_frame(unit)), foot, Vector2(76, 76) * scale_value, unit.uid, pose, scale_value)
 	else:
@@ -690,6 +696,7 @@ func draw_food(unit: Dictionary) -> void:
 	var fraction: float = unit.hp / run.board.max_hp(unit.id)
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56, 4) * scale_value), Color("633f46"))
 	draw_rect(Rect2(foot + Vector2(-28, 4) * scale_value, Vector2(56 * fraction, 4) * scale_value), Color("ff817d") if fraction < 0.25 else Color("7fd29b"))
+	status_feedback.draw_status(self, unit, foot, 76 * scale_value)
 
 func draw_mouse(enemy: Dictionary) -> void:
 	var scale_value: float = projection.depth_scale(enemy.row)
@@ -697,17 +704,18 @@ func draw_mouse(enemy: Dictionary) -> void:
 	var size: Vector2 = Vector2(58, 72)
 	if enemy.id == "elite": size = Vector2(68, 82)
 	if enemy.id == "boss": size = Vector2(82, 98)
+	status_feedback.draw_ground(self, enemy, foot)
 	draw_mouse_frame(enemy, foot, size, scale_value)
 	if enemy.has("death_age"): return
 	var status_pos: Vector2 = foot - Vector2(22, size.y * 0.8) * scale_value
-	if enemy.slow_time > 0: text_at(status_pos,"❄",Color("83e4f5"))
-	if enemy.burn_time > 0: text_at(status_pos + Vector2(29, 0),"♨",Color("ffab69"))
 	if enemy.id in ["boss", "elite"]: text_at(status_pos + Vector2(0, -14),run.data.enemies[enemy.id].title,Color("ffe1a1"),12)
 	draw_rect(Rect2(foot + Vector2(-23, 4) * scale_value,Vector2(46 * enemy.hp / enemy.max_hp, 4) * scale_value),Color("ed8796"))
+	status_feedback.draw_status(self, enemy, foot, size.y * scale_value)
 
 func draw_mouse_frame(enemy: Dictionary, foot: Vector2, size: Vector2, scale_value: float) -> void:
 	# Articulated frames already contain anticipation, weight and recoil.
 	var pose: Dictionary = animator.mouse_pose(enemy, foot)
+	if not enemy.has("death_age"): pose = status_feedback.cast_pose(enemy, pose)
 	size.x = size.y
 	draw_actor(art.mouse_frame(enemy.id, animator.mouse_frame(enemy)), foot, size * scale_value, enemy.uid, pose, scale_value)
 
@@ -741,6 +749,7 @@ func hovered_unit() -> Dictionary:
 
 func update_inspector() -> void:
 	var unit: Dictionary = hovered_unit()
+	var inspected_enemy: Dictionary = hovered_enemy()
 	inspect.text = ""
 	if drag_active:
 		var error: String = drag_placement_error()
@@ -750,7 +759,11 @@ func update_inspector() -> void:
 	elif heat_pickup_view.pickup_at(pointer) >= 0:
 		inspect.text = "暂停中 · 恢复后点击火苗收取热量" if run.paused else "点击火苗 · 飞入左上角后获得热量"
 	elif not unit.is_empty():
-		inspect.text = "%s +%d   生命 %.0f / %.0f\n伤害 %.1f · 间隔 %.2f秒 · 射程 %.1f格%s" % [run.data.foods[unit.id].title,run.state.level(unit.id),unit.hp,run.board.max_hp(unit.id),run.recipes.damage(unit),run.recipes.interval(unit),run.recipes.reach(unit.id)," · 面粉影响" if unit.flour > 0 else ""]
+		inspect.text = "%s +%d   生命 %.0f / %.0f\n伤害 %.1f · 间隔 %.2f秒 · 射程 %.1f格" % [run.data.foods[unit.id].title,run.state.level(unit.id),unit.hp,run.board.max_hp(unit.id),run.recipes.damage(unit),run.recipes.interval(unit),run.recipes.reach(unit.id)]
+		var description: String = status_feedback.description(unit)
+		if not description.is_empty(): inspect.text += "\n" + description
+	elif not inspected_enemy.is_empty():
+		inspect.text = "%s   生命 %.0f / %.0f\n%s" % [run.data.enemies[inspected_enemy.id].title, inspected_enemy.hp, inspected_enemy.max_hp, status_feedback.description(inspected_enemy)]
 	elif debug_enabled and run.state.phase == "battle":
 		inspect.text = "F3 开发面板 · 各行压力"
 		for row: int in range(RunState.ROWS):
@@ -761,6 +774,14 @@ func update_inspector() -> void:
 	inspect.visible = not inspect.text.is_empty() and not placement_modal_visible()
 	inspect.size = Vector2(360, 0)
 	inspect.position = Vector2(clampf(pointer.x + 16, 12, 908), clampf(pointer.y + 20, 180, 720 - inspect.size.y - 12))
+
+func hovered_enemy() -> Dictionary:
+	if drag_active or shop_overlay.visible or (panel.visible and PANEL_RECT.has_point(pointer)): return {}
+	for enemy: Dictionary in run.combat.enemies:
+		var foot: Vector2 = projection.foot(enemy.x, enemy.row)
+		var height: float = (98 if enemy.id == "boss" else 82 if enemy.id == "elite" else 72) * projection.depth_scale(enemy.row)
+		if Rect2(foot - Vector2(height * 0.5, height * 0.86), Vector2(height, height)).has_point(pointer): return enemy
+	return {}
 
 
 func create_debug_panel() -> void:

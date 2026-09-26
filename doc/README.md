@@ -28,6 +28,8 @@
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 锅铲光标回归、两尺寸渲染及 macOS 编辑器旧光标缓存重载复验通过 |
 | [art/damage_feedback.md](art/damage_feedback.md) | 双方伤害数字、shader、事件及生命周期 | 已实现，原生画面通过 |
 | [testing/damage_feedback.md](testing/damage_feedback.md) | 伤害数值、暂停倍速、shader 与渲染验证 | 逻辑及原生渲染通过，真人压力待验 |
+| [art/status_effects.md](art/status_effects.md) | Buff 光晕、状态徽记、首领召唤与技能动画及事件接口 | 已接入 |
+| [testing/status_effects.md](testing/status_effects.md) | 状态边界、技能事件、生命周期、双尺寸与鼠标验收 | 28 组回归及原生专项通过；性能限制见正文 |
 | [art/projectiles.md](art/projectiles.md) | 五种美食弹体与高压蒸汽变体 | 已实现 |
 | [testing/projectiles.md](testing/projectiles.md) | 弹体导入、暂停倍速、回归与渲染 | 自动和原生渲染通过，真人试玩未执行 |
 | [art/presentation.md](art/presentation.md) | 原创视觉、音效与来源许可 | 生成美术已接入 |

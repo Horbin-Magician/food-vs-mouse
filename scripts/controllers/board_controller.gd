@@ -4,6 +4,7 @@ extends RefCounted
 signal placed(unit: Dictionary)
 signal removed(unit: Dictionary)
 signal moved(unit: Dictionary, from_row: int, from_col: int)
+signal healed(unit: Dictionary)
 
 var state: RunState
 var data: Catalog
@@ -67,4 +68,6 @@ func remove(row: int, col: int, paused: bool) -> String:
 
 func heal(ratio: float) -> void:
 	for unit: Dictionary in state.units:
+		var before: float = unit.hp
 		unit.hp = minf(max_hp(unit.id), unit.hp + max_hp(unit.id) * ratio)
+		if unit.hp > before: healed.emit(unit)

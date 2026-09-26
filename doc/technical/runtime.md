@@ -55,6 +55,10 @@ prepare → battle → prepare，最终进入 won/lost。关后结算金币与�
 
 CombatController 在统一扣血入口新增 `damage_resolved(unit, actual, is_food, direct)`，减伤与过量伤害处理后发送。DamageFeedback 只订阅并展示，不反写运行状态；载荷语义、shader、飘字和清理规则统一见 [受击反馈](../art/damage_feedback.md)。原有受击与死亡信号保持原时点，继续驱动 UnitAnimator。
 
+## 状态与技能表现事件（2026-09-26）
+
+CombatController 的 `skill_used(effect_id, source, targets)` 与 BoardController 的 `healed(unit)` 驱动 StatusFeedback。状态来源、载荷、绘制层级、寿命、恢复事件跨阶段例外和验收规则统一见 [状态特征与技能表现](../art/status_effects.md)。鼓舞表现和移动速度共用 `is_drummer_boosted(enemy, sources)`，邻接 Buff 使用 RecipeSystem.adjacent；表现不反写战斗、不消费随机数、不加入存档。
+
 ## 铲除表现接口（2026-09-25）
 
 BoardController.remove(row, col, paused) 移除旧 confirmed 参数；成功移除发送 removed(unit)，空格不发送。ShovelFeedback 订阅当前 board 并复制绘图所需的纹理与位置，不保留可变单位引用；绑定新局时断开旧信号并清空快照。主场景用统一 visual_delta 推进，在棋盘角色后、界面前绘制。规则及验收依据 [UI 规范](../art/ui.md#直接铲除与动画2026-09-25)。

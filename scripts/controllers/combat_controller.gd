@@ -111,6 +111,7 @@ func step(delta: float) -> void:
 		unit.attacks += 1
 		acted.emit(unit.uid)
 		if stats.kind == "melee":
+			skill_used.emit("melee", unit, [target])
 			damage_enemy(target,recipes.damage(unit),unit.id)
 		else:
 			projectiles.append({"row": unit.row, "x": unit.col * 96.0 + 48.0, "damage": recipes.damage(unit), "source": unit.id, "radius": recipes.radius(unit) * 96.0, "remaining": stats.get("pierce",1), "hit": []})
@@ -175,7 +176,9 @@ func nearest(row: int, x: float, reach: float) -> Dictionary:
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool = true) -> void:
 	if not enemies.has(enemy) or amount <= 0.0 or not is_finite(amount): return
-	if direct and source == "pepper" and enemy.slow_time > 0: amount *= recipes.value("cold_spice","multiplier",1.0)
+	if direct and source == "pepper" and enemy.slow_time > 0:
+		amount *= recipes.value("cold_spice","multiplier",1.0)
+		if recipes.has("cold_spice"): skill_used.emit("cold_spice", enemy, [])
 	if direct and enemy.armor > 0:
 		amount = maxf(1.0, amount - data.enemies[enemy.id].stats.get("armor", 0))
 		enemy.armor -= 1
@@ -204,6 +207,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 		enemy_killed.emit(enemy.id)
 		if recipes.has("recycle") and state.metrics.kills % int(recipes.value("recycle","every")) == 0:
 			add_heat(recipes.value("recycle","heat"))
+			skill_used.emit("recycle", enemy, [])
 
 func damage_unit(unit: Dictionary, amount: float) -> void:
 	if not state.units.has(unit) or amount <= 0.0 or not is_finite(amount): return
@@ -220,9 +224,13 @@ func damage_unit(unit: Dictionary, amount: float) -> void:
 		unit_died.emit(unit.id)
 
 func hit(projectile: Dictionary, target: Dictionary) -> void:
+	if not enemies.has(target): return
 	var affected: Array = [target]
 	if projectile.radius > 0:
 		affected = enemies.filter(func(e: Dictionary) -> bool: return e.row == target.row and absf(e.x-target.x) <= projectile.radius)
+		var impact: Dictionary = target.duplicate()
+		impact["radius"] = projectile.radius
+		skill_used.emit("steam" if projectile.source == "bun" else "popcorn", impact, [])
 	for enemy: Dictionary in affected:
 		var multiplier: float = recipes.value("burst","multiplier",1.0) if projectile.source == "popcorn" and enemy.uid == target.uid else 1.0
 		damage_enemy(enemy,projectile.damage * multiplier,projectile.source)
@@ -244,9 +252,12 @@ func summon_pair(id: String, caster: Dictionary = {}) -> void:
 	if not caster.is_empty():
 		skill_used.emit("reinforce" if id == "lid" else "summon", caster, [first_unit, enemies[-1]])
 
-func movement_multiplier(enemy: Dictionary, sources: Array) -> float:
-	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)
+func is_drummer_boosted(enemy: Dictionary, sources: Array) -> bool:
 	for other: Dictionary in sources:
 		if other.hp > 0 and other.x >= 0 and other.uid != enemy.uid and other.id == "drummer" and other.row == enemy.row and absf(other.x-enemy.x) <= data.rules.drummer_radius:
-			return result * (1.0 + data.rules.drummer_speed)
-	return result
+			return true
+	return false
+
+func movement_multiplier(enemy: Dictionary, sources: Array) -> float:
+	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)
+	return result * (1.0 + data.rules.drummer_speed) if is_drummer_boosted(enemy, sources) else result

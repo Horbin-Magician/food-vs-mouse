@@ -117,7 +117,7 @@ func run_test() -> void:
 	# Readable state and controls stay consistent with business permissions.
 	scene.run.state.phase = "prepare"
 	scene.run.paused = false
-	scene.run.state.coins = 0
+	scene.run.state.heat = 0
 	scene.run.state.cooldowns["bun"] = 6.0
 	scene.rebuild()
 	scene._process(0)
@@ -223,23 +223,23 @@ func run_test() -> void:
 	scene._input(cancel)
 	assert(scene.shop_overlay.visible and scene.run.state.phase == "prepare")
 	assert(scene.run.state.offers == offers and scene.run.rng.state == rng_state)
-	var coins_before: int = scene.run.state.coins
-	assert(not scene.run.shop.buy(0).is_empty() and scene.run.state.coins == coins_before)
-	scene.run.state.coins = 20
+	var heat_before: float = scene.run.state.heat
+	assert(not scene.run.shop.buy(0).is_empty() and scene.run.state.heat == heat_before)
+	scene.run.state.heat = scene.run.data.rules.recipe_price + 150
 	scene.rebuild()
 	var recipe_id: String = scene.run.state.choices[0]
 	var recipe_button: Button = scene.shop_surface.get_node("Recipe_" + recipe_id)
 	assert(scene.SHOP_RECT.encloses(recipe_button.get_global_rect()))
 	recipe_button.pressed.emit()
-	assert(scene.run.state.coins == 16 and recipe_id in scene.run.state.recipes)
+	assert(scene.run.state.heat == 150 and recipe_id in scene.run.state.recipes)
 	assert(not scene.shop_surface.has_node("Recipe_" + recipe_id))
-	scene.run.state.coins = 10
+	scene.run.state.heat = scene.run.data.rules.refresh_cost * 2 + 50
 	scene.rebuild()
 	scene.shop_refresh.pressed.emit()
-	assert(scene.run.state.coins == 8 and scene.run.state.refreshes == 1)
+	assert(scene.run.state.heat == scene.run.data.rules.refresh_cost + 50 and scene.run.state.refreshes == 1)
 	scene.shop_refresh.pressed.emit()
-	assert(scene.run.state.coins == 6 and scene.run.state.refreshes == 2 and scene.shop_refresh.disabled)
-	scene.run.state.coins = 0
+	assert(scene.run.state.heat == 50 and scene.run.state.refreshes == 2 and scene.shop_refresh.disabled)
+	scene.run.state.heat = 0
 	scene.rebuild()
 	for item: Button in scene.shop_items.get_children(): assert(item.disabled)
 	for id: String in ArtCatalog.FOOD_IDS: scene.run.state.cards[id] = 1

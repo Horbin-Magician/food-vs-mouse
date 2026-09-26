@@ -9,3 +9,4 @@ title = "困难"
 hp_multiplier = 1.5
 damage_multiplier = 1.5
 reward_multiplier = 1.5
+inspiration_drop_chance = 0.04

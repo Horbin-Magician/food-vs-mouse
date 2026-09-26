@@ -7,7 +7,6 @@ func _ready() -> void:
 	super._ready()
 	run.persistence = false
 	run.new_run(42)
-	run.state.coins = 99
 	for id: String in ArtCatalog.FOOD_IDS: run.state.cards[id] = 1
 	for index: int in range(8):
 		run.state.heat = 350

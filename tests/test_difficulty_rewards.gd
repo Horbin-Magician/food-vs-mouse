@@ -7,15 +7,14 @@ func _init() -> void:
 			run.new_run(42, [], id)
 			var factor: float = {"easy":1.0,"normal":1.25,"hard":1.5}[id]
 			for index: int in range(8):
-				var coins: int = run.state.coins
+				var heat: float = run.state.heat
 				run.start()
 				run.state.leaks = leaks
 				run.finish_wave()
 				assert(run.state.inspiration_for_wave(index,run.data) == roundi(run.data.progression.inspiration_rewards[index] * factor))
-				var expected: int = 0 if index == 7 else roundi((run.data.rules.rewards[index] + (2 if leaks == 0 else 0)) * factor)
-				assert(run.state.coins == coins + expected)
+				assert(run.state.heat == heat)
 				run.finish_wave()
-				assert(run.state.coins == coins + expected)
+				assert(run.state.heat == heat)
 	# Fixed difficulty retains credited amounts across saves and retries.
 	run.new_run(13, [], "hard")
 	run.saves.folder = "user://qa_difficulty_rewards_%d/" % Time.get_ticks_usec()
@@ -85,5 +84,5 @@ func _init() -> void:
 	run.start()
 	run.finish_wave()
 	assert(run.state.inspiration_for_wave(0,run.data) == 0)
-	print("PASS difficulty rewards: all tiers/waves, rounding, bonus, fixed difficulty saves, failed write retry, legacy, loss, win, receipts and summary")
+	print("PASS difficulty rewards: all tiers/waves, rounding, no heat reward, fixed difficulty saves, failed write retry, legacy, loss, win, receipts and summary")
 	quit()

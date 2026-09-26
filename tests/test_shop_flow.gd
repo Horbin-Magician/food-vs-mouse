@@ -34,14 +34,14 @@ func check() -> void:
 	assert(scene.run.state.phase == "prepare" and scene.shop_overlay.visible)
 	assert(not scene.run.message.is_empty())
 	front.saves.folder = saved_folder
-	# Old repaired flag is accepted but has no effect on coins or HP.
+	# Old repaired flag is accepted but has no effect on heat or HP.
 	scene.run.state.repaired = true
 	scene.run.persist()
-	var coins: int = scene.run.state.coins
+	var heat: float = scene.run.state.heat
 	front.show_menu()
 	front.continue_run()
 	scene = front.game
-	assert(scene.run.state.repaired and scene.run.state.coins == coins)
+	assert(scene.run.state.repaired and scene.run.state.heat == heat)
 	assert(scene.shop_overlay.visible)
 	scene.shop_surface.get_node("Done").pressed.emit()
 	assert(scene.run.state.phase == "battle" and not scene.shop_overlay.visible)

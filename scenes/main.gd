@@ -43,6 +43,8 @@ var pointer_in_window: bool = true
 var window_focused: bool = true
 var heat_label: Label
 var heat_pickup_view: HeatPickupView
+var inspiration_label: Label
+var inspiration_pickup_view: InspirationPickupView
 var shovel_button: Button
 var panel_open: bool = true
 var layout_phase: String = ""
@@ -97,6 +99,11 @@ func _ready() -> void:
 	RenderingServer.set_default_clear_color(GameTheme.BG)
 	heat_label = label(Vector2(76, 14), 26)
 	heat_label.add_theme_color_override("font_color", GameTheme.GOLD)
+	inspiration_label = label(Vector2(1008, 35), 21)
+	inspiration_label.size = Vector2(80, 30)
+	inspiration_label.add_theme_color_override("font_color", InspirationPickupView.LIGHT)
+	inspiration_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	inspiration_label.tooltip_text = "本局已赚灵感，跨局保留，用于局外购卡与刷新。\n点击鼠群掉落的紫色灵感即可收集；过关自动收取余下灵感。"
 	header = label(Vector2(948, 674), 14)
 	header.tooltip_text = "进度表示计划鼠潮的生成比例；全部生成后仍需清除剩余敌人。"
 	pause_button = button("暂停", Vector2(24, FOOTER_Y), func() -> void:
@@ -163,6 +170,11 @@ func _ready() -> void:
 	heat_pickup_view.projection = projection
 	heat_pickup_view.target = heat_label
 	ui.add_child(heat_pickup_view)
+	inspiration_pickup_view = InspirationPickupView.new()
+	inspiration_pickup_view.run = run
+	inspiration_pickup_view.projection = projection
+	inspiration_pickup_view.target = inspiration_label
+	ui.add_child(inspiration_pickup_view)
 	inspect = label(Vector2.ZERO, 13)
 	inspect.visible = false
 	inspect.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -272,7 +284,7 @@ func rebuild() -> void:
 			panel_label(line, 18, GameTheme.TEXT)
 	var owned: Label = panel_label("已购食谱 %02d  ·  悬停查看" % run.state.recipes.size(), 13, GameTheme.MUTED)
 	owned.mouse_filter = Control.MOUSE_FILTER_STOP
-	owned.tooltip_text = "尚未购买食谱；在小铺用金币购买。" if run.state.recipes.is_empty() else "本局食谱\n"
+	owned.tooltip_text = "尚未购买食谱；在小铺用热量购买。" if run.state.recipes.is_empty() else "本局食谱\n"
 	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
@@ -378,22 +390,22 @@ func build_shop() -> void:
 		shop_surface.remove_child(child)
 		child.queue_free()
 	card_label(shop_surface, "打烊小铺", Vector2(24, 20), Vector2(380, 36), 26, GameTheme.TEXT)
-	card_label(shop_surface, "购买食谱，强化本局携带阵容", Vector2(24, 61), Vector2(400, 22), 14, GameTheme.MUTED)
-	card_label(shop_surface, "金币  %d" % run.state.coins, Vector2(576, 28), Vector2(140, 28), 20, GameTheme.GOLD)
+	card_label(shop_surface, "食谱与布阵共用热量，剩余热量跨关保留", Vector2(24, 61), Vector2(480, 22), 14, GameTheme.MUTED)
+	card_label(shop_surface, "热量  %d" % run.state.heat, Vector2(576, 28), Vector2(216, 28), 20, GameTheme.GOLD)
 	shop_items = HBoxContainer.new()
 	shop_items.position = Vector2(24, 96)
 	shop_items.size = Vector2(792, 222)
 	shop_items.add_theme_constant_override("separation", 12)
 	shop_surface.add_child(shop_items)
 	var focus_buttons: Array[Button] = []
-	card_label(shop_surface, "每张 %d 金 · 购买后整局生效" % run.data.rules.recipe_price, Vector2(24,  90), Vector2(760, 28), 17, GameTheme.GOLD)
+	card_label(shop_surface, "每张 %d 热量 · 购买后整局生效" % run.data.rules.recipe_price, Vector2(24,  90), Vector2(760, 28), 17, GameTheme.GOLD)
 	if run.state.choices.is_empty():
 		card_label(shop_surface, "暂无可购食谱\n可以刷新，或完成购物直接开战。", Vector2(80, 210), Vector2(680, 100), 24, GameTheme.MUTED)
 	for index: int in range(run.state.choices.size()):
 		var id: String = run.state.choices[index]
 		var item := shop_button("", Vector2(24 + index * 268, 142), Vector2(256, 276), func() -> void: report(run.shop.buy_recipe(id), "purchase"))
 		item.name = "Recipe_" + id
-		item.disabled = run.state.coins < run.data.rules.recipe_price
+		item.disabled = run.state.heat < run.data.rules.recipe_price
 		item.tooltip_text = run.data.recipes[id].stats.description
 		var portrait := TextureRect.new()
 		portrait.texture = art.recipe(id)
@@ -405,19 +417,19 @@ func build_shop() -> void:
 		item.add_child(portrait)
 		card_label(item,run.data.recipes[id].title,Vector2(20,126),Vector2(216,30),22,GameTheme.TEXT)
 		card_label(item,run.data.recipes[id].stats.description,Vector2(20,166),Vector2(216,64),16,GameTheme.MUTED,true)
-		card_label(item,"%d 金 · %s" % [run.data.rules.recipe_price,"金币不足" if item.disabled else "购买食谱"],Vector2(20,234),Vector2(216,28),18,GameTheme.GOLD)
+		card_label(item,"%d 热量 · %s" % [run.data.rules.recipe_price,"热量不足" if item.disabled else "购买食谱"],Vector2(20,234),Vector2(216,28),18,GameTheme.GOLD)
 		focus_buttons.append(item)
 	var definition: DifficultyDef = run.data.difficulties[run.state.difficulty]
-	card_label(shop_surface, "本局难度：%s · 属性/收益 ×%s · 整局固定" % [definition.title, str(definition.hp_multiplier)], Vector2(24, 430), Vector2(792, 28), 16, GameTheme.MUTED)
+	card_label(shop_surface, "本局难度：%s · 属性/通关收益 ×%s · 整局固定" % [definition.title, str(definition.hp_multiplier)], Vector2(24, 430), Vector2(792, 28), 16, GameTheme.MUTED)
 	var feedback := card_label(shop_surface, run.message, Vector2(24, 465), Vector2(792, 22), 13, GameTheme.ACCENT)
 	feedback.clip_text = true
 	feedback.tooltip_text = run.message
-	shop_refresh = shop_button("刷新 · %d 金    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 500), Vector2(240, 36), func() -> void: report(run.shop.refresh(), "refresh"))
-	shop_refresh.disabled = run.state.refreshes >= run.data.rules.refresh_limit or run.state.coins < run.data.rules.refresh_cost
-	shop_refresh.tooltip_text = "刷新次数已用完" if run.state.refreshes >= run.data.rules.refresh_limit else ("金币不足" if shop_refresh.disabled else "更换食谱商品，消耗 %d 金币" % run.data.rules.refresh_cost)
+	shop_refresh = shop_button("刷新 · %d 热量    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 500), Vector2(240, 36), func() -> void: report(run.shop.refresh(), "refresh"))
+	shop_refresh.disabled = run.state.refreshes >= run.data.rules.refresh_limit or run.state.heat < run.data.rules.refresh_cost
+	shop_refresh.tooltip_text = "刷新次数已用完" if run.state.refreshes >= run.data.rules.refresh_limit else ("热量不足" if shop_refresh.disabled else "更换食谱商品，消耗 %d 热量" % run.data.rules.refresh_cost)
 	var owned := card_label(shop_surface, "已购食谱 %02d · 悬停查看" % run.state.recipes.size(), Vector2(288, 507), Vector2(280, 24), 13, GameTheme.MUTED)
 	owned.mouse_filter = Control.MOUSE_FILTER_STOP
-	owned.tooltip_text = "尚未购买食谱；在小铺用金币购买。" if run.state.recipes.is_empty() else "本局食谱\n"
+	owned.tooltip_text = "尚未购买食谱；在小铺用热量购买。" if run.state.recipes.is_empty() else "本局食谱\n"
 	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
 	var done := shop_button("购物完成  →", Vector2(620, 500), Vector2(196, 36), finish_shopping)
 	done.name = "Done"
@@ -489,8 +501,10 @@ func _process(delta: float) -> void:
 	status_feedback.advance(visual_delta)
 	shovel_feedback.advance(visual_delta)
 	heat_label.text = "%03d" % run.state.heat
-	heat_label.tooltip_text = "每关上限 %.0f；每秒恢复 %.0f，准备阶段不恢复。\n点击布丁冒出的火苗，飞入此处后获得热量。" % [run.data.rules.heat_cap, run.data.rules.heat_rate]
+	heat_label.tooltip_text = "热量上限 %.0f；每秒恢复 %.0f，准备阶段不恢复。\n用于布阵、购买食谱与刷新，剩余量跨关保留。\n点击布丁冒出的火苗，飞入此处后获得热量。" % [run.data.rules.heat_cap, run.data.rules.heat_rate]
 	heat_pickup_view.queue_redraw()
+	inspiration_label.text = "%02d" % earned_inspiration()
+	inspiration_pickup_view.queue_redraw()
 	header.text = wave_status()
 	header.tooltip_text = "战斗中退出会回到本关开战前。已购食谱："
 	for id: String in run.state.recipes:
@@ -499,6 +513,13 @@ func _process(delta: float) -> void:
 	feedback_remaining = maxf(0.0, feedback_remaining - delta)
 	update_inspector()
 	queue_redraw()
+
+func earned_inspiration() -> int:
+	var amount: int = run.state.collected_inspiration()
+	if run.state.rewards_enabled:
+		for index: int in range(run.state.reward_floor, mini(int(run.state.metrics.passed), 8)):
+			amount += run.state.inspiration_for_wave(index, run.data)
+	return amount
 
 func wave_progress() -> float:
 	if run.state.phase == "prepare": return 0.0
@@ -551,7 +572,9 @@ func update_controls() -> void:
 
 func update_shovel_cursor() -> void:
 	if shop_overlay == null or run.state == null: return
-	var active: bool = shovel and run.state.phase in ["prepare", "battle"] and not run.paused and not placement_modal_visible() and pointer_in_window and window_focused and is_visible_in_tree()
+	var pickup_hovered: bool = inspiration_pickup_view != null and inspiration_pickup_view.pickup_at(pointer) >= 0 and not placement_modal_visible() and not run.paused and pointer_in_window and window_focused and is_visible_in_tree()
+	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND if pickup_hovered else Input.CURSOR_ARROW)
+	var active: bool = shovel and run.state.phase in ["prepare", "battle"] and not run.paused and not placement_modal_visible() and not pickup_hovered and pointer_in_window and window_focused and is_visible_in_tree()
 	shovel_cursor.position = pointer - Vector2(30, 8)
 	shovel_cursor.visible = active
 	if active == shovel_cursor_active: return
@@ -563,6 +586,7 @@ func update_shovel_cursor() -> void:
 func _exit_tree() -> void:
 	# A queued old scene must not bind the persistent audio service to its run.
 	if run.changed.is_connected(rebuild): run.changed.disconnect(rebuild)
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	if not shovel_cursor_active: return
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	shovel_cursor_active = false
@@ -588,6 +612,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("board_select"):
 		if placement_modal_visible(): return
 		if panel.visible and PANEL_RECT.has_point(event.position): return
+		if collect_inspiration_at(event.position): return
 		var pickup_uid: int = heat_pickup_view.pickup_at(event.position)
 		if pickup_uid >= 0:
 			report(run.collect_heat(pickup_uid))
@@ -605,6 +630,14 @@ func _unhandled_input(event: InputEvent) -> void:
 				report(run.board.move(move_from.y,move_from.x,row,col))
 				move_from = Vector2i(-1,-1)
 		elif not selected.is_empty(): report(run.board.place(selected,row,col,run.paused))
+
+func collect_inspiration_at(pos: Vector2) -> bool:
+	if placement_modal_visible(): return false
+	var pickup_uid: int = inspiration_pickup_view.pickup_at(pos)
+	if pickup_uid < 0: return false
+	report(run.collect_inspiration(pickup_uid))
+	get_viewport().set_input_as_handled()
+	return true
 
 func text_at(position_value: Vector2, title: String, color: Color = Color.WHITE, size: int = 16) -> void:
 	draw_string(ThemeDB.fallback_font, position_value, title, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
@@ -748,6 +781,8 @@ func update_inspector() -> void:
 		inspect.text = "松手放置 · 右键 / Esc 取消" if error.is_empty() else error
 	elif feedback_remaining > 0:
 		inspect.text = feedback_text
+	elif inspiration_pickup_view.pickup_at(pointer) >= 0:
+		inspect.text = "暂停中 · 恢复后点击收集灵感" if run.paused else "点击紫色灵感 · 跨局保留，用于局外购卡"
 	elif heat_pickup_view.pickup_at(pointer) >= 0:
 		inspect.text = "暂停中 · 恢复后点击火苗收取热量" if run.paused else "点击火苗 · 飞入左上角后获得热量"
 	elif not unit.is_empty():
@@ -797,15 +832,14 @@ func create_debug_panel() -> void:
 	wave_button.pressed.connect(func() -> void:
 		if run.state.phase == "prepare": run.state.wave = int(wave_input.value); run.persist(); rebuild())
 	box.add_child(wave_button)
-	var money: Button = Button.new()
-	money.text = "增加 50 金币 / 补满热量"
-	money.pressed.connect(func() -> void:
+	var heat: Button = Button.new()
+	heat.text = "补满热量"
+	heat.pressed.connect(func() -> void:
 		if not run.paused:
-			run.state.coins += 50
 			run.state.heat = run.data.rules.heat_cap
 			run.persist()
 			rebuild())
-	box.add_child(money)
+	box.add_child(heat)
 	debug_window.add_child(box)
 	ui.add_child(debug_window)
 	debug_window.visibility_changed.connect(update_shovel_cursor)
@@ -843,6 +877,9 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		pointer = event.position
 		update_shovel_cursor()
+	# A flying pickup can cross card controls; consume it before GUI selection.
+	if event is InputEventMouseButton and event.is_action_pressed("board_select"):
+		if collect_inspiration_at(event.position): return
 	# Cancel before a hovered Control can consume right-click or Escape.
 	if shovel and event.is_action_pressed("cancel_selection") and not placement_modal_visible():
 		sound.cue("ui_cancel")

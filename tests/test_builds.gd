@@ -11,8 +11,8 @@ func _init() -> void:
 	run.board.place("bun",2,0,false)
 	run.state.units[0].hp = 100.0
 	run.state.phase = "prepare"
-	var coins: int = run.state.coins
-	assert(run.shop.buy(0) != "" and run.state.coins == coins)
+	var heat: float = run.state.heat
+	assert(run.shop.buy(0) != "" and run.state.heat == heat)
 	assert(run.state.units[0].hp == 100.0 and run.state.star("bun") == 1)
 	for id: String in run.data.foods: run.state.cards[id] = 1
 	run.shop.generate()
@@ -35,16 +35,16 @@ func _init() -> void:
 	run.state.recipes.clear()
 	run.recipes.offer(run.rng,[])
 	var choice: String = run.state.choices[0]
-	run.state.coins = 0
+	run.state.heat = 0
 	assert(run.shop.buy_recipe(choice) != "" and run.state.recipes.is_empty())
-	run.state.coins = 20
+	run.state.heat = run.data.rules.recipe_price + 150
 	run.state.phase = "battle"
-	assert(run.shop.buy_recipe(choice) != "" and run.state.coins == 20)
+	assert(run.shop.buy_recipe(choice) != "" and run.state.heat == run.data.rules.recipe_price + 150)
 	run.state.phase = "prepare"
 	assert(run.shop.buy_recipe(choice) == "")
-	assert(run.state.coins == 16 and run.recipes.has(choice))
+	assert(run.state.heat == 150 and run.recipes.has(choice))
 	assert(run.shop.buy_recipe(choice) != "")
-	assert(run.state.coins == 16)
+	assert(run.state.heat == 150)
 	run.state.recipes = run.data.recipes.keys()
 	run.recipes.offer(run.rng,[])
 	assert(run.state.choices.is_empty())

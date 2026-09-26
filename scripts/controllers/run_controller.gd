@@ -40,6 +40,7 @@ func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "ea
 		message = selection_error
 		return
 	state = RunState.new()
+	state.heat = data.rules.heat_start
 	state.difficulty = difficulty
 	state.run_id = "%d_%d" % [Time.get_unix_time_from_system(),Time.get_ticks_usec()]
 	state.cards.clear()
@@ -70,7 +71,6 @@ func start() -> void:
 	if state.phase != "prepare": return
 	if not persist(): return
 	state.phase = "battle"
-	state.heat = data.rules.heat_start
 	state.cooldowns.clear()
 	state.leaks = 0
 	combat.clear()
@@ -84,10 +84,27 @@ func collect_heat(uid: int) -> String:
 	combat.collect_heat(uid)
 	return ""
 
+func collect_inspiration(uid: int) -> String:
+	if state.phase != "battle": return "仅战斗中可收取灵感"
+	if paused: return "暂停时不能收取灵感"
+	var pickup: Dictionary = combat.inspiration_pickup(uid)
+	if pickup.is_empty(): return ""
+	if not state.rewards_enabled: return "调试对局不获得灵感"
+	var total: int = combat.inspiration_collected + int(pickup.amount)
+	if persistence:
+		if not saves.collect_inspiration(state, total, data):
+			message = saves.error
+			return message
+	else:
+		var key: String = str(state.wave)
+		state.inspiration_collected[key] = maxi(int(state.inspiration_collected.get(key, 0)), total)
+	combat.collect_inspiration(uid)
+	return ""
+
 func advance(delta: float) -> void:
 	if state.phase != "battle" or paused: return
 	accumulator += minf(delta, 0.25) * speed
-	while accumulator >= 1.0 / 60.0 and state.phase == "battle":
+	while accumulator >= 1.0 / 60.0 and state.phase == "battle" and not paused:
 		accumulator -= 1.0 / 60.0
 		state.elapsed += 1.0 / 60.0
 		for event: Dictionary in director.advance(1.0 / 60.0):
@@ -106,6 +123,15 @@ func advance(delta: float) -> void:
 
 func finish_wave() -> void:
 	if state.phase != "battle": return
+	# Last-kill drops are collected before leaving battle; a failed write stays retryable.
+	for pickup: Dictionary in combat.inspiration_pickups:
+		if pickup.flight < 0.0:
+			var failure: String = collect_inspiration(pickup.uid)
+			if not failure.is_empty():
+				message = failure + "；恢复战斗后重试收取。"
+				paused = true
+				changed.emit()
+				return
 	combat.heat_pickups.clear()
 	state.metrics.passed = state.wave
 	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
@@ -116,12 +142,10 @@ func finish_wave() -> void:
 		message = "今夜粮仓守住了！"
 		settle()
 		return
-	state.coins += difficulty.reward(data.rules.rewards[state.wave - 1] + (data.rules.bonus if state.leaks <= 1 else 0))
 	state.wave += 1
 	state.phase = "prepare"
 	shop.open()
-	state.heat = data.rules.heat_start
-	message = "本关灵感 +%d，金币与免费恢复已到账。" % state.inspiration_for_wave(state.wave - 2, data)
+	message = "灵感已收取，阵地免费恢复；剩余热量可购买食谱。"
 	persist()
 
 func persist() -> bool:

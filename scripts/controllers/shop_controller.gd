@@ -31,8 +31,8 @@ func buy(_index: int) -> String:
 func refresh() -> String:
 	if state.phase != "prepare": return "仅准备阶段可刷新"
 	if state.refreshes >= data.rules.refresh_limit: return "刷新次数已用完"
-	if state.coins < data.rules.refresh_cost: return "金币不足"
-	state.coins -= data.rules.refresh_cost
+	if state.heat < data.rules.refresh_cost: return "热量不足"
+	state.heat -= data.rules.refresh_cost
 	state.refreshes += 1
 	generate()
 	return ""
@@ -40,8 +40,8 @@ func refresh() -> String:
 func buy_recipe(id: String) -> String:
 	if state.phase != "prepare": return "仅准备阶段可购买"
 	if id not in state.choices or not data.recipes.has(id) or not recipes.eligible(id, unlocked): return "食谱已售罄或不可用"
-	if state.coins < data.rules.recipe_price: return "金币不足"
-	state.coins -= data.rules.recipe_price
+	if state.heat < data.rules.recipe_price: return "热量不足"
+	state.heat -= data.rules.recipe_price
 	state.recipes.append(id)
 	state.metrics.recipes.append(id)
 	state.choices.erase(id)

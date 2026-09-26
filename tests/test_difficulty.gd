@@ -55,6 +55,9 @@ func check() -> void:
 	DirAccess.make_dir_recursive_absolute(front.saves.folder)
 	front.show_hub("loadout")
 	assert(front.hub.difficulty == "easy")
+	for id: String in ["easy", "normal", "hard"]:
+		var rate: int = {"easy":2, "normal":3, "hard":4}[id]
+		assert(("掉落概率 %d%%" % rate) in front.hub.find_child("Difficulty_" + id,true,false).tooltip_text)
 	front.hub.find_child("Difficulty_normal",true,false).pressed.emit()
 	front.hub.find_child("Difficulty_normal",true,false).pressed.emit()
 	assert(front.hub.difficulty == "normal")

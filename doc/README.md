@@ -19,6 +19,8 @@
 | [testing/screens.md](testing/screens.md) | 菜单与战报流程、存档及渲染验证 | 导入、16 组回归与原生渲染通过 |
 | [design/shop.md](design/shop.md) | 局内商店实现记录与新版只售食谱的变更入口 | 新版仅食谱已接入，历史记录保留 |
 | [testing/shop.md](testing/shop.md) | 统一商店的交易、购物完成开战、存档与窗口验收 | 最新流程自动／渲染通过，鼠标复验待完成 |
+| [design/economy.md](design/economy.md) | 热量购食谱、跨关保留与鼠群灵感拾取、防重复存档 | 已实现；用户指定掉落率与价格已更新，整局平衡待验 |
+| [testing/economy.md](testing/economy.md) | 新经济逻辑、迁移、拾取和窗口验收 | 初次 35 项、本次数值调整九项及双尺寸渲染通过；真实鼠标复验受限 |
 | [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |
 | [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 拾取回归及上限调整验证通过，范围与限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |

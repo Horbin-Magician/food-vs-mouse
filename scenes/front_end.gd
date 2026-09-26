@@ -133,7 +133,7 @@ func show_menu() -> void:
 	notice = text_line(load_error if not load_error.is_empty() else ("暂无可继续的守卫，开始新的一局吧。" if snapshot.is_empty() else "准备阶段自动保存。战斗中退出后，\n继续游戏会回到本关开战前。"), Vector2(792, 558), Vector2(356, 66), 15, GameTheme.MUTED)
 	overwrite = ConfirmationDialog.new()
 	overwrite.title = "开始新的一局？"
-	overwrite.dialog_text = "现有守卫进度将结束，阵地和金币将重置。\n已赚灵感与食谱解锁保留，卡店刷新。"
+	overwrite.dialog_text = "现有守卫进度将结束，阵地和热量将重置。\n已赚灵感与食谱解锁保留，卡店刷新。"
 	overwrite.ok_button_text = "开始新局"
 	overwrite.cancel_button_text = "返回"
 	overwrite.confirmed.connect(prepare_new)
@@ -266,7 +266,7 @@ func leave_result(destination: String) -> void:
 	if destination == "new": prepare_new()
 
 func run_inspiration(state: RunState) -> int:
-	var amount: int = 0
+	var amount: int = state.collected_inspiration()
 	if state.rewards_enabled:
 		for index: int in range(state.reward_floor,mini(int(state.metrics.passed),8)):
 			amount += state.inspiration_for_wave(index, data)

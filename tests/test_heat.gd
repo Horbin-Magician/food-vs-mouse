@@ -9,6 +9,7 @@ func _init() -> void:
 	run.state.heat = 0
 	tick(run, 60)
 	assert(run.state.heat == 0, "prepare does not regenerate")
+	run.state.heat = run.data.rules.heat_start
 	run.start()
 	assert(run.board.place("pudding", 0, 0, false).is_empty())
 	run.state.heat = 0

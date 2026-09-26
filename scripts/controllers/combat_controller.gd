@@ -24,6 +24,9 @@ var current_wave: Resource
 var enemies: Array = []
 var projectiles: Array = []
 var heat_pickups: Array[Dictionary] = []
+var inspiration_pickups: Array[Dictionary] = []
+var inspiration_collected: int = 0
+var _inspiration_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem, random: RandomNumberGenerator) -> void:
 	state = s
@@ -31,11 +34,19 @@ func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem, random:
 	board = b
 	recipes = r
 	rng = random
+	reset_inspiration_rng()
+
+func reset_inspiration_rng() -> void:
+	# Replaying a wave rebuilds drops without consuming the gameplay random stream.
+	_inspiration_rng.seed = ("inspiration:%d:%d" % [state.seed_value, state.wave]).hash()
 
 func clear() -> void:
 	enemies.clear()
 	projectiles.clear()
 	heat_pickups.clear()
+	inspiration_pickups.clear()
+	inspiration_collected = 0
+	reset_inspiration_rng()
 	for unit: Dictionary in state.units:
 		unit.timer = 0.0
 		unit.attacks = 0
@@ -85,9 +96,40 @@ func advance_heat_pickups(delta: float) -> void:
 				add_heat(pickup.amount)
 				heat_pickups.erase(pickup)
 
+func drop_inspiration(enemy: Dictionary) -> void:
+	if not state.rewards_enabled: return
+	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
+	var chance: float = difficulty.inspiration_drop_chance
+	var roll: float = _inspiration_rng.randf()
+	if chance <= 0.0 or (chance < 1.0 and roll >= chance): return
+	inspiration_pickups.append({"uid": state.uid(), "row": enemy.row, "x": enemy.x, "amount": data.progression.inspiration_drop_amount, "age": 0.0, "flight": -1.0})
+
+func inspiration_pickup(uid: int) -> Dictionary:
+	for pickup: Dictionary in inspiration_pickups:
+		if pickup.uid == uid and pickup.flight < 0.0: return pickup
+	return {}
+
+func collect_inspiration(uid: int) -> bool:
+	if state.phase != "battle": return false
+	var pickup: Dictionary = inspiration_pickup(uid)
+	if pickup.is_empty(): return false
+	pickup.flight = 0.0
+	inspiration_collected += pickup.amount
+	return true
+
+func advance_inspiration_pickups(delta: float) -> void:
+	for pickup: Dictionary in inspiration_pickups.duplicate():
+		if pickup.flight < 0.0:
+			pickup.age += delta
+		else:
+			pickup.flight += delta
+			if pickup.flight + 0.000001 >= data.progression.inspiration_flight_duration:
+				inspiration_pickups.erase(pickup)
+
 func step(delta: float) -> void:
 	add_heat(data.rules.heat_rate * delta)
 	advance_heat_pickups(delta)
+	advance_inspiration_pickups(delta)
 	for id: String in state.cooldowns:
 		state.cooldowns[id] = maxf(0.0, state.cooldowns[id] - delta)
 	for unit: Dictionary in state.units.duplicate():
@@ -175,7 +217,7 @@ func nearest(row: int, x: float, reach: float) -> Dictionary:
 	return result
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool = true) -> void:
-	if not enemies.has(enemy) or amount <= 0.0 or not is_finite(amount): return
+	if not enemies.has(enemy) or enemy.hp <= 0.0 or amount <= 0.0 or not is_finite(amount): return
 	if direct and source == "pepper" and enemy.slow_time > 0:
 		amount *= recipes.value("cold_spice","multiplier",1.0)
 		if recipes.has("cold_spice"): skill_used.emit("cold_spice", enemy, [])
@@ -203,6 +245,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 					unit.flour = data.rules.flour_duration
 		enemy_fallen.emit(enemy)
 		enemies.erase(enemy)
+		drop_inspiration(enemy)
 		state.metrics.kills += 1
 		enemy_killed.emit(enemy.id)
 		if recipes.has("recycle") and state.metrics.kills % int(recipes.value("recycle","every")) == 0:

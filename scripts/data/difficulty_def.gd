@@ -7,6 +7,7 @@ extends Resource
 @export var damage_multiplier: float = 1.0
 
 @export var reward_multiplier: float = 1.0
+@export var inspiration_drop_chance: float = 0.0
 
 func reward(base: int) -> int:
 	return roundi(base * reward_multiplier)

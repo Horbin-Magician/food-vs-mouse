@@ -2,7 +2,7 @@ class_name SaveService
 extends RefCounted
 
 const VERSION: int = 1
-const FIELDS: Array[String] = ["inspiration_earned","difficulty","wave","phase","coins","pantry","heat","cards","recipes","units","offers","choices","refreshes","repaired","leaks","elapsed","next_uid","metrics","run_id","loadout","levels","legacy_stars","reward_floor","rewards_enabled"]
+const FIELDS: Array[String] = ["inspiration_earned","inspiration_collected","difficulty","wave","phase","pantry","heat","cards","recipes","units","offers","choices","refreshes","repaired","leaks","elapsed","next_uid","metrics","run_id","loadout","levels","legacy_stars","reward_floor","rewards_enabled"]
 var folder: String = "user://"
 var error: String = ""
 
@@ -66,7 +66,13 @@ func save_run(state: RunState, rng: RandomNumberGenerator) -> bool:
 		profile.meta.loadout = []
 		for item: Dictionary in state.loadout: profile.meta.loadout.append(item.uid)
 	credit(profile.meta, state, data)
-	return commit_profile(profile, int(profile.revision))
+	profile.run.inspiration_collected = profile.meta.ledger[state.run_id].inspiration_collected.duplicate(true)
+	if not validate_collected(profile.run.inspiration_collected, state.wave):
+		error = "收集记录已进入后续关卡，不能保存旧快照"
+		return false
+	if not commit_profile(profile, int(profile.revision)): return false
+	state.inspiration_collected = profile.run.inspiration_collected.duplicate(true)
+	return true
 
 func load_run(data: Catalog) -> Dictionary:
 	var profile: Dictionary = load_profile(data)
@@ -79,13 +85,17 @@ func load_run(data: Catalog) -> Dictionary:
 	if profile.meta.ledger.get(payload.run_id, {}).get("settled", false):
 		error = "对局已结算，请开始新局"
 		return {}
+	payload["inspiration_collected"] = collected_maximum(payload.get("inspiration_collected", {}), profile.meta.ledger.get(payload.run_id, {}).get("inspiration_collected", {}))
+	if not validate_collected(payload.inspiration_collected, int(payload.wave)):
+		error = "收集记录与局内关卡不一致，请重新开局；局外灵感保留"
+		return {}
 	return payload
 
 func restore(payload: Dictionary) -> RunState:
 	var state: RunState = RunState.new()
 	state.seed_value = int(payload.seed)
 	for field: String in FIELDS:
-		if field == "inspiration_earned": state.inspiration_earned = payload.get(field, {}).duplicate(true)
+		if field in ["inspiration_earned", "inspiration_collected"]: state.set(field, payload.get(field, {}).duplicate(true))
 		else: state.set(field,payload.get(field, "easy") if field == "difficulty" else payload[field])
 	state.cards = state.cards.duplicate(true)
 	state.units = state.units.duplicate(true)
@@ -105,11 +115,11 @@ func number(value: Variant, minimum: float, maximum: float, integer: bool = fals
 func validate(p: Dictionary, data: Catalog) -> bool:
 	if not p.get("difficulty", "easy") is String or not data.difficulties.has(p.get("difficulty", "easy")): return false
 	for field: String in FIELDS:
-		if field not in ["difficulty", "inspiration_earned"] and not p.has(field): return false
+		if field not in ["difficulty", "inspiration_earned", "inspiration_collected"] and not p.has(field): return false
 	if not p.get("seed") is String or not p.seed.is_valid_int() or not p.get("rng") is String or not p.rng.is_valid_int(): return false
 	if not p.run_id is String or p.run_id.is_empty() or p.run_id.length() > 80: return false
 	if p.phase not in ["prepare","recipe"]: return false
-	if not number(p.wave,1,8,true) or not number(p.coins,0,100000,true) or not number(p.pantry,1,10,true): return false
+	if not number(p.wave,1,8,true) or not number(p.pantry,1,10,true): return false
 	if not number(p.heat,0,data.rules.heat_cap) or not number(p.refreshes,0,2,true) or not p.repaired is bool: return false
 	if not number(p.leaks,0,1000,true) or not number(p.elapsed,0,1000000) or not number(p.next_uid,1,10000000,true): return false
 	if not p.cards is Dictionary or not p.recipes is Array or not p.units is Array or not p.offers is Array or not p.choices is Array or not p.metrics is Dictionary: return false
@@ -163,6 +173,7 @@ func validate(p: Dictionary, data: Catalog) -> bool:
 	for key: Variant in p.get("inspiration_earned", {}):
 		if not key is String or key not in ["1","2","3","4","5","6","7","8"] or int(key) > p.metrics.passed: return false
 		if not number(p.inspiration_earned[key],0,1000000,true): return false
+	if not validate_collected(p.get("inspiration_collected", {}), int(p.wave)): return false
 	if not p.metrics.get("damage") is Dictionary or not p.metrics.get("recipes") is Array: return false
 	for id: Variant in p.metrics.damage:
 		if not data.foods.has(id) or not number(p.metrics.damage[id],0,1e12): return false
@@ -285,11 +296,62 @@ func validate_meta(meta: Dictionary, data: Catalog) -> bool:
 	for id: Variant in meta.ledger:
 		var entry: Variant = meta.ledger[id]
 		if not id is String or not entry is Dictionary or not number(entry.get("passed"),0,8,true) or not entry.get("settled") is bool: return false
+		if not validate_collected(entry.get("inspiration_collected", {})): return false
+	return true
+
+func validate_collected(value: Variant, maximum_wave: int = 8) -> bool:
+	if not value is Dictionary: return false
+	for key: Variant in value:
+		if not key is String or key not in ["1","2","3","4","5","6","7","8"]: return false
+		if int(key) > maximum_wave: return false
+		if not number(value[key],0,1000000,true): return false
+	return true
+
+func collected_maximum(first: Dictionary, second: Dictionary) -> Dictionary:
+	var result: Dictionary = first.duplicate(true)
+	for key: String in second: result[key] = maxi(int(result.get(key, 0)), int(second[key]))
+	return result
+
+func collect_inspiration(state: RunState, wave_total: int, data: Catalog) -> bool:
+	error = ""
+	if state.phase != "battle" or not state.rewards_enabled:
+		error = "当前对局不能收取灵感"
+		return false
+	if not number(wave_total,0,1000000,true) or not validate_collected(state.inspiration_collected, state.wave):
+		error = "灵感收集记录不合法"
+		return false
+	var profile: Dictionary = load_profile(data)
+	if profile.is_empty() or not error.is_empty(): return false
+	if not validate(profile.run, data) or profile.run.run_id != state.run_id or int(profile.run.wave) != state.wave or int(profile.run.seed) != state.seed_value or not profile.run.rewards_enabled:
+		error = "对局快照已变化，灵感未收取"
+		return false
+	var entry: Dictionary = profile.meta.ledger.get(state.run_id, {"passed":state.reward_floor,"settled":false})
+	if entry.settled:
+		error = "这局已结算，灵感未收取"
+		return false
+	var collected: Dictionary = entry.get("inspiration_collected", {}).duplicate(true)
+	if not validate_collected(collected, state.wave):
+		error = "收集记录已进入后续关卡，灵感未收取"
+		return false
+	var key: String = str(state.wave)
+	var previous: int = int(collected.get(key, 0))
+	if wave_total <= previous:
+		state.inspiration_collected = collected_maximum(state.inspiration_collected, collected)
+		return true
+	collected[key] = wave_total
+	entry["inspiration_collected"] = collected
+	profile.meta.ledger[state.run_id] = entry
+	profile.meta.inspiration += wave_total - previous
+	# Preserve the preparation board, heat and RNG; only collection metadata changes.
+	profile.run["inspiration_collected"] = collected_maximum(profile.run.get("inspiration_collected", {}), collected)
+	if not commit_profile(profile, int(profile.revision)): return false
+	state.inspiration_collected = collected_maximum(state.inspiration_collected, collected)
 	return true
 
 func credit(meta: Dictionary, state: RunState, data: Catalog) -> void:
 	var entry: Dictionary = meta.ledger.get(state.run_id, {"passed":state.reward_floor,"settled":false})
 	if entry.settled: return
+	entry["inspiration_collected"] = collected_maximum(entry.get("inspiration_collected", {}), state.inspiration_collected)
 	if state.rewards_enabled:
 		for index: int in range(int(entry.passed), mini(int(state.metrics.passed),8)):
 			meta.inspiration += state.inspiration_for_wave(index, data)
@@ -300,7 +362,9 @@ func settle(state: RunState, data: Catalog) -> bool:
 	var profile: Dictionary = load_profile(data)
 	if profile.is_empty() or not error.is_empty(): return false
 	var meta: Dictionary = profile.meta
-	if meta.ledger.get(state.run_id,{}).get("settled",false): return true
+	if meta.ledger.get(state.run_id,{}).get("settled",false):
+		state.inspiration_collected = collected_maximum(state.inspiration_collected, meta.ledger[state.run_id].get("inspiration_collected", {}))
+		return true
 	if not profile.run.is_empty() and profile.run.get("run_id",state.run_id) != state.run_id:
 		error = "对局已变化，不能结算旧请求"
 		return false
@@ -314,9 +378,11 @@ func settle(state: RunState, data: Catalog) -> bool:
 			if count >= stats.threshold: meta.unlocked.append(id)
 	meta.last_run = state.run_id
 	meta.ledger[state.run_id].settled = true
-	meta.ledger[state.run_id]["summary"] = {"seed":str(state.seed_value),"phase":state.phase,"elapsed":state.elapsed,"metrics":state.metrics.duplicate(true)}
+	meta.ledger[state.run_id]["summary"] = {"seed":str(state.seed_value),"phase":state.phase,"elapsed":state.elapsed,"metrics":state.metrics.duplicate(true),"inspiration_collected":meta.ledger[state.run_id].inspiration_collected.duplicate(true)}
 	if state.rewards_enabled:
 		MetaProgression.roll_shop(meta,data)
 		meta.refreshes = 0
 	profile.run = {}
-	return commit_profile(profile,int(profile.revision))
+	if not commit_profile(profile,int(profile.revision)): return false
+	state.inspiration_collected = meta.ledger[state.run_id].inspiration_collected.duplicate(true)
+	return true

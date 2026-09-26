@@ -257,7 +257,7 @@ func build_loadout() -> void:
 		option.name = "Difficulty_" + id
 		option.add_theme_font_size_override("font_size",14)
 		option.disabled = not model.editable()
-		option.tooltip_text = "敌人生命、伤害及通关金币、灵感的倍率；收益四舍五入。整局不能更改。"
+		option.tooltip_text = "敌人生命、伤害及通关灵感的倍率；击杀灵感掉落概率 %d%%。整局不能更改。" % roundi(definition.inspiration_drop_chance * 100.0)
 	caption(panel,"倍率影响敌人属性与通关收益。\n同类只带一张，至少一种能攻击。",Vector2(24,346),Vector2(376,48),16,GameTheme.MUTED)
 	var issue: String = MetaProgression.loadout_error(model.profile.meta,selected,model.data)
 	var launch := button(panel,"出发，守住今夜 →",Vector2(24,404),Vector2(376,42),func() -> void: launch_requested.emit(selected.duplicate(),difficulty),true)

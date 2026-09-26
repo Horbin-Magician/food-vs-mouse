@@ -11,12 +11,12 @@ func evaluate() -> void:
 		while run.state.phase not in ["won","lost"] and steps < 20000:
 			if run.state.phase == "prepare":
 				for id: String in run.state.choices.duplicate():
-					if run.state.coins >= 8: run.shop.buy_recipe(id)
+					if run.state.heat >= run.data.rules.recipe_price + 100: run.shop.buy_recipe(id)
 				var wants: Array = ["bun","toast","pudding","popcorn","garlic"] if build == "steam" else ["bun","toast","pudding","tea","pepper","garlic"]
 				for refresh: int in range(3):
 					for i: int in range(run.state.offers.size()):
 						if run.state.offers[i].id in wants: run.shop.buy(i)
-					if run.state.coins >= 6: run.shop.refresh()
+					if run.state.heat >= run.data.rules.refresh_cost + 100: run.shop.refresh()
 				run.start()
 			# Uses only normal placement costs and cooldowns. Prioritizes marked lanes.
 			var rows: Array = [2,3,4] if run.state.wave == 1 else [0,1,2,3,4,5,6]
@@ -35,6 +35,8 @@ func evaluate() -> void:
 			# Simulate clicking available flames; credit still waits for the normal flight.
 			for pickup: Dictionary in run.combat.heat_pickups:
 				if pickup.flight < 0.0: run.collect_heat(pickup.uid)
+			for pickup: Dictionary in run.combat.inspiration_pickups:
+				if pickup.flight < 0.0: run.collect_inspiration(pickup.uid)
 			run.advance(0.25)
 			steps += 1
 		print("AUTOPLAY ",JSON.stringify({"build":build,"seed":42,"phase":run.state.phase,"wave":run.state.wave,"seconds":run.state.elapsed,"pantry":run.state.pantry,"metrics":run.state.metrics,"cards":run.state.cards,"recipes":run.state.recipes}))

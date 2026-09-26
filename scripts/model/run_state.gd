@@ -12,7 +12,6 @@ var seed_value: int = 1
 var wave: int = 1
 var difficulty: String = "easy"
 var phase: String = "prepare"
-var coins: int = 6
 var pantry: int = 10
 var heat: float = 150.0
 var cards: Dictionary = {"bun": 1, "toast": 1, "pudding": 1}
@@ -20,6 +19,7 @@ var loadout: Array = []
 var levels: Dictionary = {}
 var legacy_stars: bool = false
 var inspiration_earned: Dictionary = {}
+var inspiration_collected: Dictionary = {}
 var reward_floor: int = 0
 var rewards_enabled: bool = true
 var recipes: Array = []
@@ -56,3 +56,8 @@ func production_multiplier(id: String, data: Catalog) -> float:
 func inspiration_for_wave(index: int, data: Catalog) -> int:
 	if not rewards_enabled: return 0
 	return int(inspiration_earned.get(str(index + 1), data.progression.inspiration_rewards[index]))
+
+func collected_inspiration() -> int:
+	var total: int = 0
+	for amount: Variant in inspiration_collected.values(): total += int(amount)
+	return total

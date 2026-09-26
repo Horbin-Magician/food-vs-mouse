@@ -42,6 +42,8 @@ func validate() -> PackedStringArray:
 		var difficulty: DifficultyDef = difficulties[id]
 		for multiplier: float in [difficulty.hp_multiplier, difficulty.damage_multiplier, difficulty.reward_multiplier]:
 			if not is_finite(multiplier) or multiplier <= 0: errors.append(id + ": invalid difficulty multiplier")
+		if not is_finite(difficulty.inspiration_drop_chance) or difficulty.inspiration_drop_chance < 0 or difficulty.inspiration_drop_chance > 1:
+			errors.append(id + ": invalid inspiration drop chance")
 	var summon_interval: float = rules.get("boss_summon_interval", 0.0)
 	var rage_interval: float = rules.get("boss_rage_summon_interval", 0.0)
 	if not is_finite(summon_interval) or not is_finite(rage_interval) or summon_interval <= 0 or rage_interval <= 0 or rage_interval > summon_interval:
@@ -51,6 +53,9 @@ func validate() -> PackedStringArray:
 	if progression.inspiration_rewards.size() != 8: errors.append("eight inspiration rewards required")
 	for reward: int in progression.inspiration_rewards:
 		if reward < 0: errors.append("negative inspiration reward")
+	if progression.inspiration_drop_amount <= 0: errors.append("invalid inspiration drop amount")
+	if not is_finite(progression.inspiration_flight_duration) or progression.inspiration_flight_duration <= 0:
+		errors.append("invalid inspiration flight duration")
 	if progression.material_base <= 0 or progression.material_base > 1 or progression.material_decay <= 0 or progression.material_decay > 1: errors.append("invalid enhancement probability")
 	for id: String in foods:
 		var stats: Dictionary = foods[id].stats

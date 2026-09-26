@@ -22,7 +22,7 @@
 
 ## 阶段与边界
 
-prepare → battle → prepare，最终进入 won/lost。关后结算金币与免费恢复，直接开店并保存；不再存在独立灵感／免费选谱阶段。商品、交易与旧快照迁移规则见 [食谱购买](../design/shop.md)。准备阶段用于购物，不放置新单位；购物完成后通过 RunController.start 保存快照并开始本关，付费维修已移除。升星保留损失生命的绝对值；移动交换使用同一对象。
+prepare → battle → prepare，最终进入 won/lost。关后收取剩余灵感、结算通关灵感与免费恢复，直接开店并保存；不再存在独立灵感／免费选谱阶段。商品、交易与旧快照迁移规则见 [食谱购买](../design/shop.md)。准备阶段用于购物，不放置新单位；购物完成后通过 RunController.start 保存快照并开始本关，付费维修已移除。升星保留损失生命的绝对值；移动交换使用同一对象。
 
 ## 验收
 
@@ -70,3 +70,7 @@ DifficultyDef 与 RunState.difficulty、RunController.new_run 的整局难度参
 ## 音频表现服务（2026-09-26）
 
 入口拥有 `SoundService` 并注入 main 与 CardHub，独立 main 运行时自行创建；不使用 Autoload。`bind_run` 管理业务信号的订阅和解绑，阶段变化驱动七种音乐场景。`CombatController.heat_collected(pickup)` 仅在火苗首次进入飞行时发送，飞行过程或重复点击不重发。音频只观察事件，不改写玩法和随机状态。AudioProfile／AudioCueDef 保存音频路径、混音、冷却与优先级；AudioSettings 独立保存音量，并在战斗中打开时暂停。完整配置、生命周期、暂停和速度边界见 [音频设计](../art/audio.md)。
+
+## 灵感掉落与热量经济（2026-09-26）
+
+热量跨关保留并用于食谱／刷新，金币删除。CombatController 独立掉落 RNG、拾取物与飞行计时；RunController.collect_inspiration 先调用 SaveService.collect_inspiration 成功记账，再启动飞行；同关重新开始以最高收集累计防刷。失败写入保持拾取物，关末自动收取若失败则暂停并允许恢复后重试；粮仓归零仍优先判负。SaveService 在 v2 快照与流水添加可选 inspiration_collected 字典，旧 coins 忽略，既有余额与奖励保留。权威边界与参数见 [经济设计](../design/economy.md)。

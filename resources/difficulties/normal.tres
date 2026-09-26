@@ -9,3 +9,4 @@ title = "普通"
 hp_multiplier = 1.25
 damage_multiplier = 1.25
 reward_multiplier = 1.25
+inspiration_drop_chance = 0.03

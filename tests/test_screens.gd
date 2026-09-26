@@ -19,7 +19,7 @@ func check() -> void:
 	screen.start_new()
 	assert(screen.game.run.state.phase == "prepare")
 	var id: String = screen.game.run.state.run_id
-	screen.game.run.state.coins = 12
+	screen.game.run.state.heat = 12
 	screen.game.run.persist()
 	screen.show_menu()
 	assert(not screen.continue_button.disabled)
@@ -28,7 +28,7 @@ func check() -> void:
 	screen.overwrite.hide()
 	assert(screen.saves.load_run(screen.data).run_id == id)
 	screen.continue_run()
-	assert(screen.game.run.state.run_id == id and screen.game.run.state.coins == 12)
+	assert(screen.game.run.state.run_id == id and screen.game.run.state.heat == 12)
 	screen.game.run.start()
 	screen.game.run.state.pantry = 0
 	screen.game.run.advance(0.1)

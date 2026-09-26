@@ -40,7 +40,7 @@
 | [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 自动及渲染检查通过，鼠标复验待完成 |
 | [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |
 
-| [design/waves.md](design/waves.md) | 组合波次、重点路线及后期数量调整 | 已实现，真人平衡待验 |
+| [design/waves.md](design/waves.md) | 组合波次、重点路线、后期生命及首领召唤调整 | 已实现，真人平衡待验 |
 | [testing/balance.md](testing/balance.md) | 压力测试、组合鼠潮回归和真人验收缺口 | 新波次回归及渲染通过，真人待验收 |
 
 ## 后续文档归档

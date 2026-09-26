@@ -133,8 +133,9 @@ func step(delta: float) -> void:
 			if not enemies.has(enemy): continue
 		if enemy.id == "boss":
 			enemy.summon += delta
-			if enemy.summon >= data.rules.boss_summon_interval:
-				enemy.summon -= data.rules.boss_summon_interval
+			var summon_interval: float = data.rules.boss_rage_summon_interval if enemy.rage else data.rules.boss_summon_interval
+			if enemy.summon >= summon_interval:
+				enemy.summon -= summon_interval
 				summon_pair("gray")
 		var blocker: Dictionary = {}
 		for unit: Dictionary in state.units:
@@ -179,6 +180,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 	state.metrics.damage[source] = state.metrics.damage.get(source, 0.0) + actual
 	if enemy.id == "boss" and not enemy.rage and enemy.hp > 0 and enemy.hp < enemy.max_hp * data.rules.boss_rage_threshold:
 		enemy.rage = true
+		enemy.summon *= data.rules.boss_rage_summon_interval / data.rules.boss_summon_interval
 		summon_pair("lid")
 	if enemy.hp <= 0:
 		if enemy.id == "flour":

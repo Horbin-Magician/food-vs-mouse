@@ -32,6 +32,10 @@ func _init() -> void:
 
 func validate() -> PackedStringArray:
 	var errors: PackedStringArray = []
+	var summon_interval: float = rules.get("boss_summon_interval", 0.0)
+	var rage_interval: float = rules.get("boss_rage_summon_interval", 0.0)
+	if not is_finite(summon_interval) or not is_finite(rage_interval) or summon_interval <= 0 or rage_interval <= 0 or rage_interval > summon_interval:
+		errors.append("invalid boss summon intervals")
 	for id: String in foods:
 		var stats: Dictionary = foods[id].stats
 		for key: String in ["cost","cooldown","hp","damage","interval","reach","price"]:

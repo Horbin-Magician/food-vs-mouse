@@ -26,7 +26,7 @@ func _init() -> void:
 	assert(run.combat.enemies[1].row != run.combat.enemies[2].row)
 	run.combat.damage_enemy(boss,1,"bun")
 	assert(run.combat.enemies.size() == 3)
-	boss.summon = 12.0
+	boss.summon = run.data.rules.boss_rage_summon_interval
 	run.combat.step(1.0/60.0)
 	assert(run.combat.enemies.size() == 5)
 	run.director.cursor = run.director.events.size()

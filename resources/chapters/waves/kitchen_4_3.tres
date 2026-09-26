@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_4_3"
+title = "锅盖扬尘"
+stats = {"duration": 100, "composition": ["lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour", "lid", "gray", "lid", "flour", "runner", "flour"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.72, "damage_scale": 1.8, "batches": [{"time": 5.0, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.619, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 20.238, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.856, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 35.475, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 43.094, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 50.713, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 58.331, "gap": 1.35, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 65.95, "gap": 1.35, "lanes": [0, 1, 2, 0]}]}

@@ -107,10 +107,11 @@ func capture() -> void:
 	assert(not run.paused)
 
 	# Result fixtures retain the real run ID; only this isolated profile is settled.
+	run.state.chapter_id = "kitchen_5"
 	run.state.wave = 8
 	run.state.phase = "won"
 	run.state.elapsed = 847
-	run.state.metrics.passed = 8
+	run.state.metrics.passed = 40
 	run.state.metrics.kills = 204
 	run.state.metrics.leaks = 2
 	run.state.metrics.deaths = 9

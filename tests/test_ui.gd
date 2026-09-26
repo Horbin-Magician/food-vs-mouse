@@ -85,8 +85,11 @@ func run_test() -> void:
 	assert(scene.cards.position.x >= 190)
 	assert(scene.cards.get_global_rect().end.x < scene.shovel_button.position.x)
 	assert(scene.cards.get_global_rect().end.y <= 82)
-	# A visible overlay consumes its entire rectangle, including blank areas.
+	# A chapter-boundary shop consumes its entire rectangle, including blank areas.
+	scene.run.state.chapter_id = "kitchen_2"
+	scene.run.state.wave = 1
 	scene.run.state.phase = "prepare"
+	scene.run.shop.open()
 	scene.rebuild()
 	scene._process(0)
 	scene.shovel = false
@@ -124,7 +127,7 @@ func run_test() -> void:
 	await process_frame
 	assert(not scene.settings_button.disabled)
 	assert(not scene.run.board.has_method("repair"))
-	assert("准备阶段" in scene.card_status("bun"))
+	assert("选购食谱" in scene.card_status("bun"))
 	assert(not scene.cards.get_child(0).get_node("Cooldown").visible)
 	for child: Node in scene.panel.get_children():
 		if child is Button: assert(child.disabled)
@@ -205,6 +208,10 @@ func run_test() -> void:
 	assert(is_equal_approx(scene.projection.ORIGIN.x + scene.projection.CANVAS_SIZE.x / 2.0, 640.0))
 	# Shop modal: transaction rebuilding, horizontal layout, closing and input isolation.
 	scene.run.new_run(25)
+	scene.run.state.chapter_id = "kitchen_2"
+	scene.run.state.wave = 1
+	scene.run.shop.open()
+	scene.rebuild()
 	scene.set_panel_open(true)
 	await process_frame
 	await process_frame
@@ -259,6 +266,7 @@ func run_test() -> void:
 	assert(not scene.shop_overlay.visible)
 	scene.shovel_button.pressed.emit()
 	assert(scene.shovel_cursor_active)
+	scene.run.state.wave = 8
 	scene.run.finish_wave()
 	scene.rebuild()
 	assert(scene.shop_overlay.visible and not scene.shovel_cursor_active)

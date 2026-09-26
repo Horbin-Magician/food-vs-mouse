@@ -20,6 +20,7 @@ var data: Catalog
 var board: BoardController
 var recipes: RecipeSystem
 var rng: RandomNumberGenerator
+var warning_summons: Array[Dictionary] = []
 var current_wave: Resource
 var enemies: Array = []
 var projectiles: Array = []
@@ -38,9 +39,10 @@ func _init(s: RunState, c: Catalog, b: BoardController, r: RecipeSystem, random:
 
 func reset_inspiration_rng() -> void:
 	# Replaying a wave rebuilds drops without consuming the gameplay random stream.
-	_inspiration_rng.seed = ("inspiration:%d:%d" % [state.seed_value, state.wave]).hash()
+	_inspiration_rng.seed = ("inspiration:%d:%d" % [state.seed_value, state.global_wave()]).hash()
 
 func clear() -> void:
+	warning_summons.clear()
 	enemies.clear()
 	projectiles.clear()
 	heat_pickups.clear()
@@ -127,6 +129,7 @@ func advance_inspiration_pickups(delta: float) -> void:
 				inspiration_pickups.erase(pickup)
 
 func step(delta: float) -> void:
+	advance_summons(delta)
 	add_heat(data.rules.heat_rate * delta)
 	advance_heat_pickups(delta)
 	advance_inspiration_pickups(delta)
@@ -183,10 +186,10 @@ func step(delta: float) -> void:
 			if not enemies.has(enemy): continue
 		if enemy.id == "boss":
 			enemy.summon += delta
-			var summon_interval: float = data.rules.boss_rage_summon_interval if enemy.rage else data.rules.boss_summon_interval
+			var summon_interval: float = boss_interval(enemy.rage)
 			if enemy.summon >= summon_interval:
 				enemy.summon -= summon_interval
-				summon_pair("gray", enemy)
+				request_summons(boss_configuration().get("rage_id" if enemy.rage else "normal_id", "gray"), enemy)
 		var blocker: Dictionary = {}
 		for unit: Dictionary in state.units:
 			var x: float = unit.col * 96.0 + 48.0
@@ -232,9 +235,9 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 	state.metrics.damage[source] = state.metrics.damage.get(source, 0.0) + actual
 	if enemy.id == "boss" and not enemy.rage and enemy.hp > 0 and enemy.hp < enemy.max_hp * data.rules.boss_rage_threshold:
 		enemy.rage = true
-		enemy.summon *= data.rules.boss_rage_summon_interval / data.rules.boss_summon_interval
+		enemy.summon *= boss_interval(true) / boss_interval(false)
 		skill_used.emit("rage", enemy, [])
-		summon_pair("lid", enemy)
+		request_summons(boss_configuration().get("burst_id", "lid"), enemy)
 	if enemy.hp <= 0:
 		if enemy.id == "flour":
 			var cloud: Dictionary = enemy.duplicate()
@@ -245,6 +248,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 					unit.flour = data.rules.flour_duration
 		enemy_fallen.emit(enemy)
 		enemies.erase(enemy)
+		warning_summons = warning_summons.filter(func(warning: Dictionary) -> bool: return warning.caster != enemy.uid)
 		drop_inspiration(enemy)
 		state.metrics.kills += 1
 		enemy_killed.emit(enemy.id)
@@ -304,3 +308,34 @@ func is_drummer_boosted(enemy: Dictionary, sources: Array) -> bool:
 func movement_multiplier(enemy: Dictionary, sources: Array) -> float:
 	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)
 	return result * (1.0 + data.rules.drummer_speed) if is_drummer_boosted(enemy, sources) else result
+
+func boss_configuration() -> Dictionary:
+	return current_wave.stats.get("boss", {}) if current_wave != null else {}
+
+func boss_interval(rage: bool) -> float:
+	return boss_configuration().get("rage_interval" if rage else "interval", data.rules.boss_rage_summon_interval if rage else data.rules.boss_summon_interval)
+
+func enemy_title(id: String) -> String:
+	return boss_configuration().get("title", data.enemies[id].title) if id == "boss" else data.enemies[id].title
+
+func request_summons(id: String, caster: Dictionary) -> void:
+	var configuration: Dictionary = boss_configuration()
+	if configuration.is_empty():
+		summon_pair(id, caster)
+		return
+	warning_summons.append({"caster":caster.uid, "id":id, "rows":configuration.rows.duplicate(), "remaining":float(configuration.warning_seconds)})
+
+func advance_summons(delta: float) -> void:
+	for warning: Dictionary in warning_summons.duplicate():
+		var casters: Array = enemies.filter(func(enemy: Dictionary) -> bool: return enemy.uid == warning.caster)
+		if casters.is_empty():
+			warning_summons.erase(warning)
+			continue
+		warning.remaining -= delta
+		if warning.remaining > 0.000001: continue
+		warning_summons.erase(warning)
+		var targets: Array = []
+		for row: int in warning.rows:
+			spawn(warning.id, row, current_wave)
+			targets.append(enemies[-1])
+		skill_used.emit("reinforce" if warning.id == "lid" else "summon", casters[0], targets)

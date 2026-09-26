@@ -6,13 +6,15 @@ func _init() -> void:
 func capture() -> void:
 	var screen = load("res://scenes/front_end.tscn").instantiate()
 	root.add_child(screen)
-	screen.saves.folder = "user://qa_screens_gallery/"
+	screen.saves.folder = "user://qa_screens_gallery_%d/" % Time.get_ticks_usec()
 	DirAccess.make_dir_recursive_absolute(screen.saves.folder)
 	screen.saves.delete_run()
 	screen.show_menu()
 	await snap("menu")
 	screen.start_new()
-	screen.game.run.state.wave = 8
+	for index: int in range(39):
+		screen.game.run.start()
+		screen.game.run.finish_wave()
 	screen.game.run.start()
 	screen.game.run.state.elapsed = 847
 	screen.game.run.state.metrics.kills = 204
@@ -20,6 +22,7 @@ func capture() -> void:
 	screen._process(0)
 	await snap("won")
 	screen.leave_result("new")
+	screen.start_new()
 	screen.game.run.start()
 	screen.game.run.state.pantry = 0
 	screen.game.run.advance(0.1)

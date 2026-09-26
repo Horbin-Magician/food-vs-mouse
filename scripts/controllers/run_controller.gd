@@ -16,11 +16,21 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var paused: bool = false
 var speed: float = 1.0
 var accumulator: float = 0.0
-var message: String = "购物完成后自动开战，再选卡放置。"
+var automatic_start_pending: bool = false
+var message: String = "大关内连续作战，通关后可进入小铺购买食谱。"
 
-func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "easy") -> void:
+func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "easy", scene_id: String = "kitchen") -> void:
 	if not data.difficulties.has(difficulty):
 		message = "未知难度"
+		return
+	if persistence:
+		saves.load_meta(data)
+		if not saves.error.is_empty():
+			message = saves.error
+			return
+	var scene_issue: String = data.scene_error(scene_id)
+	if not scene_issue.is_empty():
+		message = scene_issue
 		return
 	if persistence and state != null:
 		if not saves.settle(state,data):
@@ -39,9 +49,11 @@ func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "ea
 	if not selection_error.is_empty():
 		message = selection_error
 		return
-	state = RunState.new()
+	state = RunState.new(data)
 	state.heat = data.rules.heat_start
 	state.difficulty = difficulty
+	state.scene_id = scene_id
+	state.chapter_id = data.scene_chapters(scene_id)[0]
 	state.run_id = "%d_%d" % [Time.get_unix_time_from_system(),Time.get_ticks_usec()]
 	state.cards.clear()
 	state.levels.clear()
@@ -57,24 +69,25 @@ func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "ea
 	board = BoardController.new(state, data)
 	recipes = RecipeSystem.new(state,data)
 	shop = ShopController.new(state,data,board,rng,recipes,unlocked)
-	shop.open()
 	combat = CombatController.new(state, data, board, recipes, rng)
 	director = WaveDirector.new()
 	paused = false
 	speed = 1.0
 	accumulator = 0.0
-	message = "购买食谱，购物完成后立即开战。"
-	persist()
+	message = "准备开战；大关通关后可购买食谱。"
+	automatic_start_pending = persist()
 	changed.emit()
 
 func start() -> void:
 	if state.phase != "prepare": return
+	automatic_start_pending = false
 	if not persist(): return
 	state.phase = "battle"
 	state.cooldowns.clear()
 	state.leaks = 0
+	accumulator = 0.0
 	combat.clear()
-	director.begin(data.waves[state.wave - 1], rng)
+	director.begin(data.chapter_waves(state.chapter_id)[state.wave - 1], rng)
 	message = "鼠潮来袭！左键选卡再点格子，右键取消。"
 	changed.emit()
 
@@ -96,19 +109,23 @@ func collect_inspiration(uid: int) -> String:
 			message = saves.error
 			return message
 	else:
-		var key: String = str(state.wave)
+		var key: String = str(state.global_wave())
 		state.inspiration_collected[key] = maxi(int(state.inspiration_collected.get(key, 0)), total)
 	combat.collect_inspiration(uid)
 	return ""
 
 func advance(delta: float) -> void:
+	if state.phase == "prepare" and automatic_start_pending and not shop.is_open() and not paused:
+		start()
+		if state.phase == "prepare": changed.emit()
+		return
 	if state.phase != "battle" or paused: return
 	accumulator += minf(delta, 0.25) * speed
 	while accumulator >= 1.0 / 60.0 and state.phase == "battle" and not paused:
 		accumulator -= 1.0 / 60.0
 		state.elapsed += 1.0 / 60.0
 		for event: Dictionary in director.advance(1.0 / 60.0):
-			combat.spawn(event.id, event.row, data.waves[state.wave - 1])
+			combat.spawn(event.id, event.row, data.chapter_waves(state.chapter_id)[state.wave - 1])
 		combat.step(1.0 / 60.0)
 		if state.pantry <= 0:
 			state.phase = "lost"
@@ -118,7 +135,6 @@ func advance(delta: float) -> void:
 			finish_wave()
 		if state.phase != "battle":
 			combat.clear()
-			persist()
 			changed.emit()
 
 func finish_wave() -> void:
@@ -133,20 +149,31 @@ func finish_wave() -> void:
 				changed.emit()
 				return
 	combat.heat_pickups.clear()
-	state.metrics.passed = state.wave
+	state.metrics.passed = state.global_wave()
 	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
-	state.inspiration_earned[str(state.wave)] = difficulty.reward(data.progression.inspiration_rewards[state.wave - 1]) if state.rewards_enabled else 0
+	state.inspiration_earned[str(state.global_wave())] = difficulty.reward(data.progression.inspiration_rewards[state.wave - 1]) if state.rewards_enabled else 0
 	board.heal(recipes.value("reheat","heal",data.rules.heal))
-	if state.wave == data.waves.size():
-		state.phase = "won"
-		message = "今夜粮仓守住了！"
-		settle()
-		return
-	state.wave += 1
+	if state.wave == data.chapter_waves(state.chapter_id).size():
+		var chapters: Array[String] = data.scene_chapters(state.scene_id)
+		var chapter_index: int = chapters.find(state.chapter_id)
+		if chapter_index == chapters.size() - 1:
+			state.phase = "won"
+			message = "五大关全部守住，厨房迎来黎明！"
+			settle()
+			return
+		state.chapter_id = chapters[chapter_index + 1]
+		state.wave = 1
+	else:
+		state.wave += 1
+	combat.clear()
 	state.phase = "prepare"
-	shop.open()
-	message = "灵感已收取，阵地免费恢复；剩余热量可购买食谱。"
-	persist()
+	if shop.is_open():
+		shop.open()
+		message = "大关通关！阵地已恢复，选购食谱后继续下一大关。"
+	else:
+		shop.close()
+		message = "灵感已收取，阵地已恢复，准备下一小关。"
+	automatic_start_pending = persist() and not shop.is_open()
 
 func persist() -> bool:
 	if not persistence or state.phase != "prepare": return true
@@ -174,16 +201,13 @@ func resume_run() -> bool:
 	board = BoardController.new(state,data)
 	recipes = RecipeSystem.new(state,data)
 	shop = ShopController.new(state,data,board,rng,recipes,unlocked)
-	if state.phase == "recipe":
-		var legacy_choices: Array = state.choices.duplicate()
-		state.phase = "prepare"
-		shop.open()
-		state.choices = legacy_choices
-		persist()
+	state.phase = "prepare"
+	if not shop.is_open(): shop.close()
 	combat = CombatController.new(state,data,board,recipes,rng)
 	director = WaveDirector.new()
 	paused = false
 	accumulator = 0.0
 	message = "已恢复准备快照；战斗中退出会回到本关开战前。 " + meta_error
+	automatic_start_pending = not shop.is_open()
 	changed.emit()
 	return true

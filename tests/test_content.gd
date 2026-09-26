@@ -18,7 +18,7 @@ func _init() -> void:
 	assert(final_director.events.back().row == 3)
 	run.state.wave = 8
 	run.start()
-	run.combat.spawn("boss",2,run.data.waves[7])
+	run.combat.spawn("boss",2,legacy_boss_wave(run))
 	var boss: Dictionary = run.combat.enemies[0]
 	assert(boss.hp == 2600 and boss.dps == 60)
 	run.combat.damage_enemy(boss,1400,"bun")
@@ -35,7 +35,7 @@ func _init() -> void:
 	assert(run.state.phase == "battle", "summons prevent early victory")
 	for enemy: Dictionary in run.combat.enemies.duplicate(): run.combat.damage_enemy(enemy,10000,"bun")
 	run.advance(1.0/60.0)
-	assert(run.state.phase == "won")
+	assert(run.state.phase == "prepare" and run.state.chapter_id == "kitchen_2" and run.state.wave == 1, "first boss continues the scene after summons clear")
 	run.new_run(4)
 	run.start()
 	run.board.place("bun",2,0,false)
@@ -49,3 +49,10 @@ func _init() -> void:
 	assert(is_equal_approx(run.combat.movement_multiplier(run.combat.enemies[0],run.combat.enemies),1.2))
 	print("PASS content: eight waves, generation, boss, summons, flour, drummer")
 	quit()
+
+# Preserve coverage of the pre-campaign immediate-summon fallback without mutating definitions.
+# All shipped chapter bosses use telegraphs, checked in test_campaign_content / test_chapter_two.
+func legacy_boss_wave(run: RunController) -> Resource:
+	var wave: Resource = run.data.waves[7].duplicate(true)
+	wave.stats.erase("boss")
+	return wave

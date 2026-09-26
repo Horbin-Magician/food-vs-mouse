@@ -17,11 +17,21 @@ func _init(s: RunState, c: Catalog, b: BoardController, random: RandomNumberGene
 	recipes = recipe_system
 	unlocked = unlocked_ids
 
+func is_open() -> bool:
+	return state.phase == "prepare" and state.wave == 1 and state.global_wave() > state.start_wave
+
+func close() -> void:
+	state.offers.clear()
+	state.choices.clear()
+	state.refreshes = 0
+
 func open() -> void:
+	if not is_open(): return
 	state.refreshes = 0
 	generate()
 
 func generate() -> void:
+	if not is_open(): return
 	state.offers.clear()
 	recipes.offer(rng, unlocked)
 
@@ -29,7 +39,7 @@ func buy(_index: int) -> String:
 	return "卡片请在局外卡店购买；本局只出售食谱"
 
 func refresh() -> String:
-	if state.phase != "prepare": return "仅准备阶段可刷新"
+	if not is_open(): return "仅大关通关后的小铺可刷新"
 	if state.refreshes >= data.rules.refresh_limit: return "刷新次数已用完"
 	if state.heat < data.rules.refresh_cost: return "热量不足"
 	state.heat -= data.rules.refresh_cost
@@ -38,7 +48,7 @@ func refresh() -> String:
 	return ""
 
 func buy_recipe(id: String) -> String:
-	if state.phase != "prepare": return "仅准备阶段可购买"
+	if not is_open(): return "仅大关通关后的小铺可购买"
 	if id not in state.choices or not data.recipes.has(id) or not recipes.eligible(id, unlocked): return "食谱已售罄或不可用"
 	if state.heat < data.rules.recipe_price: return "热量不足"
 	state.heat -= data.rules.recipe_price

@@ -27,3 +27,12 @@ func _ready() -> void:
 		run.board.healed.disconnect(status_feedback.on_heal)
 		status_feedback = NoStatusDrawing.new()
 		status_feedback.bind(run, projection)
+
+	if "--campaign-load" in OS.get_cmdline_user_args():
+		for index: int in range(9):
+			run.state.heat = 350
+			run.state.cooldowns.clear()
+			run.board.place("pepper", 5 + index / 8, index % 8, false)
+		run.state.chapter_id = "kitchen_5"
+		run.combat.warning_summons.append({"caster":run.combat.enemies[0].uid,"id":"flour","rows":[0,6],"remaining":60.0})
+		assert(run.state.units.size() == 49)

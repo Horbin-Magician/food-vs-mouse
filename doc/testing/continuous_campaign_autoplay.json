@@ -1,0 +1,4472 @@
+{
+  "date": "2026-09-26",
+  "engine": "Godot 4.6.3",
+  "scope": "Continuous kitchen 1-1 through 5-8; normal gameplay; five-card builds use preset +0 inventory; no balance guarantee",
+  "samples": [
+    {
+      "build": "starter",
+      "cards": {
+        "bun": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_5",
+      "difficulty": "easy",
+      "global_wave": 40,
+      "growth": {
+        "bun": 0,
+        "pudding": 0,
+        "toast": 0
+      },
+      "history": [
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 2,
+          "heat": 72.1999999999937,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 81.0999999999967,
+          "units": 7,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 3,
+          "heat": 28.5333333333232,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 149.266666666678,
+          "units": 12,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 4,
+          "heat": 277.466666666695,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 246.233333333421,
+          "units": 23,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 5,
+          "heat": 306.400000000021,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 338.200000000021,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 6,
+          "heat": 1218.76666666662,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 424.383333333276,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 1,
+          "global_wave": 7,
+          "heat": 2245.4333333331,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [
+            "caramel"
+          ],
+          "seconds": 525.216666666518,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 8,
+          "heat": 2466.36666666622,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat"
+          ],
+          "seconds": 640.683333333079,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 9,
+          "heat": 4461.66666666655,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 793.33333333294,
+          "units": 35,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 10,
+          "heat": 5501.53333333487,
+          "pantry": 10,
+          "passed": 9,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 858.266666666215,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 11,
+          "heat": 6555.40000000324,
+          "pantry": 10,
+          "passed": 10,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 925.199999999487,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 12,
+          "heat": 7770.70000000509,
+          "pantry": 10,
+          "passed": 11,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 997.849999999421,
+          "units": 35,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 13,
+          "heat": 9316.66666667058,
+          "pantry": 10,
+          "passed": 12,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1095.83333333267,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 14,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 13,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1177.49999999926,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 15,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 14,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1261.71666666585,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 16,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 15,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1366.74999999909,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 17,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 16,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1526.89999999894,
+          "units": 35,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 18,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 17,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1609.9833333322,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 19,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 18,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1710.74999999877,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 5,
+          "global_wave": 20,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 19,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1814.54999999868,
+          "units": 35,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 10,
+          "global_wave": 21,
+          "heat": 9934.79999999999,
+          "pantry": 10,
+          "passed": 20,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1948.14999999856,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 15,
+          "global_wave": 22,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 21,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2062.81666666532,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 18,
+          "global_wave": 23,
+          "heat": 9935.89999999983,
+          "pantry": 10,
+          "passed": 22,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2179.95000000015,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 21,
+          "global_wave": 24,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 23,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2308.73333333512,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 23,
+          "global_wave": 25,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 24,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2476.78333333726,
+          "units": 35,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 23,
+          "global_wave": 26,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 25,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2551.56666667154,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 23,
+          "global_wave": 27,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 26,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2625.18333333915,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 23,
+          "global_wave": 28,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 27,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2716.48333334031,
+          "units": 35,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 24,
+          "global_wave": 29,
+          "heat": 9926.1333333333,
+          "pantry": 10,
+          "passed": 28,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2834.31666667514,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 24,
+          "global_wave": 30,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 29,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2919.35000000956,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 26,
+          "global_wave": 31,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 30,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3032.98333334434,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 30,
+          "global_wave": 32,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 31,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3157.01666667925,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 33,
+          "global_wave": 33,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 32,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3329.50000001478,
+          "units": 35,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 36,
+          "global_wave": 34,
+          "heat": 9942.36666666654,
+          "pantry": 10,
+          "passed": 33,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3438.1833333495,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 41,
+          "global_wave": 35,
+          "heat": 9991.56666666627,
+          "pantry": 10,
+          "passed": 34,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3546.28333335088,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 47,
+          "global_wave": 36,
+          "heat": 9925.39999999998,
+          "pantry": 10,
+          "passed": 35,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3674.45000001918,
+          "units": 35,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 62,
+          "global_wave": 37,
+          "heat": 9820.53333333186,
+          "pantry": 10,
+          "passed": 36,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3823.01666668773,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 70,
+          "global_wave": 38,
+          "heat": 9935.29999999984,
+          "pantry": 10,
+          "passed": 37,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3963.40000002285,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 74,
+          "global_wave": 39,
+          "heat": 9929.33333333326,
+          "pantry": 10,
+          "passed": 38,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 4072.91666669092,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 84,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 39,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 4205.25000002295,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 88,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 40,
+          "recipes": [
+            "caramel",
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 4378.81666668709,
+          "units": 35,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 716921.500000001
+        },
+        "deaths": 88,
+        "kills": 1969,
+        "leaks": 0,
+        "overflow": 46163.6333332417,
+        "passed": 40,
+        "puddings": 7,
+        "recipes": [
+          "caramel",
+          "crust",
+          "recycle",
+          "reheat",
+          "pressure"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "caramel",
+        "crust",
+        "recycle",
+        "reheat",
+        "pressure"
+      ],
+      "scene": "kitchen",
+      "seconds": 4378.81666668709,
+      "seed": 42,
+      "wave": 8
+    },
+    {
+      "build": "steam",
+      "cards": {
+        "bun": 1,
+        "garlic": 1,
+        "popcorn": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_5",
+      "difficulty": "easy",
+      "global_wave": 40,
+      "growth": {
+        "bun": 0,
+        "garlic": 0,
+        "popcorn": 0,
+        "pudding": 0,
+        "toast": 0
+      },
+      "history": [
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 2,
+          "heat": 72.1999999999937,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 81.0999999999967,
+          "units": 7,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 3,
+          "heat": 28.5333333333232,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 149.266666666678,
+          "units": 12,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 4,
+          "heat": 83.5333333333499,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 249.266666666757,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 5,
+          "heat": 74.5333333333427,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 377.266666666652,
+          "units": 32,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 6,
+          "heat": 57.2666666666707,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 451.133333333252,
+          "units": 40,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 7,
+          "heat": 53.1999999999971,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 531.599999999845,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 8,
+          "heat": 1073.0666666666,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 621.533333333097,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 9,
+          "heat": 2671.79999999968,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "caramel"
+          ],
+          "seconds": 760.899999999637,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 10,
+          "heat": 2207.56666666624,
+          "pantry": 10,
+          "passed": 9,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst"
+          ],
+          "seconds": 823.783333332913,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 11,
+          "heat": 2258.09999999945,
+          "pantry": 10,
+          "passed": 10,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 889.04999999952,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 12,
+          "heat": 3469.53333333266,
+          "pantry": 10,
+          "passed": 11,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 959.766666666122,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 13,
+          "heat": 4868.00000000048,
+          "pantry": 10,
+          "passed": 12,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1048.99999999937,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 14,
+          "heat": 6098.90000000241,
+          "pantry": 10,
+          "passed": 13,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1124.44999999931,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 15,
+          "heat": 7338.56666667111,
+          "pantry": 10,
+          "passed": 14,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1204.28333333257,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 3,
+          "global_wave": 16,
+          "heat": 8906.76666667113,
+          "pantry": 10,
+          "passed": 15,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1298.38333333248,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 17,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 16,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1438.23333333235,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 18,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 17,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1512.78333333229,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 19,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 18,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1590.53333333222,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 20,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 19,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1672.69999999881,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 21,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 20,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1769.93333333205,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 22,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 21,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1854.29999999864,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 23,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 22,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 1948.56666666522,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 3,
+          "global_wave": 24,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 23,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2049.09999999848,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 25,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 24,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2194.566666667,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 26,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 25,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2261.43333333452,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 27,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 26,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2330.60000000206,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 28,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 27,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2412.28333333644,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 29,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 28,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2509.46666667101,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 30,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 29,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2589.40000000536,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 31,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 30,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2682.05000000654,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 3,
+          "global_wave": 32,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 31,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2780.50000000779,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 33,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 32,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 2927.40000000966,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 34,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 33,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3006.60000001067,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 35,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 34,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3085.48333334501,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 36,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 35,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3175.65000001282,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 37,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 36,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3277.96666668079,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 38,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 37,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3369.33333334862,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 39,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 38,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3460.35000001645,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 39,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3561.33333335107,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 3,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 40,
+          "recipes": [
+            "caramel",
+            "recycle",
+            "crust",
+            "burst",
+            "reheat",
+            "pressure"
+          ],
+          "seconds": 3702.25000001953,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 445101.225000001,
+          "popcorn": 266827.675
+        },
+        "deaths": 3,
+        "kills": 1953,
+        "leaks": 0,
+        "overflow": 38115.4999999345,
+        "passed": 40,
+        "puddings": 7,
+        "recipes": [
+          "caramel",
+          "recycle",
+          "crust",
+          "burst",
+          "reheat",
+          "pressure"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "caramel",
+        "recycle",
+        "crust",
+        "burst",
+        "reheat",
+        "pressure"
+      ],
+      "scene": "kitchen",
+      "seconds": 3702.25000001953,
+      "seed": 42,
+      "wave": 8
+    },
+    {
+      "build": "ice_fire",
+      "cards": {
+        "bun": 1,
+        "pepper": 1,
+        "pudding": 1,
+        "tea": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_5",
+      "difficulty": "easy",
+      "global_wave": 40,
+      "growth": {
+        "bun": 0,
+        "pepper": 0,
+        "pudding": 0,
+        "tea": 0,
+        "toast": 0
+      },
+      "history": [
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 2,
+          "heat": 72.1999999999937,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 81.0999999999967,
+          "units": 7,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 3,
+          "heat": 28.5333333333232,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 149.266666666678,
+          "units": 12,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 4,
+          "heat": 108.53333333335,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 249.266666666757,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 4,
+          "global_wave": 5,
+          "heat": 25.0666666666732,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 387.53333333331,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 4,
+          "global_wave": 6,
+          "heat": 29.6333333333335,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 469.816666666568,
+          "units": 43,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 4,
+          "global_wave": 7,
+          "heat": 436.66666666668,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 553.333333333159,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 4,
+          "global_wave": 8,
+          "heat": 1567.93333333321,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 646.466666666407,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 9,
+          "heat": 2293.83333333296,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "pressure",
+            "recycle"
+          ],
+          "seconds": 786.91666666628,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 10,
+          "heat": 1624.69999999951,
+          "pantry": 10,
+          "passed": 9,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat"
+          ],
+          "seconds": 852.349999999553,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 11,
+          "heat": 1673.79999999939,
+          "pantry": 10,
+          "passed": 10,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long"
+          ],
+          "seconds": 916.899999999495,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 12,
+          "heat": 2243.49999999926,
+          "pantry": 10,
+          "passed": 11,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 986.749999999431,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 13,
+          "heat": 3636.96666666577,
+          "pantry": 10,
+          "passed": 12,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1073.48333333269,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 14,
+          "heat": 4867.63333333352,
+          "pantry": 10,
+          "passed": 13,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1148.81666666595,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 15,
+          "heat": 6105.13333333553,
+          "pantry": 10,
+          "passed": 14,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1227.56666666588,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 4,
+          "global_wave": 16,
+          "heat": 7671.0333333379,
+          "pantry": 10,
+          "passed": 15,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1320.51666666579,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 17,
+          "heat": 9847.33333333614,
+          "pantry": 10,
+          "passed": 16,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1453.66666666567,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 18,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 17,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1525.61666666561,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 19,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 18,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1598.66666666554,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 20,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 19,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1679.08333333213,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 21,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 20,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1776.44999999871,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 22,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 21,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1857.58333333197,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 23,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 22,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 1944.88333333189,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 4,
+          "global_wave": 24,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 23,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2049.01666666515,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 25,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 24,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2182.88333333352,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 26,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 25,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2249.40000000103,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 27,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 26,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2318.60000000191,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 28,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 27,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2400.36666666962,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 29,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 28,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2493.66666667081,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 30,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 29,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2572.96666667182,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 31,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 30,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2665.03333333966,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 4,
+          "global_wave": 32,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 31,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2765.03333334093,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 33,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 32,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2900.18333334265,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 34,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 33,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 2975.0833333436,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 35,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 34,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3049.20000001121,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 36,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 35,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3132.26666667894,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 37,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 36,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3233.5833333469,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 38,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 37,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3331.21666668147,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 39,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 38,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3423.23333334931,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 39,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3524.6333333506,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 4,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 40,
+          "recipes": [
+            "pressure",
+            "recycle",
+            "ice",
+            "cold_spice",
+            "reheat",
+            "caramel",
+            "long",
+            "crust"
+          ],
+          "seconds": 3657.7833333523,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 408430.15,
+          "pepper": 252788.7,
+          "tea": 47614.05
+        },
+        "deaths": 4,
+        "kills": 1947,
+        "leaks": 0,
+        "overflow": 36176.5666666053,
+        "passed": 40,
+        "puddings": 7,
+        "recipes": [
+          "pressure",
+          "recycle",
+          "ice",
+          "cold_spice",
+          "reheat",
+          "caramel",
+          "long",
+          "crust"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "pressure",
+        "recycle",
+        "ice",
+        "cold_spice",
+        "reheat",
+        "caramel",
+        "long",
+        "crust"
+      ],
+      "scene": "kitchen",
+      "seconds": 3657.7833333523,
+      "seed": 42,
+      "wave": 8
+    },
+    {
+      "build": "starter",
+      "cards": {
+        "bun": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_4",
+      "difficulty": "normal",
+      "global_wave": 30,
+      "growth": {
+        "bun": 0,
+        "pudding": 0,
+        "toast": 0
+      },
+      "history": [
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 2,
+          "heat": 40.5999999999933,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 87.7999999999963,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 3,
+          "heat": 64.8999999999873,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 167.450000000025,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 4,
+          "heat": 12.8666666666576,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 266.43333333342,
+          "units": 25,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 5,
+          "heat": 142.699999999985,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 358.850000000002,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 5,
+          "global_wave": 6,
+          "heat": 1137.26666666656,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 458.633333333245,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 11,
+          "global_wave": 7,
+          "heat": 2059.09999999967,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [
+            "caramel"
+          ],
+          "seconds": 579.549999999802,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 13,
+          "global_wave": 8,
+          "heat": 2029.19999999947,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat"
+          ],
+          "seconds": 689.599999999701,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 15,
+          "global_wave": 9,
+          "heat": 4048.86666666594,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 859.43333333288,
+          "units": 35,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 15,
+          "global_wave": 10,
+          "heat": 5103.4000000007,
+          "pantry": 10,
+          "passed": 9,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 926.699999999486,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 15,
+          "global_wave": 11,
+          "heat": 6158.66666666909,
+          "pantry": 10,
+          "passed": 10,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 994.333333332758,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 15,
+          "global_wave": 12,
+          "heat": 7369.43333333768,
+          "pantry": 10,
+          "passed": 11,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1069.71666666602,
+          "units": 35,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 17,
+          "global_wave": 13,
+          "heat": 8925.6000000041,
+          "pantry": 10,
+          "passed": 12,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1172.79999999926,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 17,
+          "global_wave": 14,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 13,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1266.21666666584,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 17,
+          "global_wave": 15,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 14,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1351.23333333243,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 22,
+          "global_wave": 16,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 15,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1479.88333333232,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 24,
+          "global_wave": 17,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 16,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1662.34999999882,
+          "units": 35,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 26,
+          "global_wave": 18,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 17,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1753.58333333207,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 30,
+          "global_wave": 19,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 18,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1860.6166666653,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 37,
+          "global_wave": 20,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 19,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 1973.34999999853,
+          "units": 33,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 44,
+          "global_wave": 21,
+          "heat": 9927.93333333328,
+          "pantry": 10,
+          "passed": 20,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2095.96666666574,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 55,
+          "global_wave": 22,
+          "heat": 9992.83333333306,
+          "pantry": 10,
+          "passed": 21,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2220.16666666732,
+          "units": 34,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 72,
+          "global_wave": 23,
+          "heat": 9784.26666666477,
+          "pantry": 10,
+          "passed": 22,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2368.13333333588,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 99,
+          "global_wave": 24,
+          "heat": 9844.19999999963,
+          "pantry": 2,
+          "passed": 23,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2591.85000000539,
+          "units": 34,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 109,
+          "global_wave": 25,
+          "heat": 9999.0,
+          "pantry": 2,
+          "passed": 24,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2793.7833333413,
+          "units": 34,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 109,
+          "global_wave": 26,
+          "heat": 9999.0,
+          "pantry": 2,
+          "passed": 25,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2870.61666667561,
+          "units": 35,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 109,
+          "global_wave": 27,
+          "heat": 9999.0,
+          "pantry": 2,
+          "passed": 26,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 2947.96666667659,
+          "units": 35,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 119,
+          "global_wave": 28,
+          "heat": 9980.56666666606,
+          "pantry": 2,
+          "passed": 27,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 3079.78333334494,
+          "units": 35,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 131,
+          "global_wave": 29,
+          "heat": 9919.33333333318,
+          "pantry": 2,
+          "passed": 28,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 3239.91666668031,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 136,
+          "global_wave": 30,
+          "heat": 9999.0,
+          "pantry": 2,
+          "passed": 29,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 3352.31666668174,
+          "units": 34,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 152,
+          "global_wave": 30,
+          "heat": 9900.83333333272,
+          "pantry": 0,
+          "passed": 29,
+          "recipes": [
+            "caramel",
+            "crust",
+            "pressure",
+            "reheat",
+            "recycle"
+          ],
+          "seconds": 3497.16666668358,
+          "units": 32,
+          "wave": 6
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 554449.875
+        },
+        "deaths": 152,
+        "kills": 1352,
+        "leaks": 10,
+        "overflow": 26313.4999999371,
+        "passed": 29,
+        "puddings": 12,
+        "recipes": [
+          "caramel",
+          "crust",
+          "pressure",
+          "reheat",
+          "recycle"
+        ]
+      },
+      "pantry": 0,
+      "phase": "lost",
+      "recipes": [
+        "caramel",
+        "crust",
+        "pressure",
+        "reheat",
+        "recycle"
+      ],
+      "scene": "kitchen",
+      "seconds": 3497.16666668358,
+      "seed": 7,
+      "wave": 6
+    },
+    {
+      "build": "steam",
+      "cards": {
+        "bun": 1,
+        "garlic": 1,
+        "popcorn": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_5",
+      "difficulty": "normal",
+      "global_wave": 40,
+      "growth": {
+        "bun": 0,
+        "garlic": 0,
+        "popcorn": 0,
+        "pudding": 0,
+        "toast": 0
+      },
+      "history": [
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 2,
+          "heat": 40.5999999999933,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 87.7999999999963,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 3,
+          "heat": 64.8999999999873,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 167.450000000025,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 3,
+          "global_wave": 4,
+          "heat": 65.3999999999872,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 277.700000000076,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 11,
+          "global_wave": 5,
+          "heat": 57.933333333314,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 416.466666666617,
+          "units": 30,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 11,
+          "global_wave": 6,
+          "heat": 21.2999999999739,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 503.149999999871,
+          "units": 39,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 11,
+          "global_wave": 7,
+          "heat": 101.299999999966,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 585.649999999796,
+          "units": 48,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 11,
+          "global_wave": 8,
+          "heat": 1139.49999999991,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 682.249999999708,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 9,
+          "heat": 2331.13333333297,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "crust"
+          ],
+          "seconds": 830.56666666624,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 10,
+          "heat": 1658.86666666619,
+          "pantry": 10,
+          "passed": 9,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat"
+          ],
+          "seconds": 894.433333332849,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 11,
+          "heat": 1710.3999999994,
+          "pantry": 10,
+          "passed": 10,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 960.199999999455,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 12,
+          "heat": 2924.06666666594,
+          "pantry": 10,
+          "passed": 11,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1032.03333333272,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 13,
+          "heat": 4464.49999999977,
+          "pantry": 10,
+          "passed": 12,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1127.2499999993,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 14,
+          "heat": 5698.63333333506,
+          "pantry": 10,
+          "passed": 13,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1204.3166666659,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 15,
+          "heat": 6939.03333333711,
+          "pantry": 10,
+          "passed": 14,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1284.51666666583,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 12,
+          "global_wave": 16,
+          "heat": 8511.86666667204,
+          "pantry": 10,
+          "passed": 15,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1380.93333333241,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 17,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 16,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1529.9666666656,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 18,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 17,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1607.81666666553,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 19,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 18,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1684.73333333213,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 20,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 19,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1770.59999999872,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 21,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 20,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1873.99999999862,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 22,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 21,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 1964.89999999854,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 23,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 22,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2060.04999999862,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 12,
+          "global_wave": 24,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 23,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2164.28333333328,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 12,
+          "global_wave": 25,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 24,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2320.3166666686,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 12,
+          "global_wave": 26,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 25,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2387.96666666946,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 12,
+          "global_wave": 27,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 26,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2458.98333333703,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 12,
+          "global_wave": 28,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 27,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2553.91666667157,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 12,
+          "global_wave": 29,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 28,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2655.3000000062,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 12,
+          "global_wave": 30,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 29,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2737.30000000724,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 31,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 30,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2848.60000000866,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 32,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 31,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 2961.56666667677,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 13,
+          "global_wave": 33,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 32,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3112.23333334535,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 13,
+          "global_wave": 34,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 33,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3193.48333334638,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 13,
+          "global_wave": 35,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 34,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3276.48333334744,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 13,
+          "global_wave": 36,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 35,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3368.36666668194,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 13,
+          "global_wave": 37,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 36,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3482.93333335007,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 13,
+          "global_wave": 38,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 37,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3587.50000001807,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 39,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 38,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3696.18333335279,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 15,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 39,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3812.58333335427,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 15,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 40,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "caramel",
+            "burst"
+          ],
+          "seconds": 3968.13333335625,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 559091.09375,
+          "popcorn": 333869.28125
+        },
+        "deaths": 15,
+        "kills": 1961,
+        "leaks": 0,
+        "overflow": 40962.2666665967,
+        "passed": 40,
+        "puddings": 7,
+        "recipes": [
+          "crust",
+          "recycle",
+          "pressure",
+          "reheat",
+          "caramel",
+          "burst"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "crust",
+        "recycle",
+        "pressure",
+        "reheat",
+        "caramel",
+        "burst"
+      ],
+      "scene": "kitchen",
+      "seconds": 3968.13333335625,
+      "seed": 7,
+      "wave": 8
+    },
+    {
+      "build": "ice_fire",
+      "cards": {
+        "bun": 1,
+        "pepper": 1,
+        "pudding": 1,
+        "tea": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_5",
+      "difficulty": "normal",
+      "global_wave": 40,
+      "growth": {
+        "bun": 0,
+        "pepper": 0,
+        "pudding": 0,
+        "tea": 0,
+        "toast": 0
+      },
+      "history": [
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 2,
+          "heat": 40.5999999999933,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 87.7999999999963,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 0,
+          "global_wave": 3,
+          "heat": 64.8999999999873,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 167.450000000025,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 4,
+          "global_wave": 4,
+          "heat": 37.3666666666544,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 281.183333333406,
+          "units": 25,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 11,
+          "global_wave": 5,
+          "heat": 71.6666666666664,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 415.833333333284,
+          "units": 33,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 12,
+          "global_wave": 6,
+          "heat": 54.0999999999915,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 509.549999999865,
+          "units": 42,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 12,
+          "global_wave": 7,
+          "heat": 367.366666666659,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 596.18333333312,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_1",
+          "deaths": 13,
+          "global_wave": 8,
+          "heat": 1551.9333333332,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 700.966666666358,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 9,
+          "heat": 2519.33333333293,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "crust",
+            "recycle"
+          ],
+          "seconds": 852.16666666622,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 10,
+          "heat": 1853.49999999947,
+          "pantry": 10,
+          "passed": 9,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice"
+          ],
+          "seconds": 919.249999999493,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 11,
+          "heat": 1404.33333333272,
+          "pantry": 10,
+          "passed": 10,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 984.6666666661,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 12,
+          "heat": 2616.16666666593,
+          "pantry": 10,
+          "passed": 11,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1055.5833333327,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 13,
+          "heat": 4152.7333333325,
+          "pantry": 10,
+          "passed": 12,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1148.86666666595,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 14,
+          "heat": 5386.93333333446,
+          "pantry": 10,
+          "passed": 13,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1225.96666666588,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 15,
+          "heat": 6626.60000000316,
+          "pantry": 10,
+          "passed": 14,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1305.79999999914,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_2",
+          "deaths": 13,
+          "global_wave": 16,
+          "heat": 8196.0333333388,
+          "pantry": 10,
+          "passed": 15,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1400.51666666572,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 17,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 16,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1543.08333333226,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 18,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 17,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1618.63333333219,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 19,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 18,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1695.44999999879,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 20,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 19,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1777.39999999871,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 21,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 20,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1877.58333333195,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 22,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 21,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 1962.96666666521,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 23,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 22,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2059.48333333195,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_3",
+          "deaths": 13,
+          "global_wave": 24,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 23,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2165.54999999996,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 25,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 24,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2315.0333333352,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 26,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 25,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2381.65000000271,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 27,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 26,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2451.26666667027,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 28,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 27,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2530.61666667128,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 29,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 28,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2634.93333333927,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 30,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 29,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2715.6333333403,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 13,
+          "global_wave": 31,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 30,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2820.78333334164,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_4",
+          "deaths": 14,
+          "global_wave": 32,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 31,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 2929.05000000968,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 33,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 32,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3069.11666667813,
+          "units": 49,
+          "wave": 1
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 34,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 33,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3146.10000001245,
+          "units": 49,
+          "wave": 2
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 35,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 34,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3222.00000001341,
+          "units": 49,
+          "wave": 3
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 36,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 35,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3310.1166666812,
+          "units": 49,
+          "wave": 4
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 37,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 36,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3413.01666668251,
+          "units": 49,
+          "wave": 5
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 14,
+          "global_wave": 38,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 37,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3511.78333335044,
+          "units": 49,
+          "wave": 6
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 16,
+          "global_wave": 39,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 38,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3617.56666668512,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 18,
+          "global_wave": 40,
+          "heat": 9928.73333333326,
+          "pantry": 10,
+          "passed": 39,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3731.11666668656,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "chapter": "kitchen_5",
+          "deaths": 18,
+          "global_wave": 40,
+          "heat": 9999.0,
+          "pantry": 10,
+          "passed": 40,
+          "recipes": [
+            "crust",
+            "recycle",
+            "pressure",
+            "reheat",
+            "ice",
+            "long",
+            "caramel",
+            "cold_spice"
+          ],
+          "seconds": 3885.6833333552,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 511359.40625,
+          "pepper": 321536.28125,
+          "tea": 58286.6875
+        },
+        "deaths": 18,
+        "kills": 1957,
+        "leaks": 0,
+        "overflow": 38182.3666665998,
+        "passed": 40,
+        "puddings": 7,
+        "recipes": [
+          "crust",
+          "recycle",
+          "pressure",
+          "reheat",
+          "ice",
+          "long",
+          "caramel",
+          "cold_spice"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "crust",
+        "recycle",
+        "pressure",
+        "reheat",
+        "ice",
+        "long",
+        "caramel",
+        "cold_spice"
+      ],
+      "scene": "kitchen",
+      "seconds": 3885.6833333552,
+      "seed": 7,
+      "wave": 8
+    }
+  ]
+}

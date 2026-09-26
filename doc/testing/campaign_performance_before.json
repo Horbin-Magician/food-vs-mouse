@@ -1,0 +1,24 @@
+{
+  "40": {
+    "average_fps": 67.747539692639,
+    "enemies": 100,
+    "frames": 1356,
+    "p95_ms": 27.934,
+    "p99_ms": 30.339,
+    "renderer": "Apple M4",
+    "resolution": "1280x720",
+    "seconds": 20.015487,
+    "units": 40
+  },
+  "49": {
+    "average_fps": 58.5595968061836,
+    "enemies": 100,
+    "frames": 1172,
+    "p95_ms": 21.898,
+    "p99_ms": 31.123,
+    "renderer": "Apple M4",
+    "resolution": "1280x720",
+    "seconds": 20.013799,
+    "units": 49
+  }
+}

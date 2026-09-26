@@ -6,7 +6,16 @@
 
 | 文档 | 用途 | 状态 |
 |---|---|---|
-| [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 首版代码已接入，真人与平衡验收待完成 |
+| [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 连续四十关已接入；40 项回归通过，未更新发布包 |
+| [design/campaign.md](design/campaign.md) | 场景内五大关连续推进、后四关重设、全局进度与 v4 迁移 | 已实现；40 项回归、双尺寸画面及鼠标流程通过 |
+| [testing/continuous_campaign.md](testing/continuous_campaign.md) | 连续四十关、跨大关继承、迁移防重、原生界面及正常战斗采样 | 本轮验证记录 |
+| [testing/continuous_campaign_autoplay.json](testing/continuous_campaign_autoplay.json) | 六个连续场景战斗样本 | 自动证据，含失败样本 |
+| [testing/continuous_campaign_growth.json](testing/continuous_campaign_growth.json) | 零资产三卡连续挑战与逐关读档 | 实际5-7失败，保留真实结果 |
+| [design/campaign_independent_history.md](design/campaign_independent_history.md) | 原独立选关／解锁／重置方案与分期路线 | 已废弃，仅历史背景 |
+| [testing/campaign_autoplay.json](testing/campaign_autoplay.json) | 第一大关三构筑三种子的逐关自动采样 | 自动证据，不代表真人或成长路径 |
+| [testing/campaign.md](testing/campaign.md) | 战役实现、迁移、回归与试玩证据 | 逻辑、成长、原生交互、发布验证及性能限制已记录 |
+| [releases/0.2.0-rc1.md](releases/0.2.0-rc1.md) | 五夜候选包、启动、兼容、来源及限制 | 本轮候选交付记录 |
+| [testing/campaign_playtest_form.md](testing/campaign_playtest_form.md) | 可选的匿名逐关试玩记录表 | 仅材料；本次真人测试用户豁免 |
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
 | [design/pvz_innovation_research.md](design/pvz_innovation_research.md) | PVZ 与相关策略游戏调研、十二项机制候选、优先级及验证建议 | 调研完成；新增机制均为拟议，未纳入首版排期 |
 | [design/meta_progression.md](design/meta_progression.md) | 灵感购卡、有限携卡、翻倍刷新与耗材概率强化 | 已接入，初始参数与验收边界见专项记录 |
@@ -19,8 +28,8 @@
 | [design/settings.md](design/settings.md) | 热量下方倍速、统一设置、Esc 暂停及返回菜单／退出规则 | 已实现，验证边界见专项记录 |
 | [testing/settings.md](testing/settings.md) | 设置、暂停所有权、存档离开与双尺寸界面验收 | 36 项回归、原生输入与渲染通过，真实鼠标复验受限 |
 | [testing/screens.md](testing/screens.md) | 菜单与战报流程、存档及渲染验证 | 导入、16 组回归与原生渲染通过 |
-| [design/shop.md](design/shop.md) | 局内商店实现记录与新版只售食谱的变更入口 | 新版仅食谱已接入，历史记录保留 |
-| [testing/shop.md](testing/shop.md) | 统一商店的交易、购物完成开战、存档与窗口验收 | 最新流程自动／渲染通过，鼠标复验待完成 |
+| [design/shop.md](design/shop.md) | 大关通关后小铺、普通小关自动衔接与旧档兼容 | 已实现；仅大关间四次购物，最终大关直接胜利 |
+| [testing/shop.md](testing/shop.md) | 大关小铺的交易、连续开战、存档重试与窗口验收 | 41 项回归及双尺寸渲染通过；真实鼠标复验受限 |
 | [design/economy.md](design/economy.md) | 热量购食谱、跨关保留与鼠群灵感拾取、防重复存档 | 已实现；用户指定掉落率与价格已更新，整局平衡待验 |
 | [testing/economy.md](testing/economy.md) | 新经济逻辑、迁移、拾取和窗口验收 | 初次 35 项、本次数值调整九项及双尺寸渲染通过；真实鼠标复验受限 |
 | [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |

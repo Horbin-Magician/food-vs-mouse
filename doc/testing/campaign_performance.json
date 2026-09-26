@@ -1,0 +1,35 @@
+{
+  "40": {
+    "average_fps": 70.025725582227,
+    "enemies": 100,
+    "frames": 1401,
+    "p95_ms": 27.851,
+    "p99_ms": 30.674,
+    "renderer": "Apple M4",
+    "resolution": "1280x720",
+    "seconds": 20.006933,
+    "units": 40
+  },
+  "49": {
+    "average_fps": 67.5345548473063,
+    "enemies": 100,
+    "frames": 1351,
+    "p95_ms": 28.479,
+    "p99_ms": 31.578,
+    "renderer": "Apple M4",
+    "resolution": "1280x720",
+    "seconds": 20.004574,
+    "units": 49
+  },
+  "49_repeat": {
+    "average_fps": 63.9925410973487,
+    "enemies": 100,
+    "frames": 1281,
+    "p95_ms": 28.081,
+    "p99_ms": 30.645,
+    "renderer": "Apple M4",
+    "resolution": "1280x720",
+    "seconds": 20.017958,
+    "units": 49
+  }
+}

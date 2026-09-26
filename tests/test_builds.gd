@@ -5,6 +5,11 @@ func _init() -> void:
 	run.new_run(42)
 	var same: RunController = RunController.new()
 	same.new_run(42)
+	for controller: RunController in [run, same]:
+		for stage: int in range(8):
+			controller.start()
+			controller.finish_wave()
+		assert(controller.shop.is_open())
 	assert(run.state.offers == same.state.offers and run.state.choices == same.state.choices)
 	run.state.levels.bun = 10
 	run.start()

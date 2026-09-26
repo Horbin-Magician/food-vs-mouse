@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_3_2"
+title = "硬壳尖牙"
+stats = {"duration": 95, "composition": ["lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer", "gray", "gnawer", "lid", "gray", "lid", "gnawer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.36, "damage_scale": 1.62, "batches": [{"time": 5.0, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.571, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 22.143, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 30.714, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 39.286, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 47.857, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 56.429, "gap": 1.5, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 65.0, "gap": 1.5, "lanes": [0, 1]}]}

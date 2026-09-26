@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChapterDef" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/chapter_def.gd" id="1"]
+
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_1.tres" id="w1"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_2.tres" id="w2"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_3.tres" id="w3"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_4.tres" id="w4"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_5.tres" id="w5"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_6.tres" id="w6"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_7.tres" id="w7"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_2_8.tres" id="w8"]
+
+[resource]
+script = ExtResource("1")
+id = "kitchen_2"
+title = "疾走宵夜"
+order = 2
+strategy = "继承阵地与热量，补牢两翼，防备跑腿与鼓手接力侧袭。"
+first_clear_reward = 12
+available = true
+waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8")])
+background_tint = Color(0.12, 0.28, 0.48, 0.15)

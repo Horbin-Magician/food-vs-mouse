@@ -5,6 +5,10 @@ func _init() -> void:
 	run.new_run(42)
 	assert(not run.data.rules.has("rewards") and not run.data.rules.has("bonus"))
 	assert(not run.saves.run_payload(run.state, run.rng).has("coins"))
+	for stage: int in range(8):
+		run.start()
+		run.finish_wave()
+	assert(run.shop.is_open())
 	var recipe: String = run.state.choices[0]
 	run.state.heat = run.data.rules.recipe_price - 0.01
 	var before: float = run.state.heat

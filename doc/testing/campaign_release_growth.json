@@ -1,0 +1,856 @@
+[
+  {
+    "actions": [],
+    "balance": 86.0,
+    "build": "starter",
+    "cards": {
+      "bun": 1,
+      "pudding": 1,
+      "toast": 1
+    },
+    "chapter": "kitchen_1",
+    "clears": {
+      "kitchen_1": 1.0
+    },
+    "difficulty": "easy",
+    "growth": {
+      "bun": 0.0,
+      "pudding": 0.0,
+      "toast": 0.0
+    },
+    "history": [
+      {
+        "deaths": 0,
+        "heat": 16.7666666666602,
+        "pantry": 10,
+        "passed": 1,
+        "recipes": [],
+        "seconds": 83.3833333333299,
+        "units": 8,
+        "wave": 2
+      },
+      {
+        "deaths": 0,
+        "heat": 38.9333333333242,
+        "pantry": 10,
+        "passed": 2,
+        "recipes": [],
+        "seconds": 161.966666666688,
+        "units": 13,
+        "wave": 3
+      },
+      {
+        "deaths": 0,
+        "heat": 126.466666666648,
+        "pantry": 10,
+        "passed": 3,
+        "recipes": [],
+        "seconds": 248.233333333423,
+        "units": 24,
+        "wave": 4
+      },
+      {
+        "deaths": 0,
+        "heat": 70.7333333333056,
+        "pantry": 10,
+        "passed": 4,
+        "recipes": [],
+        "seconds": 337.866666666688,
+        "units": 35,
+        "wave": 5
+      },
+      {
+        "deaths": 1,
+        "heat": 1133.03333333323,
+        "pantry": 10,
+        "passed": 5,
+        "recipes": [],
+        "seconds": 434.016666666601,
+        "units": 35,
+        "wave": 6
+      },
+      {
+        "deaths": 5,
+        "heat": 1670.19999999971,
+        "pantry": 10,
+        "passed": 6,
+        "recipes": [
+          "recycle"
+        ],
+        "seconds": 537.59999999984,
+        "units": 35,
+        "wave": 7
+      },
+      {
+        "deaths": 6,
+        "heat": 1964.89999999951,
+        "pantry": 10,
+        "passed": 7,
+        "recipes": [
+          "recycle",
+          "reheat",
+          "crust"
+        ],
+        "seconds": 647.44999999974,
+        "units": 35,
+        "wave": 8
+      },
+      {
+        "deaths": 6,
+        "heat": 3460.19999999923,
+        "pantry": 10,
+        "passed": 8,
+        "recipes": [
+          "recycle",
+          "reheat",
+          "crust",
+          "caramel",
+          "pressure"
+        ],
+        "seconds": 800.099999999601,
+        "units": 35,
+        "wave": 8
+      }
+    ],
+    "loadout": [
+      {
+        "id": "bun",
+        "level": 0.0,
+        "uid": "card_1"
+      },
+      {
+        "id": "toast",
+        "level": 0.0,
+        "uid": "card_2"
+      },
+      {
+        "id": "pudding",
+        "level": 0.0,
+        "uid": "card_3"
+      }
+    ],
+    "metrics": {
+      "damage": {
+        "bun": 64488.7000000001
+      },
+      "deaths": 6,
+      "kills": 245,
+      "leaks": 0,
+      "overflow": 0.0,
+      "passed": 8,
+      "puddings": 7,
+      "recipes": [
+        "recycle",
+        "reheat",
+        "crust",
+        "caramel",
+        "pressure"
+      ]
+    },
+    "pantry": 10,
+    "phase": "won",
+    "recipes": [
+      "recycle",
+      "reheat",
+      "crust",
+      "caramel",
+      "pressure"
+    ],
+    "seconds": 800.099999999601,
+    "seed": 43,
+    "wave": 8
+  },
+  {
+    "actions": [
+      "购入 冰柠茶 +0",
+      "购入 小笼包 +0",
+      "购入 冰柠茶 +0",
+      "购入 拉面碗 +0",
+      "强化成功 · 小笼包 +1；已消耗 2 张材料",
+      "卡店已刷新，花费 2 灵感"
+    ],
+    "balance": 151.0,
+    "build": "starter",
+    "cards": {
+      "bun": 1,
+      "pudding": 1,
+      "toast": 1
+    },
+    "chapter": "kitchen_2",
+    "clears": {
+      "kitchen_1": 1.0,
+      "kitchen_2": 1.0
+    },
+    "difficulty": "easy",
+    "growth": {
+      "bun": 1.0,
+      "pudding": 0.0,
+      "toast": 0.0
+    },
+    "history": [
+      {
+        "deaths": 0,
+        "heat": 52.9999999999939,
+        "pantry": 10,
+        "passed": 1,
+        "recipes": [],
+        "seconds": 78.9999999999968,
+        "units": 7,
+        "wave": 2
+      },
+      {
+        "deaths": 0,
+        "heat": 64.433333333323,
+        "pantry": 10,
+        "passed": 2,
+        "recipes": [],
+        "seconds": 152.21666666668,
+        "units": 12,
+        "wave": 3
+      },
+      {
+        "deaths": 0,
+        "heat": 186.266666666659,
+        "pantry": 10,
+        "passed": 3,
+        "recipes": [],
+        "seconds": 230.633333333409,
+        "units": 22,
+        "wave": 4
+      },
+      {
+        "deaths": 0,
+        "heat": 46.8666666666529,
+        "pantry": 10,
+        "passed": 4,
+        "recipes": [],
+        "seconds": 325.933333333366,
+        "units": 35,
+        "wave": 5
+      },
+      {
+        "deaths": 0,
+        "heat": 940.466666666612,
+        "pantry": 10,
+        "passed": 5,
+        "recipes": [],
+        "seconds": 405.233333333294,
+        "units": 35,
+        "wave": 6
+      },
+      {
+        "deaths": 0,
+        "heat": 1335.7666666665,
+        "pantry": 10,
+        "passed": 6,
+        "recipes": [
+          "breakfast"
+        ],
+        "seconds": 485.383333333221,
+        "units": 35,
+        "wave": 7
+      },
+      {
+        "deaths": 0,
+        "heat": 1474.63333333306,
+        "pantry": 10,
+        "passed": 7,
+        "recipes": [
+          "breakfast",
+          "pressure",
+          "reheat"
+        ],
+        "seconds": 582.316666666466,
+        "units": 35,
+        "wave": 8
+      },
+      {
+        "deaths": 0,
+        "heat": 2360.49999999948,
+        "pantry": 10,
+        "passed": 8,
+        "recipes": [
+          "breakfast",
+          "pressure",
+          "reheat",
+          "crust",
+          "wide"
+        ],
+        "seconds": 737.749999999658,
+        "units": 35,
+        "wave": 8
+      }
+    ],
+    "loadout": [
+      {
+        "id": "bun",
+        "level": 1.0,
+        "uid": "card_1"
+      },
+      {
+        "id": "toast",
+        "level": 0.0,
+        "uid": "card_2"
+      },
+      {
+        "id": "pudding",
+        "level": 0.0,
+        "uid": "card_3"
+      }
+    ],
+    "metrics": {
+      "damage": {
+        "bun": 45841.5500000001
+      },
+      "deaths": 0,
+      "kills": 241,
+      "leaks": 0,
+      "overflow": 0.0,
+      "passed": 8,
+      "puddings": 7,
+      "recipes": [
+        "breakfast",
+        "pressure",
+        "reheat",
+        "crust",
+        "wide"
+      ]
+    },
+    "pantry": 10,
+    "phase": "won",
+    "recipes": [
+      "breakfast",
+      "pressure",
+      "reheat",
+      "crust",
+      "wide"
+    ],
+    "seconds": 737.749999999658,
+    "seed": 44,
+    "wave": 8
+  },
+  {
+    "actions": [
+      "购入 焦糖布丁 +0",
+      "购入 厚吐司 +0",
+      "购入 厚吐司 +0",
+      "购入 拉面碗 +0",
+      "强化成功 · 小笼包 +2；已消耗 2 张材料",
+      "卡店已刷新，花费 2 灵感"
+    ],
+    "balance": 217.0,
+    "build": "starter",
+    "cards": {
+      "bun": 1,
+      "pudding": 1,
+      "toast": 1
+    },
+    "chapter": "kitchen_3",
+    "clears": {
+      "kitchen_1": 1.0,
+      "kitchen_2": 1.0,
+      "kitchen_3": 1.0
+    },
+    "difficulty": "easy",
+    "growth": {
+      "bun": 2.0,
+      "pudding": 0.0,
+      "toast": 0.0
+    },
+    "history": [
+      {
+        "deaths": 0,
+        "heat": 30.6666666666597,
+        "pantry": 10,
+        "passed": 1,
+        "recipes": [],
+        "seconds": 97.8333333333291,
+        "units": 9,
+        "wave": 2
+      },
+      {
+        "deaths": 0,
+        "heat": 127.933333333319,
+        "pantry": 10,
+        "passed": 2,
+        "recipes": [],
+        "seconds": 196.466666666715,
+        "units": 16,
+        "wave": 3
+      },
+      {
+        "deaths": 1,
+        "heat": 70.0333333333122,
+        "pantry": 10,
+        "passed": 3,
+        "recipes": [],
+        "seconds": 275.016666666745,
+        "units": 26,
+        "wave": 4
+      },
+      {
+        "deaths": 1,
+        "heat": 327.266666666643,
+        "pantry": 10,
+        "passed": 4,
+        "recipes": [],
+        "seconds": 368.633333333327,
+        "units": 35,
+        "wave": 5
+      },
+      {
+        "deaths": 1,
+        "heat": 1339.19999999989,
+        "pantry": 10,
+        "passed": 5,
+        "recipes": [],
+        "seconds": 454.599999999915,
+        "units": 35,
+        "wave": 6
+      },
+      {
+        "deaths": 1,
+        "heat": 1351.93333333314,
+        "pantry": 10,
+        "passed": 6,
+        "recipes": [
+          "pressure",
+          "reheat"
+        ],
+        "seconds": 540.966666666503,
+        "units": 35,
+        "wave": 7
+      },
+      {
+        "deaths": 1,
+        "heat": 1490.16666666637,
+        "pantry": 10,
+        "passed": 7,
+        "recipes": [
+          "pressure",
+          "reheat",
+          "crust",
+          "breakfast"
+        ],
+        "seconds": 637.583333333082,
+        "units": 35,
+        "wave": 8
+      },
+      {
+        "deaths": 1,
+        "heat": 2907.93333333278,
+        "pantry": 10,
+        "passed": 8,
+        "recipes": [
+          "pressure",
+          "reheat",
+          "crust",
+          "breakfast",
+          "caramel",
+          "wide"
+        ],
+        "seconds": 796.466666666271,
+        "units": 35,
+        "wave": 8
+      }
+    ],
+    "loadout": [
+      {
+        "id": "bun",
+        "level": 2.0,
+        "uid": "card_1"
+      },
+      {
+        "id": "toast",
+        "level": 0.0,
+        "uid": "card_2"
+      },
+      {
+        "id": "pudding",
+        "level": 0.0,
+        "uid": "card_3"
+      }
+    ],
+    "metrics": {
+      "damage": {
+        "bun": 73128.8750000014
+      },
+      "deaths": 1,
+      "kills": 249,
+      "leaks": 0,
+      "overflow": 0.0,
+      "passed": 8,
+      "puddings": 7,
+      "recipes": [
+        "pressure",
+        "reheat",
+        "crust",
+        "breakfast",
+        "caramel",
+        "wide"
+      ]
+    },
+    "pantry": 10,
+    "phase": "won",
+    "recipes": [
+      "pressure",
+      "reheat",
+      "crust",
+      "breakfast",
+      "caramel",
+      "wide"
+    ],
+    "seconds": 796.466666666271,
+    "seed": 45,
+    "wave": 8
+  },
+  {
+    "actions": [
+      "购入 焦糖布丁 +0",
+      "购入 辣椒串 +0",
+      "购入 蒜香面包 +0",
+      "购入 辣椒串 +0",
+      "强化成功 · 小笼包 +3；已消耗 2 张材料",
+      "卡店已刷新，花费 2 灵感"
+    ],
+    "balance": 283.0,
+    "build": "starter",
+    "cards": {
+      "bun": 1,
+      "pudding": 1,
+      "toast": 1
+    },
+    "chapter": "kitchen_4",
+    "clears": {
+      "kitchen_1": 1.0,
+      "kitchen_2": 1.0,
+      "kitchen_3": 1.0,
+      "kitchen_4": 1.0
+    },
+    "difficulty": "easy",
+    "growth": {
+      "bun": 3.0,
+      "pudding": 0.0,
+      "toast": 0.0
+    },
+    "history": [
+      {
+        "deaths": 0,
+        "heat": 32.4666666666598,
+        "pantry": 10,
+        "passed": 1,
+        "recipes": [],
+        "seconds": 98.733333333329,
+        "units": 9,
+        "wave": 2
+      },
+      {
+        "deaths": 0,
+        "heat": 121.966666666655,
+        "pantry": 10,
+        "passed": 2,
+        "recipes": [],
+        "seconds": 170.983333333362,
+        "units": 14,
+        "wave": 3
+      },
+      {
+        "deaths": 0,
+        "heat": 88.8666666666495,
+        "pantry": 10,
+        "passed": 3,
+        "recipes": [],
+        "seconds": 256.933333333429,
+        "units": 26,
+        "wave": 4
+      },
+      {
+        "deaths": 0,
+        "heat": 302.966666666654,
+        "pantry": 10,
+        "passed": 4,
+        "recipes": [],
+        "seconds": 343.98333333335,
+        "units": 34,
+        "wave": 5
+      },
+      {
+        "deaths": 0,
+        "heat": 1189.06666666659,
+        "pantry": 10,
+        "passed": 5,
+        "recipes": [],
+        "seconds": 419.533333333281,
+        "units": 34,
+        "wave": 6
+      },
+      {
+        "deaths": 0,
+        "heat": 1687.59999999976,
+        "pantry": 10,
+        "passed": 6,
+        "recipes": [
+          "recycle"
+        ],
+        "seconds": 508.799999999866,
+        "units": 35,
+        "wave": 7
+      },
+      {
+        "deaths": 0,
+        "heat": 1924.93333333292,
+        "pantry": 10,
+        "passed": 7,
+        "recipes": [
+          "recycle",
+          "breakfast",
+          "crust"
+        ],
+        "seconds": 604.966666666445,
+        "units": 35,
+        "wave": 8
+      },
+      {
+        "deaths": 0,
+        "heat": 2906.69999999935,
+        "pantry": 10,
+        "passed": 8,
+        "recipes": [
+          "recycle",
+          "breakfast",
+          "crust",
+          "reheat",
+          "caramel",
+          "pressure"
+        ],
+        "seconds": 755.849999999641,
+        "units": 35,
+        "wave": 8
+      }
+    ],
+    "loadout": [
+      {
+        "id": "bun",
+        "level": 3.0,
+        "uid": "card_1"
+      },
+      {
+        "id": "toast",
+        "level": 0.0,
+        "uid": "card_2"
+      },
+      {
+        "id": "pudding",
+        "level": 0.0,
+        "uid": "card_3"
+      }
+    ],
+    "metrics": {
+      "damage": {
+        "bun": 56992.374999998
+      },
+      "deaths": 0,
+      "kills": 257,
+      "leaks": 0,
+      "overflow": 0.0,
+      "passed": 8,
+      "puddings": 7,
+      "recipes": [
+        "recycle",
+        "breakfast",
+        "crust",
+        "reheat",
+        "caramel",
+        "pressure"
+      ]
+    },
+    "pantry": 10,
+    "phase": "won",
+    "recipes": [
+      "recycle",
+      "breakfast",
+      "crust",
+      "reheat",
+      "caramel",
+      "pressure"
+    ],
+    "seconds": 755.849999999641,
+    "seed": 46,
+    "wave": 8
+  },
+  {
+    "actions": [
+      "购入 蒜香面包 +0",
+      "购入 小笼包 +0",
+      "购入 焦糖布丁 +0",
+      "购入 拉面碗 +0",
+      "强化失败 · 小笼包 +3；已消耗 2 张材料",
+      "卡店已刷新，花费 2 灵感"
+    ],
+    "balance": 348.0,
+    "build": "starter",
+    "cards": {
+      "bun": 1,
+      "pudding": 1,
+      "toast": 1
+    },
+    "chapter": "kitchen_5",
+    "clears": {
+      "kitchen_1": 1.0,
+      "kitchen_2": 1.0,
+      "kitchen_3": 1.0,
+      "kitchen_4": 1.0,
+      "kitchen_5": 1.0
+    },
+    "difficulty": "easy",
+    "growth": {
+      "bun": 3.0,
+      "pudding": 0.0,
+      "toast": 0.0
+    },
+    "history": [
+      {
+        "deaths": 0,
+        "heat": 16.4666666666602,
+        "pantry": 10,
+        "passed": 1,
+        "recipes": [],
+        "seconds": 83.2333333333299,
+        "units": 8,
+        "wave": 2
+      },
+      {
+        "deaths": 0,
+        "heat": 65.0666666666567,
+        "pantry": 10,
+        "passed": 2,
+        "recipes": [],
+        "seconds": 170.033333333361,
+        "units": 14,
+        "wave": 3
+      },
+      {
+        "deaths": 0,
+        "heat": 36.7999999999849,
+        "pantry": 10,
+        "passed": 3,
+        "recipes": [],
+        "seconds": 245.900000000088,
+        "units": 25,
+        "wave": 4
+      },
+      {
+        "deaths": 0,
+        "heat": 275.166666666655,
+        "pantry": 10,
+        "passed": 4,
+        "recipes": [],
+        "seconds": 332.58333333336,
+        "units": 33,
+        "wave": 5
+      },
+      {
+        "deaths": 0,
+        "heat": 961.266666666621,
+        "pantry": 10,
+        "passed": 5,
+        "recipes": [],
+        "seconds": 408.133333333291,
+        "units": 35,
+        "wave": 6
+      },
+      {
+        "deaths": 0,
+        "heat": 1466.99999999984,
+        "pantry": 10,
+        "passed": 6,
+        "recipes": [
+          "breakfast"
+        ],
+        "seconds": 490.999999999882,
+        "units": 35,
+        "wave": 7
+      },
+      {
+        "deaths": 0,
+        "heat": 2013.69999999971,
+        "pantry": 10,
+        "passed": 7,
+        "recipes": [
+          "breakfast",
+          "recycle",
+          "caramel"
+        ],
+        "seconds": 584.349999999797,
+        "units": 35,
+        "wave": 8
+      },
+      {
+        "deaths": 0,
+        "heat": 3008.59999999943,
+        "pantry": 10,
+        "passed": 8,
+        "recipes": [
+          "breakfast",
+          "recycle",
+          "caramel",
+          "reheat",
+          "pressure",
+          "crust"
+        ],
+        "seconds": 736.799999999658,
+        "units": 35,
+        "wave": 8
+      }
+    ],
+    "loadout": [
+      {
+        "id": "bun",
+        "level": 3.0,
+        "uid": "card_1"
+      },
+      {
+        "id": "toast",
+        "level": 0.0,
+        "uid": "card_2"
+      },
+      {
+        "id": "pudding",
+        "level": 0.0,
+        "uid": "card_3"
+      }
+    ],
+    "metrics": {
+      "damage": {
+        "bun": 58970.7249999983
+      },
+      "deaths": 0,
+      "kills": 265,
+      "leaks": 0,
+      "overflow": 0.0,
+      "passed": 8,
+      "puddings": 7,
+      "recipes": [
+        "breakfast",
+        "recycle",
+        "caramel",
+        "reheat",
+        "pressure",
+        "crust"
+      ]
+    },
+    "pantry": 10,
+    "phase": "won",
+    "recipes": [
+      "breakfast",
+      "recycle",
+      "caramel",
+      "reheat",
+      "pressure",
+      "crust"
+    ],
+    "seconds": 736.799999999658,
+    "seed": 47,
+    "wave": 8
+  }
+]

@@ -50,7 +50,21 @@ func on_damage(unit: Dictionary, amount: float, is_food: bool, direct: bool) -> 
 	serial += 1
 	var tint: Color = Color("ff8d87") if is_food else Color("fff0ae")
 	if not direct: tint = Color("ffb265")
-	numbers.append({"uid": unit.uid, "text": ("·" if not direct else "") + damage_text(amount), "position": foot + Vector2(offset + side_offset, -height - mini(overlap, 3) * 22.0), "age": 0.0, "color": tint})
+	var merged: bool = false
+	if not is_food and not direct and combat.enemies.size() > 45:
+		for number: Dictionary in numbers:
+			if number.get("burn_row", -1) == unit.row and number.age < 0.2:
+				number.amount += amount
+				number.text = "灼烧 " + damage_text(number.amount)
+				number.width = ThemeDB.fallback_font.get_string_size(number.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+				merged = true
+				break
+	if not merged:
+		var dense_burn: bool = not is_food and not direct and combat.enemies.size() > 45
+		var title: String = ("灼烧 " if dense_burn else ("·" if not direct else "")) + damage_text(amount)
+		var origin: Vector2 = foot + Vector2(offset + side_offset, -height - mini(overlap, 3) * 22.0)
+		origin.y = maxf(125, origin.y)
+		numbers.append({"uid": unit.uid, "text": title, "width":ThemeDB.fallback_font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x, "burn_row":unit.row if dense_burn else -1, "amount":amount, "position": origin, "age": 0.0, "color": tint})
 	if numbers.size() > MAX_NUMBERS: numbers.pop_front()
 	if not flashes.has(unit.uid):
 		var sprite := Sprite2D.new()
@@ -105,6 +119,6 @@ func _draw() -> void:
 		var alpha: float = 1.0 - smoothstep(0.55, 1.0, progress)
 		var point: Vector2 = number.position + Vector2(0, -30.0 * progress)
 		var font: Font = ThemeDB.fallback_font
-		point.x -= font.get_string_size(number.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x * 0.5
+		point.x -= number.width * 0.5
 		draw_string_outline(font, point, number.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, 5, Color(0.12, 0.07, 0.08, alpha))
 		draw_string(font, point, number.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(number.color, alpha))

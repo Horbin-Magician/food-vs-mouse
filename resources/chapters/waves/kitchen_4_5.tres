@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_4_5"
+title = "鼓风来袭"
+stats = {"duration": 105, "composition": ["flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer", "runner", "runner", "flour", "gray", "flour", "drummer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.8, "damage_scale": 1.84, "batches": [{"time": 5.0, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.489, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 19.978, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.467, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 34.956, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 42.444, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 49.933, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 57.422, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 64.911, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 72.4, "gap": 1.1, "lanes": [0, 1]}]}

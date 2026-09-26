@@ -16,6 +16,8 @@ var shop_overlay: Control
 var shop_surface: Panel
 var shop_items: HBoxContainer
 var shop_refresh: Button
+var save_retry_overlay: Control
+var save_retry_message: Label
 var ui: Control
 var settings_button: Button
 var speed_button: Button
@@ -43,6 +45,7 @@ var window_focused: bool = true
 var heat_label: Label
 var heat_pickup_view: HeatPickupView
 var inspiration_label: Label
+var first_clear_inspiration: int = 0
 var inspiration_pickup_view: InspirationPickupView
 var shovel_button: Button
 var panel_open: bool = true
@@ -112,9 +115,8 @@ func _ready() -> void:
 	inspiration_label.add_theme_color_override("font_color", InspirationPickupView.LIGHT)
 	inspiration_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	inspiration_label.tooltip_text = "本局已赚灵感，跨局保留，用于局外购卡与刷新。\n点击鼠群掉落的紫色灵感即可收集；过关自动收取余下灵感。"
-	header = label(Vector2(948, 674), 14)
-	header.size = Vector2(306, 25)
-	header.add_theme_font_size_override("font_size", 13)
+	header = label(Vector2(948, 674), 12)
+	header.size = Vector2(306, 38)
 	header.mouse_filter = Control.MOUSE_FILTER_STOP
 	header.tooltip_text = "进度表示计划鼠潮的生成比例；全部生成后仍需清除剩余敌人。"
 	operation_hint = label(Vector2(184, 684), 13)
@@ -233,6 +235,7 @@ func _ready() -> void:
 	shop_surface.mouse_filter = Control.MOUSE_FILTER_STOP
 	shop_surface.add_theme_stylebox_override("panel", panel_style)
 	shop_overlay.add_child(shop_surface)
+	build_save_retry()
 	if debug_enabled: create_debug_panel()
 	run.changed.connect(rebuild)
 	if run.state == null and not run.resume_run():
@@ -252,6 +255,7 @@ func _ready() -> void:
 		set_process_input(false)
 		set_process_unhandled_input(false)
 		return
+	run.advance(0.0)
 	rebuild()
 
 func label(position_value: Vector2, size: int) -> Label:
@@ -282,6 +286,10 @@ func report(error: String, success_cue: String = "") -> void:
 
 func rebuild() -> void:
 	if not is_inside_tree(): return
+	# Refresh the persisted chapter bonus with UI state changes, never from the frame loop.
+	first_clear_inspiration = 0
+	if run.persistence and run.state != null:
+		first_clear_inspiration = int(run.saves.load_meta(run.data).get("ledger", {}).get(run.state.run_id, {}).get("first_clear_reward", 0))
 	if sound != null: sound.bind_run(run)
 	shovel_feedback.bind(run, projection, art)
 	status_feedback.bind(run, projection)
@@ -297,9 +305,11 @@ func rebuild() -> void:
 		panel_open = run.state.phase != "battle"
 		layout_phase = run.state.phase
 	panel_label({"prepare":"打烊小铺", "battle":"本局食谱", "won":"今夜，守住了", "lost":"明晚，再来"}.get(run.state.phase,""), 24, GameTheme.TEXT)
-	panel_label({"prepare":"购买食谱，强化本局携带阵容", "battle":"已获得的加成持续生效", "won":"八关告捷 · 食堂安然无恙", "lost":"粮仓失守 · 换个阵容再试试"}.get(run.state.phase,""), 13, GameTheme.MUTED)
-	if run.state.phase == "prepare":
+	var victory_caption: String = "接续守卫完成 · 食堂安然无恙" if run.state.start_wave > 1 else "五大关告捷 · 食堂安然无恙"
+	panel_label({"prepare":"购买食谱，强化本局携带阵容", "battle":"已获得的加成持续生效", "won":victory_caption, "lost":"粮仓失守 · 换个阵容再试试"}.get(run.state.phase,""), 13, GameTheme.MUTED)
+	if run.shop.is_open():
 		build_shop()
+	save_retry_message.text = run.message
 	if run.state.phase in ["won","lost"]:
 		panel_label("今 夜 战 报", 13, GameTheme.GOLD)
 		for line: String in ["守卫时长        %.1f 分钟" % (run.state.elapsed/60.0), "击退鼠群        %d" % run.state.metrics.kills, "粮仓损失        %d" % run.state.metrics.leaks, "美食阵亡        %d" % run.state.metrics.deaths]:
@@ -393,16 +403,53 @@ func set_panel_open(value: bool) -> void:
 
 func sync_panel_visibility() -> void:
 	panel.visible = false
-	var show_shop: bool = run.state.phase == "prepare"
-	if show_shop:
+	var show_shop: bool = run.shop.is_open()
+	var show_retry: bool = run.state.phase == "prepare" and not show_shop and not run.automatic_start_pending
+	if show_shop or show_retry:
 		cancel_card_drag()
 		selected = ""
 		shovel = false
 		move_from = Vector2i(-1, -1)
 	var was_visible: bool = shop_overlay.visible
 	shop_overlay.visible = show_shop
+	var retry_was_visible: bool = save_retry_overlay.visible
+	save_retry_overlay.visible = show_retry
+	if show_retry and not retry_was_visible:
+		save_retry_overlay.get_node("Surface/Retry").grab_focus()
 	if show_shop and not was_visible:
 		shop_surface.get_node("Done").grab_focus()
+
+func build_save_retry() -> void:
+	save_retry_overlay = Control.new()
+	save_retry_overlay.size = Vector2(1280, 720)
+	save_retry_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	save_retry_overlay.hide()
+	ui.add_child(save_retry_overlay)
+	var shade := ColorRect.new()
+	shade.size = save_retry_overlay.size
+	shade.color = Color(0.01, 0.015, 0.025, 0.82)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	save_retry_overlay.add_child(shade)
+	var surface := Panel.new()
+	surface.name = "Surface"
+	surface.position = Vector2(350, 214)
+	surface.size = Vector2(580, 292)
+	surface.add_theme_stylebox_override("panel", panel_style)
+	save_retry_overlay.add_child(surface)
+	card_label(surface, "保存未完成", Vector2(28, 24), Vector2(524, 40), 28, GameTheme.TEXT)
+	card_label(surface, "保存成功后继续下一小关", Vector2(28, 76), Vector2(524, 26), 16, GameTheme.MUTED)
+	save_retry_message = card_label(surface, "", Vector2(28, 116), Vector2(524, 84), 16, GameTheme.ACCENT, true)
+	var retry := Button.new()
+	retry.name = "Retry"
+	retry.text = "重试保存并开战"
+	retry.position = Vector2(302, 222)
+	retry.size = Vector2(250, 42)
+	retry.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	retry.pressed.connect(func() -> void:
+		run.start()
+		if run.state.phase == "prepare": sound.cue("ui_error")
+		rebuild())
+	surface.add_child(retry)
 
 func shop_button(title: String, pos: Vector2, bounds: Vector2, action: Callable) -> Button:
 	var node := Button.new()
@@ -419,9 +466,19 @@ func build_shop() -> void:
 		shop_surface.remove_child(child)
 		child.queue_free()
 	var definition: DifficultyDef = run.data.difficulties[run.state.difficulty]
-	card_label(shop_surface, "第 %02d / 08 关开战前  ·  %s" % [run.state.wave, definition.title], Vector2(24, 18), Vector2(520, 20), 12, GameTheme.GOLD)
+	card_label(shop_surface, "%s · %d-%d · 总 %02d/%d · %s" % [run.data.chapters[run.state.chapter_id].title,run.data.chapters[run.state.chapter_id].order,run.state.wave,run.state.global_wave(),run.data.scene_wave_count(run.state.scene_id),definition.title], Vector2(24, 18), Vector2(520, 20), 12, GameTheme.GOLD).name = "SceneProgress"
 	card_label(shop_surface, "打烊小铺", Vector2(24, 42), Vector2(420, 36), 28, GameTheme.TEXT)
-	card_label(shop_surface, "选购食谱，为现有与后续美食添一道拿手菜。", Vector2(24, 84), Vector2(550, 22), 14, GameTheme.MUTED)
+	var wave: Resource = run.data.chapter_waves(run.state.chapter_id)[run.state.wave - 1]
+	var threats: Array[String] = []
+	for id: String in wave.stats.composition:
+		if run.data.enemies[id].title not in threats: threats.append(run.data.enemies[id].title)
+	var preview := card_label(shop_surface, "下关 · %s · %s" % [wave.title, " / ".join(threats)], Vector2(24, 80), Vector2(530, 22), 12, GameTheme.MUTED)
+	preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	preview.mouse_filter = Control.MOUSE_FILTER_STOP
+	preview.tooltip_text = "即将迎战：%s\n%s\n购物与布阵共用热量，预留补位预算。" % [wave.title, " / ".join(threats)]
+	if wave.stats.has("boss"):
+		var boss: Dictionary = wave.stats.boss
+		preview.tooltip_text += "\n%s：第 %d、%d 行增援，预警 %.1f 秒；常态 %s，狂暴 %s，半血 %s。" % [boss.title, int(boss.rows[0])+1, int(boss.rows[1])+1, boss.warning_seconds, run.data.enemies[boss.normal_id].title, run.data.enemies[boss.rage_id].title, run.data.enemies[boss.burst_id].title]
 	var budget := card_label(shop_surface, "%d 热量" % run.state.heat, Vector2(572, 35), Vector2(244, 36), 26, GameTheme.GOLD)
 	budget.name = "Budget"
 	budget.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -576,21 +633,22 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func earned_inspiration() -> int:
-	var amount: int = run.state.collected_inspiration()
+	var amount: int = run.state.collected_inspiration() + first_clear_inspiration
 	if run.state.rewards_enabled:
-		for index: int in range(run.state.reward_floor, mini(int(run.state.metrics.passed), 8)):
+		for index: int in range(run.state.reward_floor, mini(int(run.state.metrics.passed), run.data.scene_wave_count(run.state.scene_id))):
 			amount += run.state.inspiration_for_wave(index, run.data)
 	return amount
 
 func owned_recipe_tooltip() -> String:
-	if run.state.recipes.is_empty(): return "尚未购买食谱。关前小铺用热量购买，持续至本局结束。"
+	if run.state.recipes.is_empty(): return "尚未购买食谱。大关通关后可在小铺用热量购买，持续至本局结束。"
 	var text: String = "本局已购食谱 · 对现有与后续美食生效"
 	for id: String in run.state.recipes:
 		text += "\n%s · %s" % [run.data.recipes[id].title, run.data.recipes[id].stats.description]
 	return text
 
 func operation_status() -> String:
-	if run.state.phase == "prepare": return "开战前 · 选购食谱，留足布阵热量"
+	if run.shop.is_open(): return "大关通关 · 选购食谱，留足布阵热量"
+	if run.state.phase == "prepare": return "保存进度后继续下一小关"
 	if run.state.phase != "battle": return "今夜收摊 · 灵感跨局保留"
 	if run.paused: return "已暂停 · 从设置继续游戏"
 	if shovel: return "锅铲已拿起 · 点击立即铲除，无返还 · 右键放回"
@@ -604,14 +662,14 @@ func wave_progress() -> float:
 	return clampf(float(run.director.cursor) / maxi(1, run.director.events.size()), 0.0, 1.0)
 
 func wave_status() -> String:
-	var status: String = {"prepare":"关前购物", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
+	var status: String = {"prepare":"大关间购物" if run.shop.is_open() else "准备开战", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
 	if run.state.phase == "battle":
 		status = "清理余鼠 %d" % run.combat.enemies.size() if wave_progress() >= 1.0 else "鼠潮 %d%% · 余鼠 %d" % [roundi(wave_progress() * 100), run.combat.enemies.size()]
 		if run.paused: status = "暂停 · " + status
-	return "%02d/08 关 · %s · %s" % [run.state.wave, run.data.difficulties[run.state.difficulty].title, status]
+	return "%d-%d · 总 %02d/%d · %s\n%s" % [run.data.chapters[run.state.chapter_id].order,run.state.wave,run.state.global_wave(),run.data.scene_wave_count(run.state.scene_id),run.data.difficulties[run.state.difficulty].title,status]
 
 func draw_wave_progress() -> void:
-	var bar := Rect2(948, 705, 300, 5)
+	var bar := Rect2(948, 714, 300, 3)
 	draw_style_box(GameTheme.box(GameTheme.RAISED, 3), bar)
 	var fill_width: float = bar.size.x * wave_progress()
 	if fill_width > 0:
@@ -619,7 +677,7 @@ func draw_wave_progress() -> void:
 	for index: int in range(1,8):
 		var x: float = bar.position.x + bar.size.x * index / 8.0
 		draw_line(Vector2(x,bar.position.y),Vector2(x,bar.end.y),GameTheme.BG,2)
-	draw_circle(Vector2(bar.end.x,bar.position.y+2.5),4,GameTheme.GOLD)
+	draw_circle(Vector2(bar.end.x,bar.get_center().y),3,GameTheme.GOLD)
 
 func update_controls() -> void:
 	var phase: String = run.state.phase
@@ -671,7 +729,8 @@ func _exit_tree() -> void:
 	shovel_cursor_active = false
 
 func card_status(id: String) -> String:
-	if run.state.phase == "prepare": return "准备阶段选购食谱，购物完成后可放置美食"
+	if run.shop.is_open(): return "选购食谱，购物完成后可放置美食"
+	if run.state.phase == "prepare": return "保存进度后开战"
 	if run.state.phase in ["won", "lost"]: return "本局已结束"
 	if run.state.phase != "battle": return "等待下一关"
 	if run.paused: return "已暂停"
@@ -747,6 +806,11 @@ func _draw() -> void:
 	if run.state.phase == "battle":
 		for row: int in run.director.warning_rows():
 			text_at(projection.foot(RunState.BOARD_WIDTH + 7, row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
+		for warning: Dictionary in run.combat.warning_summons:
+			for row: int in warning.rows:
+				var tile: PackedVector2Array = projection.polygon(Rect2((RunState.COLS - 1) * 96, row * 96, 96, 96))
+				draw_colored_polygon(tile, Color(1.0, 0.55, 0.2, 0.22))
+				text_at(projection.foot(RunState.BOARD_WIDTH + 7, row) + Vector2(0, -12), "增援 %.1fs" % maxf(0, warning.remaining), Color("ffce83"), 13)
 	shovel_feedback.draw(self)
 	status_feedback.draw_effects(self)
 	battle_art.hud(self, run.state, run.paused)
@@ -761,7 +825,7 @@ func _draw() -> void:
 			outline(tile, tint, 3.0)
 
 func draw_kitchen() -> void:
-	battle_art.background(self)
+	battle_art.background(self, run.data.chapters[run.state.chapter_id].background_tint)
 
 func outline(points: PackedVector2Array, color: Color, width: float = 1.0) -> void:
 	var closed: PackedVector2Array = points.duplicate()
@@ -812,7 +876,11 @@ func draw_mouse(enemy: Dictionary) -> void:
 	draw_mouse_frame(enemy, foot, size, scale_value)
 	if enemy.has("death_age"): return
 	var status_pos: Vector2 = foot - Vector2(22, size.y * 0.8) * scale_value
-	if enemy.id in ["boss", "elite"]: text_at(status_pos + Vector2(0, -14),run.data.enemies[enemy.id].title,Color("ffe1a1"),12)
+	if enemy.id in ["boss", "elite"]:
+		var caption: String = run.combat.enemy_title(enemy.id)
+		var label_pos: Vector2 = status_pos + Vector2(0, -14)
+		draw_string_outline(ThemeDB.fallback_font, label_pos, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 4, Color("26392f"))
+		text_at(label_pos, caption, Color("ffe1a1"), 12)
 	draw_rect(Rect2(foot + Vector2(-23, 4) * scale_value,Vector2(46 * enemy.hp / enemy.max_hp, 4) * scale_value),Color("ed8796"))
 	status_feedback.draw_status(self, enemy, foot, size.y * scale_value)
 
@@ -869,7 +937,7 @@ func update_inspector() -> void:
 		var description: String = status_feedback.description(unit)
 		if not description.is_empty(): inspect.text += "\n" + description
 	elif not inspected_enemy.is_empty():
-		inspect.text = "%s   生命 %.0f / %.0f\n%s" % [run.data.enemies[inspected_enemy.id].title, inspected_enemy.hp, inspected_enemy.max_hp, status_feedback.description(inspected_enemy)]
+		inspect.text = "%s   生命 %.0f / %.0f\n%s" % [run.combat.enemy_title(inspected_enemy.id), inspected_enemy.hp, inspected_enemy.max_hp, status_feedback.description(inspected_enemy)]
 	elif debug_enabled and run.state.phase == "battle":
 		inspect.text = "F3 开发面板 · 各行压力"
 		for row: int in range(RunState.ROWS):
@@ -924,7 +992,7 @@ func create_debug_panel() -> void:
 	debug_window.visibility_changed.connect(update_shovel_cursor)
 
 func placement_modal_visible() -> bool:
-	return shop_overlay.visible or (debug_window != null and debug_window.visible) or (audio_settings != null and audio_settings.visible)
+	return shop_overlay.visible or save_retry_overlay.visible or (debug_window != null and debug_window.visible) or (audio_settings != null and audio_settings.visible)
 
 func begin_card_drag(id: String) -> void:
 	if placement_modal_visible(): return
@@ -994,7 +1062,7 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func finish_shopping() -> void:
-	if run.state.phase != "prepare": return
+	if not run.shop.is_open(): return
 	run.start()
 	if run.state.phase == "prepare": sound.cue("ui_error")
 	rebuild()

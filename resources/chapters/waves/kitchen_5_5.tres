@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_5_5"
+title = "鼓点交错"
+stats = {"duration": 110, "composition": ["runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid", "runner", "lid", "gray", "runner", "gnawer", "lid"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.12, "damage_scale": 2.0, "batches": [{"time": 5.0, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 12.444, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 19.889, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 27.333, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 34.778, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 42.222, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 49.667, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 57.111, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 64.556, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 72.0, "gap": 1.0, "lanes": [0, 1, 2, 0, 1, 0]}]}

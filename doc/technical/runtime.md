@@ -1,5 +1,7 @@
 # 运行模型与首版实现约定
 
+2026-09-26 连续战役更新：一局改为厨房场景内五大关共四十小关，场外只选场景；跨大关继承阵地、热量、粮仓和食谱。奖励流水使用全局 1～40 关号，存档迁移至 v4；当前权威规则及旧版差异见[连续战役](../design/campaign.md)。本文中的历史八关验证不代表新版整局通过。
+
 卡片体系更新（2026-09-25）：已接入有限携卡和永久强化快照；ShopController 仅负责食谱，MetaProgression 负责局外卡片，SaveService 使用 v2 单文件事务。详见 [实施规格](card_progression.md)。下文旧星级、v1 分文件结算与卡片商品部分保留为历史记录，冲突处以新版规格为准。
 
 状态：设计已确定，按提交逐步实现；验收状态见 [验证记录](../testing/implementation.md)。上游：[玩法基线](../TODO.md)。
@@ -18,11 +20,11 @@
 
 ## 随机与生成
 
-单个显式 RandomNumberGenerator 属于 RunController，消费顺序为开店（美食后食谱）、开战生成表、下一商店。保存种子与 rng.state；表现不使用此随机源。各关生成方式、组合批次及随机路线约束统一见 [组合鼠潮](../design/waves.md)。WaveDirector 保持 time/id/row 事件接口。
+单个显式 RandomNumberGenerator 属于 RunController，消费顺序为各小关开战生成表，仅大关通关后生成食谱商品；新局与普通关不消耗商店随机数。保存种子与 rng.state；表现不使用此随机源。各关生成方式、组合批次及随机路线约束统一见 [组合鼠潮](../design/waves.md)。WaveDirector 保持 time/id/row 事件接口。
 
 ## 阶段与边界
 
-prepare → battle → prepare，最终进入 won/lost。关后收取剩余灵感、结算通关灵感与免费恢复，直接开店并保存；不再存在独立灵感／免费选谱阶段。商品、交易与旧快照迁移规则见 [食谱购买](../design/shop.md)。准备阶段用于购物，不放置新单位；购物完成后通过 RunController.start 保存快照并开始本关，付费维修已移除。升星保留损失生命的绝对值；移动交换使用同一对象。
+prepare → battle → prepare，最终进入 won/lost。关后收取剩余灵感、结算通关灵感与免费恢复并保存；普通关自动开战，仅大关通关后开店；不再存在独立灵感／免费选谱阶段。商品、交易与旧快照迁移规则见 [食谱购买](../design/shop.md)。准备阶段是每小关可恢复快照，是否购物由 ShopController.is_open() 判定；普通快照自动尝试开战一次，失败等待手动重试；购物完成后通过 RunController.start 保存快照并开始本关，付费维修已移除。升星保留损失生命的绝对值；移动交换使用同一对象。
 
 ## 验收
 

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_2_7"
+title = "七路接力"
+stats = {"duration": 120, "composition": ["drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid", "runner", "gnawer", "drummer", "runner", "runner", "lid"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.24, "damage_scale": 1.56, "batches": [{"time": 5.0, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 13.478, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 21.956, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 30.433, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 38.911, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 47.389, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 55.867, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 64.344, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 72.822, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 81.3, "gap": 0.9, "lanes": [0, 1, 2, 0]}]}

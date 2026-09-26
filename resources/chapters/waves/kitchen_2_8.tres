@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_2_8"
+title = "快班大厨"
+stats = {"duration": 150, "composition": ["runner", "drummer", "runner", "lid", "gray", "runner", "runner", "drummer", "runner", "lid", "gray", "runner", "runner", "drummer", "runner", "lid", "gray", "runner", "runner", "drummer", "runner", "lid", "gray", "runner", "runner", "drummer", "runner", "lid", "gray", "runner", "runner", "drummer", "runner", "lid", "gray", "runner", "runner", "drummer", "runner", "lid", "gray", "runner", "boss"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.28, "damage_scale": 1.58, "batches": [{"time": 5.0, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 19.286, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 33.571, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 47.857, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 62.143, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 76.429, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 90.714, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 105.0, "gap": 0.9, "lanes": [0]}], "boss": {"title": "快班大厨", "normal_id": "runner", "rage_id": "runner", "burst_id": "drummer", "interval": 12.0, "rage_interval": 10.0, "warning_seconds": 2.0, "rows": [0, 6]}}

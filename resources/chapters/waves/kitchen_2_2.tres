@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WaveDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = "kitchen_2_2"
+title = "两翼试探"
+stats = {"duration": 90, "composition": ["runner", "runner", "gray", "runner", "gray", "runner", "runner", "runner", "gray", "runner", "gray", "runner", "runner", "runner", "gray", "runner", "gray", "runner", "runner", "runner", "gray", "runner", "gray", "runner", "runner", "runner", "gray", "runner", "gray", "runner", "runner", "runner", "gray", "runner", "gray", "runner", "runner", "runner", "gray", "runner"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.04, "damage_scale": 1.46, "batches": [{"time": 5.0, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 14.117, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 23.233, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 32.35, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 41.467, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 50.583, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0]}, {"time": 59.7, "gap": 1.1, "lanes": [0, 1, 2, 0]}]}

@@ -11,6 +11,11 @@ func services(node: Node) -> int:
 	for child: Node in node.get_children(): total += services(child)
 	return total
 
+func clear_cues(sound: SoundService) -> void:
+	for player: AudioStreamPlayer in sound.voices: player.stop()
+	sound._last_cue.clear()
+	heard.clear()
+
 func open_front() -> Node:
 	var front: Node = load("res://scenes/front_end.tscn").instantiate()
 	root.add_child(front)
@@ -48,33 +53,36 @@ func check() -> void:
 	front.start_new()
 	var old_run: RunController = front.game.run
 	assert(front.game.sound == sound and services(front) == 1)
-	assert(sound.bound_run == old_run and sound.context == "shop")
-	assert(old_run.state.phase == "prepare")
+	assert(sound.bound_run == old_run and sound.context == "battle")
+	assert(old_run.state.phase == "battle" and not old_run.shop.is_open())
 	assert("place" not in heard and "clear" not in heard)
 	heard.clear()
 	front.game.finish_shopping()
-	assert(sound.context == "battle" and "wave_start" in heard)
+	assert(sound.context == "battle" and heard.is_empty(), "shopping action cannot restart a new battle")
 	assert(old_run.board.place("bun",2,0,false).is_empty())
 	assert("place" in heard)
 	heard.clear()
 	old_run.finish_wave()
 	sound.sync_run()
-	assert(sound.context == "shop" and heard == ["clear"])
+	assert(sound.context == "battle" and heard == ["clear"])
 	assert(old_run.state.units.size() == 1)
+	clear_cues(sound)
+	old_run.advance(0.0)
+	assert(sound.context == "battle" and heard == ["wave_start"])
 	front.show_menu()
 	assert(sound.bound_run == null and sound.context == "menu")
 	heard.clear()
 	front.continue_run()
 	var run: RunController = front.game.run
 	assert(run != old_run and sound.bound_run == run)
-	assert(run.state.units.size() == 1 and run.state.phase == "prepare")
-	assert(sound.context == "shop" and heard.is_empty())
+	assert(run.state.units.size() == 1 and run.state.phase == "battle")
+	assert(sound.context == "battle" and heard.is_empty())
 	# Retained old controllers cannot reach the persistent audio service.
 	old_run.board.placed.emit(old_run.state.units[0])
 	old_run.combat.enemy_leaked.emit(1)
 	old_run.state.phase = "lost"
 	old_run.changed.emit()
-	assert(heard.is_empty() and sound.context == "shop")
+	assert(heard.is_empty() and sound.context == "battle")
 	front.game.finish_shopping()
 	assert(sound.context == "battle")
 	front.game.speed_button.pressed.emit()
@@ -109,10 +117,35 @@ func check() -> void:
 	assert(front.game == null and sound.bound_run == null and sound.context == "shop")
 	front.start_new()
 	assert(front.game.sound == sound and services(front) == 1)
-	front.game.run.state.wave = 8
-	front.game.finish_shopping()
+	for index: int in range(7):
+		front.game.run.advance(0.0)
+		front.game.run.finish_wave()
+		sound.sync_run()
+		assert(sound.context != "shop")
+	clear_cues(sound)
+	front.game.run.advance(0.0)
 	assert(sound.context == "boss")
 	front.game.run.finish_wave()
+	sound.sync_run()
+	front._process(0)
+	assert(not front.showing_result and sound.context == "shop")
+	assert(front.game.run.state.chapter_id == "kitchen_2" and heard.count("clear") == 1, "Cross-chapter cue: %s / %s" % [front.game.run.state.chapter_id,str(heard)])
+	front.show_menu()
+	clear_cues(sound)
+	front.continue_run()
+	assert(front.game.run.shop.is_open() and sound.context == "shop")
+	assert(heard.is_empty(), "resuming the chapter shop does not replay its clear cue")
+	var shops: int = 0
+	for index: int in range(32):
+		if front.game.run.shop.is_open():
+			shops += 1
+			assert(sound.context == "shop")
+			front.game.finish_shopping()
+		else:
+			front.game.run.advance(0.0)
+		front.game.run.finish_wave()
+		sound.sync_run()
+	assert(shops == 4)
 	sound.sync_run()
 	front._process(0)
 	assert(front.showing_result and sound.context == "won")
@@ -138,5 +171,5 @@ func check() -> void:
 	await process_frame
 	# Give the audio mixer time to release the final streaming playback.
 	await create_timer(0.5).timeout
-	print("PASS audio flow: shared service, seven music contexts, resume silence, old-run disconnect, settings pause/results, 2x pitch and persisted sliders/mute")
+	print("PASS audio flow: shared service, seven music contexts, four chapter shops, ordinary battle continuity, resume silence, old-run disconnect, settings pause/results, 2x pitch and persisted sliders/mute")
 	quit()

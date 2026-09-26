@@ -13,7 +13,7 @@ func _init(storage: SaveService, catalog: Catalog) -> void:
 static func initial(data: Catalog) -> Dictionary:
 	var random := RandomNumberGenerator.new()
 	random.randomize()
-	var meta: Dictionary = {"kills":0, "unlocked":[], "last_run":"", "inspiration":0, "cards":[], "loadout":[], "next_card":4, "offers":[], "refreshes":0, "rng":str(random.state), "ledger":{}, "last_action":{}}
+	var meta: Dictionary = {"chapter_clears":{}, "kills":0, "unlocked":[], "last_run":"", "inspiration":0, "cards":[], "loadout":[], "next_card":4, "offers":[], "refreshes":0, "rng":str(random.state), "ledger":{}, "last_action":{}}
 	for index: int in range(3):
 		var uid: String = "card_%d" % (index + 1)
 		meta.cards.append({"uid":uid, "id":["bun","toast","pudding"][index], "level":0, "starter":true, "locked":false})

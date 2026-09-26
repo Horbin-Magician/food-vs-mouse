@@ -29,6 +29,10 @@ func _init() -> void:
 	var restored: RunState = run.saves.restore(snapshot)
 	assert(restored.units == run.state.units and restored.heat == run.state.heat)
 	# Purchased recipes and remaining stock survive restore; legacy choice phase migrates once.
+	for stage: int in range(2, 9):
+		run.start()
+		run.finish_wave()
+	assert(run.shop.is_open())
 	var recipe_id: String = run.state.choices[0]
 	run.state.heat = run.data.rules.recipe_price + 17.5
 	assert(run.shop.buy_recipe(recipe_id).is_empty())
@@ -57,7 +61,7 @@ func _init() -> void:
 	corrupt.units[0].id = "missing"
 	assert(not run.saves.validate(corrupt,run.data))
 	run.state.metrics.kills = 100
-	run.state.metrics.passed = 4
+	assert(run.state.metrics.passed == 8)
 	run.state.metrics.puddings = 3
 	assert(run.saves.settle(run.state,run.data))
 	var meta: Dictionary = run.saves.load_meta(run.data)

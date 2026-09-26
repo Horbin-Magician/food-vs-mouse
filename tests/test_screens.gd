@@ -17,8 +17,9 @@ func check() -> void:
 		if child is TextureRect:
 			assert(Rect2(Vector2.ZERO, Vector2(1280, 720)).encloses(child.get_rect()))
 	screen.start_new()
-	assert(screen.game.run.state.phase == "prepare")
+	assert(screen.game.run.state.phase == "battle" and not screen.game.shop_overlay.visible)
 	var id: String = screen.game.run.state.run_id
+	var snapshot_heat: float = screen.game.run.state.heat
 	screen.game.run.state.heat = 12
 	screen.game.run.persist()
 	screen.show_menu()
@@ -28,8 +29,8 @@ func check() -> void:
 	screen.overwrite.hide()
 	assert(screen.saves.load_run(screen.data).run_id == id)
 	screen.continue_run()
-	assert(screen.game.run.state.run_id == id and screen.game.run.state.heat == 12)
-	screen.game.run.start()
+	assert(screen.game.run.state.run_id == id and screen.game.run.state.heat == snapshot_heat)
+	assert(screen.game.run.state.phase == "battle")
 	screen.game.run.state.pantry = 0
 	screen.game.run.advance(0.1)
 	screen._process(0)
@@ -52,11 +53,18 @@ func check() -> void:
 	screen.start_new()
 	assert(not screen.showing_result and screen.game.run.state.run_id != id)
 	assert(not screen.game.run.paused and screen.game.run.speed == 1.0)
-	screen.game.run.state.wave = 8
-	screen.game.run.start()
-	screen.game.run.finish_wave()
+	for index: int in range(40):
+		screen.game.run.start()
+		screen.game.run.finish_wave()
+		if index == 7:
+			screen.game.rebuild()
+			assert(screen.game.first_clear_inspiration == 12)
+			assert(screen.game.earned_inspiration() == screen.run_inspiration(screen.game.run.state))
+		if index < 39:
+			screen._process(0)
+			assert(not screen.showing_result)
 	screen._process(0)
-	assert(screen.showing_result and screen.game.run.state.metrics.passed == 8)
+	assert(screen.showing_result and screen.game.run.state.metrics.passed == 40)
 	screen.leave_result("cards")
 	assert(screen.game == null and screen.hub.tab == "shop")
 	assert(screen.hub.model.editable(), "result card-hub action must settle before allowing purchases")
@@ -68,8 +76,19 @@ func check() -> void:
 	screen.show_menu()
 	assert(screen.continue_button.disabled and "不合法" in screen.notice.text)
 	screen.start_new()
-	assert(screen.game.run.state.phase == "prepare")
+	assert(screen.game.run.state.phase == "battle" and not screen.game.shop_overlay.visible)
 	screen.game.run.persistence = false
+	# A migrated independent-chapter run must not report earlier chapters as played.
+	screen.game.run.state.start_wave = 25
+	screen.game.run.state.chapter_id = "kitchen_4"
+	screen.game.run.state.wave = 2
+	screen.game.run.state.metrics.passed = 25
+	screen.game.run.state.phase = "lost"
+	screen._process(0)
+	var visible_text: String = ""
+	for child: Node in screen.page.get_children():
+		if child is Label: visible_text += child.text + "\n"
+	assert("1 / 16" in visible_text and "旧档第 25 关接续 · 场景进度 26/40" in visible_text)
 	screen.saves.delete_run()
 	screen.queue_free()
 	await process_frame

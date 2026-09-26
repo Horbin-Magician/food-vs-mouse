@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ScenarioDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/scenario_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "kitchen"
+title = "深夜厨房"
+chapter_ids = Array[String](["kitchen_1", "kitchen_2", "kitchen_3", "kitchen_4", "kitchen_5"])
+available = true

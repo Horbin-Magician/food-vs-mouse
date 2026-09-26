@@ -116,6 +116,10 @@ func run_test() -> void:
 	mouse(cell(1, 0), false)
 	assert(scene.drag_card.is_empty() and scene.run.state.units.size() == 1)
 	scene.run.state.phase = "prepare"
+	scene.run.state.chapter_id = "kitchen_2"
+	scene.run.state.wave = 1
+	scene.run.state.metrics.passed = 8
+	scene.run.shop.open()
 	scene.rebuild()
 	scene.begin_card_drag("bun")
 	assert(scene.shop_overlay.visible and scene.drag_card.is_empty())

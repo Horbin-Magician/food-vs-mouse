@@ -6,7 +6,7 @@ func arena() -> RunController:
 	run.state.wave = 8
 	run.start()
 	run.director.cursor = run.director.events.size()
-	run.combat.spawn("boss", RunState.CENTER_ROW, run.data.waves[7])
+	run.combat.spawn("boss", RunState.CENTER_ROW, legacy_boss_wave(run))
 	return run
 
 func _init() -> void:
@@ -73,3 +73,10 @@ func _init() -> void:
 	run.data.rules.boss_rage_summon_interval = old_interval
 	print("PASS boss difficulty: summon cadence, half-health boundaries, progress, lethal hit, pause/speed, all wave HP and DPS")
 	quit()
+
+# Preserve coverage of the pre-campaign immediate-summon fallback without mutating definitions.
+# All shipped chapter bosses use telegraphs, checked in test_campaign_content / test_chapter_two.
+func legacy_boss_wave(run: RunController) -> Resource:
+	var wave: Resource = run.data.waves[7].duplicate(true)
+	wave.stats.erase("boss")
+	return wave

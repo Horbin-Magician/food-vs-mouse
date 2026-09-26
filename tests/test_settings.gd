@@ -97,6 +97,13 @@ func check() -> void:
 	assert(scene.settings_button.position == Vector2(1104, 22))
 	assert(scene.settings_button.get_rect().end.x <= scene.shovel_button.position.x)
 	assert(scene.cards.get_global_rect().end.x < scene.settings_button.position.x)
+	assert(run.state.phase == "battle" and not scene.shop_overlay.visible)
+	# Reach the first chapter shop through valid persisted progression.
+	for wave: int in range(8):
+		run.finish_wave()
+		run.advance(0)
+	scene.rebuild()
+	var prior_inspiration: int = front.saves.load_meta(front.data).inspiration
 	# Settings above the mandatory shop must preserve transactions and random state.
 	var choices: Array = run.state.choices.duplicate()
 	var rng_state: int = run.rng.state
@@ -171,7 +178,7 @@ func check() -> void:
 	assert(front.game == null and not front.continue_button.disabled)
 	var saved: Dictionary = front.saves.load_run(front.data)
 	assert(saved.units == snapshot.units and saved.heat == snapshot.heat and saved.elapsed == snapshot.elapsed)
-	assert(front.saves.load_meta(front.data).inspiration == 3)
+	assert(front.saves.load_meta(front.data).inspiration == prior_inspiration + 3)
 	front.continue_run()
 	scene = front.game
 	scene.set_process(false)
@@ -216,7 +223,7 @@ func check() -> void:
 	await frames()
 	assert(front.game == null and front.continue_button.disabled)
 	var settled: Dictionary = front.saves.load_profile(front.data)
-	assert(settled.meta.inspiration == 3 and settled.run.is_empty())
+	assert(settled.meta.inspiration == prior_inspiration + 3 and settled.run.is_empty())
 	await preload("res://tests/audio_cleanup.gd").release_scene(front, self)
 	print("PASS settings: Esc/echo, shop, geometry, modal input, pause ownership, right click/shovel, 2x, leave cancel, snapshot/inspiration, prepare/result write retry")
 	quit()

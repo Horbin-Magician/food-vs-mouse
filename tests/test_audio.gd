@@ -84,9 +84,9 @@ func check() -> void:
 	run.new_run(41)
 	clear_cues(sound)
 	sound.bind_run(run)
-	assert(sound.context == "shop" and played.is_empty())
+	assert(sound.context == "battle" and played.is_empty() and not run.shop.is_open())
 	var random_state: int = run.rng.state
-	run.start()
+	run.advance(0.0)
 	assert(sound.context == "battle" and played == ["wave_start"])
 	assert(run.rng.state != random_state) # WaveDirector.begin owns gameplay RNG.
 	random_state = run.rng.state
@@ -131,17 +131,33 @@ func check() -> void:
 	assert(not run.combat.collect_heat(run.combat.heat_pickups[0].uid))
 	assert(played.size() == 2)
 	clear_cues(sound)
+	target = sound._music_target
 	run.finish_wave()
 	sound.sync_run()
-	assert(sound.context == "shop" and played == ["clear"])
+	assert(sound.context == "battle" and played == ["clear"] and not run.shop.is_open())
+	assert(sound._music_target == target, "ordinary clear keeps the current battle track")
 	sound.sync_run()
 	assert(played.size() == 1)
 	clear_cues(sound)
+	run.advance(0.0)
+	assert(sound.context == "battle" and played == ["wave_start"])
+	assert(sound._music_target == target)
+	run.state.phase = "prepare"
 	run.state.wave = 4
+	sound.sync_run()
+	assert(sound.context == "elite", "ordinary elite prepare uses battle music")
 	run.start()
 	assert(sound.context == "elite")
 	run.state.phase = "prepare"
+	run.state.wave = 8
 	sound.sync_run()
+	assert(sound.context == "boss", "ordinary boss prepare uses battle music")
+	run.start()
+	assert(sound.context == "boss")
+	run.finish_wave()
+	sound.sync_run()
+	assert(sound.context == "shop" and run.state.chapter_id == "kitchen_2")
+	run.state.chapter_id = "kitchen_5"
 	run.state.wave = 8
 	run.start()
 	assert(sound.context == "boss")
@@ -152,7 +168,7 @@ func check() -> void:
 	var old_board: BoardController = run.board
 	var old_combat: CombatController = run.combat
 	run.new_run(42)
-	assert(sound.context == "shop" and sound._armor_remaining.is_empty())
+	assert(sound.context == "battle" and sound._armor_remaining.is_empty())
 	assert(not old_board.placed.is_connected(sound._on_placed))
 	assert(not old_combat.skill_used.is_connected(sound._on_skill))
 	clear_cues(sound)
@@ -204,7 +220,7 @@ func check() -> void:
 	dialog.open(run)
 	run.new_run(43)
 	dialog.hide()
-	assert(not run.paused and sound.context == "shop")
+	assert(not run.paused and sound.context == "battle")
 	run.start()
 	dialog.open(run)
 	sound.bind_run(null)

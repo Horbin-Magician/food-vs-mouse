@@ -94,12 +94,16 @@ func _init() -> void:
 	boss.x = 650
 	boss.summon = 9.99
 	run.combat.step(0.02)
+	assert(run.combat.warning_summons.size() == 1)
+	run.combat.advance_summons(2.0)
 	assert(view.effects[-1].id == "summon" and view.effects[-1].targets.size() == 2)
 	var targets: Array = view.effects[-1].targets
 	assert(targets[0].y != targets[1].y)
 	assert(targets[0] == view.point(run.combat.enemies[-2]))
 	assert(targets[1] == view.point(run.combat.enemies[-1]))
 	run.combat.damage_enemy(boss, 1301, "bun")
+	assert(run.combat.warning_summons.size() == 1)
+	run.combat.advance_summons(2.0)
 	view.advance(0)
 	assert("rage" in view.statuses[boss.uid])
 	assert(view.effects[-2].id == "rage" and view.effects[-1].id == "reinforce")

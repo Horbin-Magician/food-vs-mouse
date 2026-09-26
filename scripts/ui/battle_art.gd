@@ -9,8 +9,9 @@ var wood := GameTheme.box(Color("5b4735"), 12, Color("be9860"))
 var inset := GameTheme.box(Color("243e39"), 8, Color("8c9a79"))
 var panel := GameTheme.box(GameTheme.SURFACE, 12, GameTheme.BORDER)
 
-func background(canvas: Node2D) -> void:
+func background(canvas: Node2D, tint: Color = Color(0, 0, 0, 0)) -> void:
 	canvas.draw_texture_rect(BACKGROUND, Rect2(0, 0, 1280, 720), false)
+	if tint.a > 0: canvas.draw_rect(Rect2(0, 0, 1280, 720), tint)
 	canvas.draw_style_box(wood, Rect2(259, 80, 762, 592))
 	canvas.draw_style_box(inset, Rect2(267, 84, 746, 582))
 	for pos: Vector2 in [Vector2(263, 86), Vector2(1017, 86), Vector2(263, 666), Vector2(1017, 666)]:

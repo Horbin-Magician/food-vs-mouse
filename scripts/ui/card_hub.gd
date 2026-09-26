@@ -2,7 +2,7 @@ class_name CardHub
 extends Control
 
 signal back_requested
-signal launch_requested(selected: Array, difficulty: String)
+signal launch_requested(selected: Array, difficulty: String, scene_id: String)
 
 var model: MetaProgression
 var sound: SoundService
@@ -11,6 +11,7 @@ var tab: String = "shop"
 var main_uid: String = ""
 var materials: Array = []
 var selected: Array = []
+var scene_id: String = "kitchen"
 var difficulty: String = "easy"
 var feedback: String = ""
 var scroll_offset: int = 0
@@ -22,6 +23,7 @@ func setup(storage: SaveService, catalog: Catalog, initial_tab: String = "shop")
 	tab = initial_tab
 	if model.reload():
 		selected = model.profile.meta.loadout.duplicate()
+		scene_id = model.profile.run.get("scene_id", "kitchen")
 		difficulty = model.profile.run.get("difficulty", "easy")
 	else: feedback = model.error
 	rebuild()
@@ -135,7 +137,9 @@ func rebuild() -> void:
 	else:
 		build_inventory()
 		if tab == "enhance": build_enhancement()
-		else: build_loadout()
+		else:
+			build_scenes()
+			build_loadout()
 	status = caption(self,feedback,Vector2(44,654),Vector2(1190, 48),17,GameTheme.ACCENT)
 
 func transact(result: String, success_cue: String = "ui_click") -> void:
@@ -194,8 +198,8 @@ func build_shop() -> void:
 func build_inventory() -> void:
 	caption(self,"选择主卡和材料，右侧预览结果" if tab == "enhance" else "点选携带；同种美食会替换原卡",Vector2(42,146),Vector2(736,28),16,GameTheme.MUTED)
 	inventory_scroll = ScrollContainer.new()
-	inventory_scroll.position = Vector2(40,182)
-	inventory_scroll.size = Vector2(744,450)
+	inventory_scroll.position = Vector2(40,182 if tab == "enhance" else 346)
+	inventory_scroll.size = Vector2(744,450 if tab == "enhance" else 286)
 	inventory_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(inventory_scroll)
 	var grid := GridContainer.new()
@@ -356,7 +360,7 @@ func build_loadout() -> void:
 			if stats.kind == "wall": blockers += 1
 			if stats.kind == "producer": producers += 1
 	caption(panel,"攻击 %d  ·  阻挡 %d  ·  补给 %d" % [attackers,blockers,producers],Vector2(24,210),Vector2(376,26),17,GameTheme.ACCENT)
-	caption(panel,"本局难度 · 出发后八关固定",Vector2(24,252),Vector2(376,26),16,GameTheme.GOLD)
+	caption(panel,"本局难度 · 出发后全程固定",Vector2(24,252),Vector2(376,26),16,GameTheme.GOLD)
 	for index: int in range(model.data.difficulties.size()):
 		var id: String = model.data.difficulties.keys()[index]
 		var definition: DifficultyDef = model.data.difficulties[id]
@@ -368,10 +372,11 @@ func build_loadout() -> void:
 	var active: DifficultyDef = model.data.difficulties[difficulty]
 	caption(panel,"敌人生命 ×%s · 伤害 ×%s\n通关灵感 ×%s · 击杀掉落 %d%%" % [str(active.hp_multiplier),str(active.damage_multiplier),str(active.reward_multiplier),roundi(active.inspiration_drop_chance*100.0)],Vector2(24,336),Vector2(376,49),16,GameTheme.MUTED)
 	var issue: String = MetaProgression.loadout_error(model.profile.meta,selected,model.data)
+	if issue.is_empty(): issue = model.data.scene_error(scene_id)
 	var readiness: String = "阵容已就绪，先去小铺挑选食谱" if issue.is_empty() else issue
 	if not model.editable(): readiness = "对局进行中，请返回主菜单继续"
 	caption(panel,readiness,Vector2(24,395),Vector2(376,26),16,GameTheme.ACCENT if issue.is_empty() and model.editable() else GameTheme.DANGER)
-	var launch := button(panel,"出发，守住今夜 →",Vector2(24,428),Vector2(376,36),func() -> void: launch_requested.emit(selected.duplicate(),difficulty),true)
+	var launch := button(panel,"出发，从第 1 大关开始 →",Vector2(24,428),Vector2(376,36),func() -> void: launch_requested.emit(selected.duplicate(),difficulty,scene_id),true)
 	launch.name = "Launch"
 	launch.disabled = not issue.is_empty() or not model.editable()
 	launch.tooltip_text = issue
@@ -380,3 +385,37 @@ func choose_difficulty(id: String) -> void:
 	if not model.editable() or not model.data.difficulties.has(id): return
 	difficulty = id
 	rebuild()
+
+func build_scenes() -> void:
+	var selector := OptionButton.new()
+	selector.name = "SceneSelect"
+	selector.position = Vector2(40, 184)
+	selector.size = Vector2(744, 38)
+	selector.add_theme_font_size_override("font_size", 19)
+	add_child(selector)
+	selector.get_popup().add_theme_color_override("font_disabled_color", GameTheme.MUTED)
+	selector.get_popup().add_theme_stylebox_override("panel", GameTheme.box(GameTheme.SURFACE, 10, GameTheme.BORDER))
+	for id: String in model.data.scenes:
+		var scene: ScenarioDef = model.data.scenes[id]
+		var issue: String = model.data.scene_error(id)
+		selector.add_item("场景 · %s" % scene.title)
+		var index: int = selector.item_count - 1
+		selector.set_item_metadata(index, id)
+		selector.set_item_disabled(index, not issue.is_empty())
+		if id == scene_id: selector.select(index)
+	selector.disabled = not model.editable()
+	selector.item_selected.connect(func(index: int) -> void:
+		var id: String = selector.get_item_metadata(index)
+		if not model.editable() or not model.data.scene_error(id).is_empty(): return
+		scene_id = id
+		rebuild())
+	var chapters: Array[String] = model.data.scene_chapters(scene_id)
+	for index: int in range(chapters.size()):
+		var chapter: ChapterDef = model.data.chapters[chapters[index]]
+		var stage := inset(self,Vector2(40 + index * 151,232),Vector2(140,52))
+		stage.name = "ChapterRoute_" + chapter.id
+		stage.mouse_filter = Control.MOUSE_FILTER_STOP
+		stage.tooltip_text = "第 %d 大关 · %s\n%s\n场景内按顺序抵达，每大关 8 小关。" % [chapter.order,chapter.title,chapter.strategy]
+		caption(stage,"第 %d 大关" % chapter.order,Vector2(10,3),Vector2(120,20),12,GameTheme.GOLD)
+		caption(stage,chapter.title,Vector2(10,23),Vector2(120,25),16)
+	caption(self,"五大关 × 八小关 · 一次出发，1-1 → 5-8（共 %d 关）\n跨大关保留阵地、热量、粮仓与食谱。" % model.data.scene_wave_count(scene_id),Vector2(44,291),Vector2(734,46),15,GameTheme.MUTED)

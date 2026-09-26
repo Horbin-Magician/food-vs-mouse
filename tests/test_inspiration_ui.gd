@@ -21,13 +21,17 @@ func move_pointer(pos: Vector2) -> void:
 func run_test() -> void:
 	var scene = load("res://scenes/main.tscn").instantiate()
 	scene.run.new_run(42)
+	for stage: int in range(8):
+		scene.run.start()
+		scene.run.finish_wave()
+	assert(scene.run.shop.is_open())
 	scene.run.saves.folder = "user://qa_inspiration_ui_%d/" % Time.get_ticks_usec()
 	DirAccess.make_dir_recursive_absolute(scene.run.saves.folder)
 	root.add_child(scene)
 	scene.set_process(false)
 	scene.run.persistence = false
 	await process_frame
-	# Initial heat cannot buy a recipe, but the player can still start normally.
+	# An unspent starting budget still cannot buy a recipe at the first chapter shop.
 	assert(scene.run.state.heat == 150)
 	for id: String in scene.run.state.choices:
 		assert(scene.shop_surface.get_node("Recipe_" + id).disabled)

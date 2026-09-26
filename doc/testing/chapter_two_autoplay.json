@@ -1,0 +1,1149 @@
+{
+  "status": "automated_only_not_human",
+  "chapter": "kitchen_2",
+  "samples": [
+    {
+      "build": "starter",
+      "cards": {
+        "bun": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 0,
+          "heat": 41.9333333333265,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 88.4666666666629,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 0,
+          "heat": 52.4666666666573,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 151.233333333346,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "deaths": 0,
+          "heat": 25.9666666666509,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 227.983333333407,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "deaths": 0,
+          "heat": 82.0666666666434,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 321.03333333337,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "deaths": 0,
+          "heat": 973.899999999938,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 399.449999999965,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "deaths": 0,
+          "heat": 1369.19999999983,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [
+            "crust"
+          ],
+          "seconds": 479.599999999892,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "deaths": 0,
+          "heat": 1612.73333333303,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [
+            "crust",
+            "recycle",
+            "reheat"
+          ],
+          "seconds": 578.866666666469,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "deaths": 0,
+          "heat": 3113.03333333274,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "crust",
+            "recycle",
+            "reheat",
+            "pressure",
+            "caramel"
+          ],
+          "seconds": 739.016666666323,
+          "units": 35,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 45841.5499999999
+        },
+        "deaths": 0,
+        "kills": 241,
+        "leaks": 0,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "crust",
+          "recycle",
+          "reheat",
+          "pressure",
+          "caramel"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "crust",
+        "recycle",
+        "reheat",
+        "pressure",
+        "caramel"
+      ],
+      "seconds": 739.016666666323,
+      "seed": 42,
+      "wave": 8
+    },
+    {
+      "build": "steam",
+      "cards": {
+        "bun": 1,
+        "garlic": 1,
+        "popcorn": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 0,
+          "heat": 41.9333333333265,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 88.4666666666629,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 0,
+          "heat": 52.4666666666573,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 151.233333333346,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "deaths": 0,
+          "heat": 170.333333333317,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 235.166666666746,
+          "units": 22,
+          "wave": 4
+        },
+        {
+          "deaths": 1,
+          "heat": 46.9666666666422,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 355.983333333338,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "deaths": 1,
+          "heat": 108.399999999967,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 431.699999999936,
+          "units": 41,
+          "wave": 6
+        },
+        {
+          "deaths": 1,
+          "heat": 502.799999999993,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 511.399999999864,
+          "units": 46,
+          "wave": 7
+        },
+        {
+          "deaths": 1,
+          "heat": 1309.29999999992,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 604.649999999779,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "deaths": 1,
+          "heat": 2069.2666666664,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "pressure",
+            "reheat"
+          ],
+          "seconds": 749.63333333298,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 31220.825,
+          "popcorn": 14366.575
+        },
+        "deaths": 1,
+        "kills": 239,
+        "leaks": 0,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "pressure",
+          "reheat"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "pressure",
+        "reheat"
+      ],
+      "seconds": 749.63333333298,
+      "seed": 42,
+      "wave": 8
+    },
+    {
+      "build": "ice_fire",
+      "cards": {
+        "bun": 1,
+        "pepper": 1,
+        "pudding": 1,
+        "tea": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 0,
+          "heat": 41.9333333333265,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 88.4666666666629,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 0,
+          "heat": 52.4666666666573,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 151.233333333346,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "deaths": 0,
+          "heat": 127.299999999987,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 233.650000000078,
+          "units": 23,
+          "wave": 4
+        },
+        {
+          "deaths": 0,
+          "heat": 64.6333333333098,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 339.816666666686,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "deaths": 0,
+          "heat": 59.9999999999683,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 419.999999999947,
+          "units": 42,
+          "wave": 6
+        },
+        {
+          "deaths": 0,
+          "heat": 654.899999999963,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 499.949999999874,
+          "units": 45,
+          "wave": 7
+        },
+        {
+          "deaths": 0,
+          "heat": 1318.39999999989,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 596.699999999786,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "deaths": 0,
+          "heat": 2568.56666666636,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "cold_spice",
+            "caramel"
+          ],
+          "seconds": 741.783333332987,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 37378.2249999999,
+          "pepper": 3027.55,
+          "tea": 5181.625
+        },
+        "deaths": 0,
+        "kills": 239,
+        "leaks": 0,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "cold_spice",
+          "caramel"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "cold_spice",
+        "caramel"
+      ],
+      "seconds": 741.783333332987,
+      "seed": 42,
+      "wave": 8
+    },
+    {
+      "build": "starter",
+      "cards": {
+        "bun": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 0,
+          "heat": 40.2999999999933,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 87.6499999999963,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 0,
+          "heat": 53.0666666666546,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 161.533333333354,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "deaths": 0,
+          "heat": 129.866666666647,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 242.433333333418,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "deaths": 0,
+          "heat": 285.966666666642,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 335.483333333357,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "deaths": 0,
+          "heat": 1079.56666666658,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 414.783333333285,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "deaths": 0,
+          "heat": 1544.86666666644,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [
+            "recycle"
+          ],
+          "seconds": 494.933333333212,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "deaths": 0,
+          "heat": 2101.23333333293,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [
+            "recycle",
+            "pressure",
+            "caramel"
+          ],
+          "seconds": 593.116666666456,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "deaths": 0,
+          "heat": 3601.53333333264,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "recycle",
+            "pressure",
+            "caramel",
+            "crust",
+            "reheat"
+          ],
+          "seconds": 753.26666666631,
+          "units": 35,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 45841.5499999999
+        },
+        "deaths": 0,
+        "kills": 241,
+        "leaks": 0,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "recycle",
+          "pressure",
+          "caramel",
+          "crust",
+          "reheat"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "recycle",
+        "pressure",
+        "caramel",
+        "crust",
+        "reheat"
+      ],
+      "seconds": 753.26666666631,
+      "seed": 7,
+      "wave": 8
+    },
+    {
+      "build": "steam",
+      "cards": {
+        "bun": 1,
+        "garlic": 1,
+        "popcorn": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 0,
+          "heat": 40.2999999999933,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 87.6499999999963,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 0,
+          "heat": 53.0666666666546,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 161.533333333354,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "deaths": 0,
+          "heat": 25.9333333333148,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 245.466666666754,
+          "units": 23,
+          "wave": 4
+        },
+        {
+          "deaths": 0,
+          "heat": 108.566666666639,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 339.283333333353,
+          "units": 31,
+          "wave": 5
+        },
+        {
+          "deaths": 0,
+          "heat": 13.3666666666345,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 421.683333333278,
+          "units": 40,
+          "wave": 6
+        },
+        {
+          "deaths": 0,
+          "heat": 107.766666666628,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 501.383333333206,
+          "units": 48,
+          "wave": 7
+        },
+        {
+          "deaths": 0,
+          "heat": 1139.26666666657,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 594.633333333121,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "deaths": 0,
+          "heat": 2399.23333333297,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "crust"
+          ],
+          "seconds": 739.616666666323,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 30454.275,
+          "popcorn": 15133.125
+        },
+        "deaths": 0,
+        "kills": 239,
+        "leaks": 0,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "crust"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "crust"
+      ],
+      "seconds": 739.616666666323,
+      "seed": 7,
+      "wave": 8
+    },
+    {
+      "build": "ice_fire",
+      "cards": {
+        "bun": 1,
+        "pepper": 1,
+        "pudding": 1,
+        "tea": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 0,
+          "heat": 40.2999999999933,
+          "pantry": 10,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 87.6499999999963,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 0,
+          "heat": 53.0666666666546,
+          "pantry": 10,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 161.533333333354,
+          "units": 13,
+          "wave": 3
+        },
+        {
+          "deaths": 0,
+          "heat": 25.9333333333151,
+          "pantry": 10,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 245.466666666754,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "deaths": 0,
+          "heat": 32.2333333333083,
+          "pantry": 10,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 348.616666666678,
+          "units": 34,
+          "wave": 5
+        },
+        {
+          "deaths": 0,
+          "heat": 109.699999999966,
+          "pantry": 10,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 429.849999999938,
+          "units": 42,
+          "wave": 6
+        },
+        {
+          "deaths": 0,
+          "heat": 404.599999999993,
+          "pantry": 10,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 509.799999999865,
+          "units": 48,
+          "wave": 7
+        },
+        {
+          "deaths": 0,
+          "heat": 1443.09999999989,
+          "pantry": 10,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 606.549999999777,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "deaths": 0,
+          "heat": 2198.433333333,
+          "pantry": 10,
+          "passed": 8,
+          "recipes": [
+            "long",
+            "reheat"
+          ],
+          "seconds": 749.216666666314,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 35452.3,
+          "pepper": 5275.0,
+          "tea": 4860.1
+        },
+        "deaths": 0,
+        "kills": 239,
+        "leaks": 0,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "long",
+          "reheat"
+        ]
+      },
+      "pantry": 10,
+      "phase": "won",
+      "recipes": [
+        "long",
+        "reheat"
+      ],
+      "seconds": 749.216666666314,
+      "seed": 7,
+      "wave": 8
+    },
+    {
+      "build": "starter",
+      "cards": {
+        "bun": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 1,
+          "heat": 64.7333333333256,
+          "pantry": 8,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 104.866666666662,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 1,
+          "heat": 190.266666666652,
+          "pantry": 8,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 167.633333333359,
+          "units": 14,
+          "wave": 3
+        },
+        {
+          "deaths": 1,
+          "heat": 75.6333333333114,
+          "pantry": 8,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 242.816666666752,
+          "units": 25,
+          "wave": 4
+        },
+        {
+          "deaths": 1,
+          "heat": 209.699999999968,
+          "pantry": 8,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 337.350000000022,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "deaths": 1,
+          "heat": 1103.29999999991,
+          "pantry": 8,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 416.64999999995,
+          "units": 35,
+          "wave": 6
+        },
+        {
+          "deaths": 1,
+          "heat": 1498.59999999976,
+          "pantry": 8,
+          "passed": 6,
+          "recipes": [
+            "pressure"
+          ],
+          "seconds": 496.799999999877,
+          "units": 35,
+          "wave": 7
+        },
+        {
+          "deaths": 1,
+          "heat": 1640.43333333294,
+          "pantry": 8,
+          "passed": 7,
+          "recipes": [
+            "pressure",
+            "reheat",
+            "crust"
+          ],
+          "seconds": 595.216666666454,
+          "units": 35,
+          "wave": 8
+        },
+        {
+          "deaths": 1,
+          "heat": 3140.73333333265,
+          "pantry": 8,
+          "passed": 8,
+          "recipes": [
+            "pressure",
+            "reheat",
+            "crust",
+            "caramel",
+            "recycle"
+          ],
+          "seconds": 755.366666666308,
+          "units": 35,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 45737.5499999999
+        },
+        "deaths": 1,
+        "kills": 239,
+        "leaks": 2,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "pressure",
+          "reheat",
+          "crust",
+          "caramel",
+          "recycle"
+        ]
+      },
+      "pantry": 8,
+      "phase": "won",
+      "recipes": [
+        "pressure",
+        "reheat",
+        "crust",
+        "caramel",
+        "recycle"
+      ],
+      "seconds": 755.366666666308,
+      "seed": 2026,
+      "wave": 8
+    },
+    {
+      "build": "steam",
+      "cards": {
+        "bun": 1,
+        "garlic": 1,
+        "popcorn": 1,
+        "pudding": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 1,
+          "heat": 64.7333333333256,
+          "pantry": 8,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 104.866666666662,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 1,
+          "heat": 190.266666666652,
+          "pantry": 8,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 167.633333333359,
+          "units": 14,
+          "wave": 3
+        },
+        {
+          "deaths": 1,
+          "heat": 73.133333333311,
+          "pantry": 8,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 251.566666666759,
+          "units": 24,
+          "wave": 4
+        },
+        {
+          "deaths": 1,
+          "heat": 14.7999999999682,
+          "pantry": 8,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 369.899999999992,
+          "units": 35,
+          "wave": 5
+        },
+        {
+          "deaths": 1,
+          "heat": 82.8666666666306,
+          "pantry": 8,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 448.933333333254,
+          "units": 42,
+          "wave": 6
+        },
+        {
+          "deaths": 1,
+          "heat": 277.26666666664,
+          "pantry": 8,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 528.633333333181,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "deaths": 1,
+          "heat": 1408.76666666654,
+          "pantry": 8,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 621.883333333096,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "deaths": 1,
+          "heat": 2133.46666666632,
+          "pantry": 8,
+          "passed": 8,
+          "recipes": [
+            "recycle",
+            "burst"
+          ],
+          "seconds": 761.733333332969,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 29486.25,
+          "popcorn": 15743.0
+        },
+        "deaths": 1,
+        "kills": 235,
+        "leaks": 2,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "recycle",
+          "burst"
+        ]
+      },
+      "pantry": 8,
+      "phase": "won",
+      "recipes": [
+        "recycle",
+        "burst"
+      ],
+      "seconds": 761.733333332969,
+      "seed": 2026,
+      "wave": 8
+    },
+    {
+      "build": "ice_fire",
+      "cards": {
+        "bun": 1,
+        "pepper": 1,
+        "pudding": 1,
+        "tea": 1,
+        "toast": 1
+      },
+      "chapter": "kitchen_2",
+      "difficulty": "easy",
+      "growth": 0,
+      "history": [
+        {
+          "deaths": 1,
+          "heat": 64.7333333333256,
+          "pantry": 8,
+          "passed": 1,
+          "recipes": [],
+          "seconds": 104.866666666662,
+          "units": 8,
+          "wave": 2
+        },
+        {
+          "deaths": 1,
+          "heat": 190.266666666652,
+          "pantry": 8,
+          "passed": 2,
+          "recipes": [],
+          "seconds": 167.633333333359,
+          "units": 14,
+          "wave": 3
+        },
+        {
+          "deaths": 1,
+          "heat": 67.1333333333107,
+          "pantry": 8,
+          "passed": 3,
+          "recipes": [],
+          "seconds": 248.566666666757,
+          "units": 25,
+          "wave": 4
+        },
+        {
+          "deaths": 1,
+          "heat": 28.6666666666385,
+          "pantry": 8,
+          "passed": 4,
+          "recipes": [],
+          "seconds": 364.333333333331,
+          "units": 36,
+          "wave": 5
+        },
+        {
+          "deaths": 1,
+          "heat": 155.299999999966,
+          "pantry": 8,
+          "passed": 5,
+          "recipes": [],
+          "seconds": 445.149999999924,
+          "units": 44,
+          "wave": 6
+        },
+        {
+          "deaths": 1,
+          "heat": 550.199999999975,
+          "pantry": 8,
+          "passed": 6,
+          "recipes": [],
+          "seconds": 525.099999999851,
+          "units": 49,
+          "wave": 7
+        },
+        {
+          "deaths": 1,
+          "heat": 1688.6999999998,
+          "pantry": 8,
+          "passed": 7,
+          "recipes": [],
+          "seconds": 621.849999999763,
+          "units": 49,
+          "wave": 8
+        },
+        {
+          "deaths": 1,
+          "heat": 2532.89999999953,
+          "pantry": 8,
+          "passed": 8,
+          "recipes": [
+            "crust",
+            "recycle"
+          ],
+          "seconds": 768.949999999629,
+          "units": 49,
+          "wave": 8
+        }
+      ],
+      "metrics": {
+        "damage": {
+          "bun": 37270.2999999999,
+          "pepper": 2982.65,
+          "tea": 5230.45
+        },
+        "deaths": 1,
+        "kills": 237,
+        "leaks": 2,
+        "overflow": 0.0,
+        "passed": 8,
+        "puddings": 7,
+        "recipes": [
+          "crust",
+          "recycle"
+        ]
+      },
+      "pantry": 8,
+      "phase": "won",
+      "recipes": [
+        "crust",
+        "recycle"
+      ],
+      "seconds": 768.949999999629,
+      "seed": 2026,
+      "wave": 8
+    }
+  ]
+}

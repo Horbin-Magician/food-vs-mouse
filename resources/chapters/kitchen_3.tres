@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChapterDef" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/chapter_def.gd" id="1"]
+
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_1.tres" id="w1"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_2.tres" id="w2"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_3.tres" id="w3"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_4.tres" id="w4"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_5.tres" id="w5"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_6.tres" id="w6"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_7.tres" id="w7"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_3_8.tres" id="w8"]
+
+[resource]
+script = ExtResource("1")
+id = "kitchen_3"
+title = "锅盖重围"
+order = 3
+strategy = "沿用食谱与火力，交替破解重装主路，保护受损前排。"
+first_clear_reward = 12
+available = true
+waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8")])
+background_tint = Color(0.48, 0.19, 0.06, 0.12)

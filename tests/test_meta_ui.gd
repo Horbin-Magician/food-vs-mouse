@@ -62,12 +62,12 @@ func check() -> void:
 	assert(not launch.disabled)
 	launch.pressed.emit()
 	assert(front.game != null and front.game.run.state.cards.size() == 2)
-	assert(front.game.run.state.level("bun") == 7 and front.game.shop_overlay.visible)
-	front.game.finish_shopping()
+	assert(front.game.run.state.level("bun") == 7 and not front.game.shop_overlay.visible)
 	assert(front.game.run.state.phase == "battle")
 	front.game.run.finish_wave()
 	assert(front.saves.load_meta(front.data).inspiration == 36)
-	front.game.run.start()
+	front.game.run.advance(0)
+	assert(front.game.run.state.phase == "battle" and not front.game.shop_overlay.visible)
 	front.game.run.state.pantry = 0
 	front.game.run.advance(0.02)
 	front._process(0)
@@ -78,5 +78,5 @@ func check() -> void:
 	front.queue_free()
 	await process_frame
 	await create_timer(0.5).timeout
-	print("PASS meta UI: new-game selection, buy, duplicate callback, enhance, selected launch, recipe shop, loss and inspiration")
+	print("PASS meta UI: new-game selection, buy, duplicate callback, enhance, selected direct launch, ordinary transition, loss and inspiration")
 	quit()

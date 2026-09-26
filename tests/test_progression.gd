@@ -6,10 +6,12 @@ func _init() -> void:
 	run.start()
 	run.board.place("bun",2,0,false)
 	run.state.units[0].hp = 100.0
+	var rng_before: int = run.rng.state
 	run.finish_wave()
 	assert(run.state.wave == 2 and run.state.phase == "prepare")
 	assert(run.state.heat == 50.0 and run.state.units[0].hp == 127.0)
-	assert(run.state.recipes.is_empty() and not run.state.choices.is_empty())
+	assert(run.state.recipes.is_empty() and run.state.choices.is_empty() and not run.shop.is_open())
+	assert(run.rng.state == rng_before, "ordinary clears do not roll a shop")
 	run.finish_wave()
 	assert(run.state.heat == 50.0, "wave cannot reset or award heat")
 	assert(run.board.move(2,0,1,1) == "")

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChapterDef" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/chapter_def.gd" id="1"]
+
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_1.tres" id="w1"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_2.tres" id="w2"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_3.tres" id="w3"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_4.tres" id="w4"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_5.tres" id="w5"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_6.tres" id="w6"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_7.tres" id="w7"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_4_8.tres" id="w8"]
+
+[resource]
+script = ExtResource("1")
+id = "kitchen_4"
+title = "面粉风暴"
+order = 4
+strategy = "守住已有防线，远处清粉与近战爆发配合，避免连续沾粉。"
+first_clear_reward = 12
+available = true
+waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8")])
+background_tint = Color(0.29, 0.14, 0.42, 0.13)

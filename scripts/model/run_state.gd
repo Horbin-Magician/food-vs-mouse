@@ -9,7 +9,11 @@ const CENTER_ROW: int = ROWS / 2
 
 var run_id: String = ""
 var seed_value: int = 1
+var scene_id: String = "kitchen"
+var chapter_id: String = "kitchen_1"
 var wave: int = 1
+var start_wave: int = 1
+var _catalog: Catalog
 var difficulty: String = "easy"
 var phase: String = "prepare"
 var pantry: int = 10
@@ -34,6 +38,13 @@ var elapsed: float = 0.0
 var next_uid: int = 1
 var metrics: Dictionary = {"kills": 0, "puddings": 0, "passed": 0, "leaks": 0, "deaths": 0, "overflow": 0.0, "damage": {}, "recipes": []}
 
+func _init(catalog: Catalog = null) -> void:
+	_catalog = catalog
+
+func global_wave() -> int:
+	if _catalog == null: _catalog = Catalog.new()
+	return _catalog.chapter_offset(scene_id, chapter_id) + wave
+
 func star(id: String) -> int:
 	if not legacy_stars: return 1
 	var count: int = cards.get(id, 0)
@@ -55,7 +66,7 @@ func production_multiplier(id: String, data: Catalog) -> float:
 
 func inspiration_for_wave(index: int, data: Catalog) -> int:
 	if not rewards_enabled: return 0
-	return int(inspiration_earned.get(str(index + 1), data.progression.inspiration_rewards[index]))
+	return int(inspiration_earned.get(str(index + 1), data.progression.inspiration_rewards[index % data.progression.inspiration_rewards.size()]))
 
 func collected_inspiration() -> int:
 	var total: int = 0

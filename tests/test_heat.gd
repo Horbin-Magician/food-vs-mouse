@@ -6,9 +6,14 @@ func tick(run: RunController, frames: int) -> void:
 func _init() -> void:
 	var run := RunController.new()
 	run.new_run(42)
+	for stage: int in range(8):
+		run.start()
+		run.finish_wave()
+	assert(run.shop.is_open())
 	run.state.heat = 0
 	tick(run, 60)
 	assert(run.state.heat == 0, "prepare does not regenerate")
+	run.new_run(42)
 	run.state.heat = run.data.rules.heat_start
 	run.start()
 	assert(run.board.place("pudding", 0, 0, false).is_empty())
@@ -84,6 +89,7 @@ func _init() -> void:
 	run.start()
 	run.board.place("pudding", 0, 0, false)
 	run.combat.produce_heat(run.state.units[0])
+	run.state.chapter_id = "kitchen_5"
 	run.state.wave = 8
 	run.finish_wave()
 	assert(run.state.phase == "won" and run.combat.heat_pickups.is_empty())

@@ -6,12 +6,12 @@ func _init() -> void:
 		for leaks: int in [0, 2]:
 			run.new_run(42, [], id)
 			var factor: float = {"easy":1.0,"normal":1.25,"hard":1.5}[id]
-			for index: int in range(8):
+			for index: int in range(40):
 				var heat: float = run.state.heat
 				run.start()
 				run.state.leaks = leaks
 				run.finish_wave()
-				assert(run.state.inspiration_for_wave(index,run.data) == roundi(run.data.progression.inspiration_rewards[index] * factor))
+				assert(run.state.inspiration_for_wave(index,run.data) == roundi(run.data.progression.inspiration_rewards[index % 8] * factor))
 				assert(run.state.heat == heat)
 				run.finish_wave()
 				assert(run.state.heat == heat)
@@ -71,13 +71,13 @@ func _init() -> void:
 	# Final wave gets scaled inspiration in the settlement transaction.
 	run.new_run(14, [], "hard")
 	assert(run.persist())
-	for index: int in range(8):
+	for index: int in range(40):
 		run.start()
 		run.finish_wave()
 	assert(run.state.phase == "won")
-	assert(run.saves.load_meta(run.data).inspiration == 127) # hard total = 104
+	assert(run.saves.load_meta(run.data).inspiration == 603) # 23 previous + 5 * (104 hard rewards + 12 first clear)
 	assert(run.saves.settle(run.state,run.data))
-	assert(run.saves.load_meta(run.data).inspiration == 127)
+	assert(run.saves.load_meta(run.data).inspiration == 603)
 	run.persistence = false
 	run.new_run()
 	run.state.rewards_enabled = false

@@ -212,7 +212,7 @@ func bind_run(run: RunController = null) -> void:
 	_board = run.board if run != null else null
 	_combat = run.combat if run != null else null
 	_phase = _state.phase if _state != null else ""
-	_wave = _state.wave if _state != null else 0
+	_wave = _state.global_wave() if _state != null else 0
 	if run != null:
 		_listen(run.changed, sync_run)
 		if _board != null:
@@ -253,18 +253,18 @@ func sync_run() -> void:
 		return
 	if _state == null: return
 	set_game_paused(_state.phase == "battle" and bound_run.paused)
-	if _phase != _state.phase or _wave != _state.wave:
+	if _phase != _state.phase or _wave != _state.global_wave():
 		_stop_gameplay(profile.transition_keep_priority)
 		if _state.phase != "battle": _armor_remaining.clear()
+		if _phase == "battle" and _state.global_wave() > _wave: cue("clear")
 		if _state.phase == "battle": cue("wave_start")
-		elif _phase == "battle" and _state.phase == "prepare" and _state.wave > _wave: cue("clear")
 		_phase = _state.phase
-		_wave = _state.wave
+		_wave = _state.global_wave()
 		set_context(_context_for_run())
 
 func _context_for_run() -> String:
 	if _state.phase in ["won", "lost"]: return _state.phase
-	if _state.phase != "battle": return "shop"
+	if bound_run.shop.is_open(): return "shop"
 	if _state.wave == 8: return "boss"
 	if _state.wave == 4: return "elite"
 	return "battle"

@@ -152,15 +152,23 @@ func show_menu() -> void:
 	portrait(art.food_portrait("bun"), Vector2(250, 382), Vector2(260, 240))
 	portrait(art.mouse("gray"), Vector2(500, 460), Vector2(160, 150))
 	text_line("今夜，开张", Vector2(792, 124), Vector2(360, 48), 32)
-	text_line("让美食守住粮仓，迎战八关鼠潮。", Vector2(792, 186), Vector2(356, 36), 17, GameTheme.MUTED)
+	text_line("深夜厨房 · 五大关连续守卫 40 小关", Vector2(792, 186), Vector2(356, 36), 17, GameTheme.MUTED)
 	var snapshot: Dictionary = saves.load_run(data)
 	var load_error: String = saves.error
 	var has_run: bool = not snapshot.is_empty()
-	continue_button = action("继续游戏  ·  第 %d 关  →" % int(snapshot.get("wave", 1)) if has_run else "暂无可继续的对局", Vector2(792, 246 if has_run else 350), continue_run, has_run)
+	var resume_text: String = "暂无可继续的对局"
+	var resume_hint: String = "开始一局后，会自动保存关前准备进度。"
+	if has_run:
+		var chapter: ChapterDef = data.chapters[snapshot.get("chapter_id", "kitchen_1")]
+		var wave: int = int(snapshot.get("wave", 1))
+		var overall: int = (chapter.order - 1) * 8 + wave
+		resume_text = "继续 · %d-%d · 总 %02d/%d  →" % [chapter.order,wave,overall,data.scene_wave_count(snapshot.get("scene_id", "kitchen"))]
+		resume_hint = "%s · 第 %d 大关：%s\n继续第 %d 小关开战前的准备进度。" % [data.scenes[snapshot.get("scene_id", "kitchen")].title,chapter.order,chapter.title,wave]
+	continue_button = action(resume_text, Vector2(792, 246 if has_run else 350), continue_run, has_run)
 	continue_button.name = "ContinueRun"
 	continue_button.disabled = snapshot.is_empty()
-	continue_button.tooltip_text = "继续本关开战前的准备进度。" if has_run else "开始一局后，会自动保存关前准备进度。"
-	var new_button := action("新的一局  ·  选择阵容  →", Vector2(792, 350 if has_run else 246), request_new, not has_run)
+	continue_button.tooltip_text = resume_hint
+	var new_button := action("新的一局 · 选择场景与阵容 →", Vector2(792, 350 if has_run else 246), request_new, not has_run)
 	new_button.name = "NewRun"
 	text_line("回到本关开战前，已赚灵感保留。" if has_run else "选 1～5 种美食，搭配你的守卫阵容。", Vector2(796, 307), Vector2(350, 28), 14, GameTheme.MUTED)
 	text_line("结束旧局，重新搭配美食与难度。" if has_run else "关前自动保存，随时回来接着守夜。", Vector2(796, 411), Vector2(350, 28), 14, GameTheme.MUTED)
@@ -240,7 +248,7 @@ func show_hub(initial_tab: String = "shop") -> void:
 	hub.launch_requested.connect(start_new)
 	hub.setup(saves,data,initial_tab)
 
-func start_new(selected: Array = [], difficulty: String = "easy") -> void:
+func start_new(selected: Array = [], difficulty: String = "easy", scene_id: String = "kitchen") -> void:
 	if is_instance_valid(game): return
 	var run := controller()
 	if not saves.load_run(data).is_empty() and not run.resume_run():
@@ -248,7 +256,7 @@ func start_new(selected: Array = [], difficulty: String = "easy") -> void:
 		notice.text = run.message
 		return
 	var previous: RunState = run.state
-	run.new_run(int(Time.get_unix_time_from_system()), selected, difficulty)
+	run.new_run(int(Time.get_unix_time_from_system()), selected, difficulty, scene_id)
 	if run.state == previous or not saves.error.is_empty():
 		sound.cue("ui_error")
 		if is_instance_valid(hub) and hub.is_inside_tree():
@@ -290,13 +298,17 @@ func show_result() -> void:
 	var state: RunState = game.run.state
 	var won: bool = state.phase == "won"
 	text_line("今夜，守住了" if won else "明晚，再来", Vector2(80, 166), Vector2(650, 88), 58, GameTheme.GOLD if won else GameTheme.DANGER)
-	text_line("八关告捷，食堂安然无恙。" if won else "第 %d 关粮仓失守。换个阵容，再试一次。" % state.wave, Vector2(88, 280), Vector2(585, 68), 22, GameTheme.MUTED)
+	var total: int = data.scene_wave_count(state.scene_id)
+	var result_description: String = "%s，五大关全部告捷。" % data.scenes[state.scene_id].title if won else "%s · %d-%d 粮仓失守。\n本局抵达第 %d / %d 小关。" % [data.chapters[state.chapter_id].title,data.chapters[state.chapter_id].order,state.wave,state.global_wave(),total]
+	if state.start_wave > 1:
+		result_description = ("%s，接续守卫完成。" % data.scenes[state.scene_id].title if won else "%s · %d-%d 粮仓失守。" % [data.chapters[state.chapter_id].title,data.chapters[state.chapter_id].order,state.wave]) + "\n旧档第 %d 关接续 · 场景进度 %d/%d" % [state.start_wave,state.global_wave(),total]
+	text_line(result_description, Vector2(88, 280), Vector2(585, 68), 22, GameTheme.MUTED)
 	portrait(art.food_portrait("bun") if won else art.mouse("boss"), Vector2(178, 362), Vector2(380, 264))
 	text_line("今夜战报", Vector2(792, 114), Vector2(360, 42), 28)
-	result_stat("通过关卡", "%d / 8" % state.metrics.passed, Vector2(792, 172), GameTheme.GOLD)
+	result_stat("本局通过", "%d / %d" % [maxi(0,int(state.metrics.passed)-state.start_wave+1),total-state.start_wave+1], Vector2(792, 172), GameTheme.GOLD)
 	result_stat("击退鼠群", str(state.metrics.kills), Vector2(976, 172))
 	result_stat("守卫时间", "%02d:%02d" % [int(state.elapsed) / 60, int(state.elapsed) % 60], Vector2(792, 266))
-	result_stat("本夜灵感 · 跨局保留", "+%d" % run_inspiration(state), Vector2(976, 266), GameTheme.ACCENT)
+	result_stat("本局灵感 · 跨局保留", "+%d" % run_inspiration(state), Vector2(976, 266), GameTheme.ACCENT)
 	text_line("粮仓损失 %d   ·   美食阵亡 %d   ·   食谱 %d" % [state.metrics.leaks, state.metrics.deaths, state.recipes.size()], Vector2(792, 360), Vector2(356, 30), 14, GameTheme.MUTED)
 	divider(Vector2(792, 400), 356)
 	action("再守一夜  ·  调整阵容  →", Vector2(792, 420), func() -> void: leave_result("new"), true).name = "PlayAgain"
@@ -304,7 +316,11 @@ func show_result() -> void:
 	var back := action("返回主菜单", Vector2(792, 550), func() -> void: leave_result("menu"))
 	back.size.y = 40
 	back.add_theme_font_size_override("font_size", 15)
-	notice = text_line(game.run.message, Vector2(792, 606), Vector2(356, 42), 13, GameTheme.MUTED)
+	var clear_reward: int = int(saves.load_meta(data).get("ledger", {}).get(state.run_id, {}).get("first_clear_reward", 0))
+	var report_message: String = game.run.message
+	if clear_reward > 0:
+		report_message += " 本局大关首通共 +%d 灵感。" % clear_reward
+	notice = text_line(report_message, Vector2(792, 606), Vector2(356, 42), 13, GameTheme.MUTED)
 
 func leave_result(destination: String) -> void:
 	if not is_instance_valid(game) or not showing_result: return
@@ -323,8 +339,9 @@ func leave_result(destination: String) -> void:
 func run_inspiration(state: RunState) -> int:
 	var amount: int = state.collected_inspiration()
 	if state.rewards_enabled:
-		for index: int in range(state.reward_floor,mini(int(state.metrics.passed),8)):
+		for index: int in range(state.reward_floor,mini(int(state.metrics.passed),data.scene_wave_count(state.scene_id))):
 			amount += state.inspiration_for_wave(index, data)
+	amount += int(saves.load_meta(data).get("ledger", {}).get(state.run_id, {}).get("first_clear_reward", 0))
 	return amount
 
 func open_settings() -> void:

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChapterDef" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/chapter_def.gd" id="1"]
+
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_1.tres" id="w1"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_2.tres" id="w2"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_3.tres" id="w3"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_4.tres" id="w4"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_5.tres" id="w5"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_6.tres" id="w6"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_7.tres" id="w7"]
+[ext_resource type="Resource" path="res://resources/chapters/waves/kitchen_5_8.tres" id="w8"]
+
+[resource]
+script = ExtResource("1")
+id = "kitchen_5"
+title = "黎明守宴"
+order = 5
+strategy = "带着整局阵地迎接混合鼠潮，辨认主路轮转，守过终章首领。"
+first_clear_reward = 12
+available = true
+waves = Array[Resource]([ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4"), ExtResource("w5"), ExtResource("w6"), ExtResource("w7"), ExtResource("w8")])
+background_tint = Color(0.65, 0.39, 0.08, 0.12)

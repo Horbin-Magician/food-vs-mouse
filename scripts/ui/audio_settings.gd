@@ -8,6 +8,7 @@ var sound: SoundService
 var sliders: Dictionary[String, HSlider] = {}
 var percentages: Dictionary[String, Label] = {}
 var mute_button: CheckButton
+var preview_button: Button
 var note: Label
 var menu_button: Button
 var quit_button: Button
@@ -33,7 +34,7 @@ func _ready() -> void:
 	exclusive = true
 	unresizable = true
 	dialog_hide_on_ok = false
-	min_size = Vector2i(520, 480)
+	min_size = Vector2i(520, 550)
 	get_ok_button().text = "返回"
 	get_ok_button().custom_minimum_size = Vector2(220, 42)
 	GameTheme.primary(get_ok_button())
@@ -133,18 +134,29 @@ func _ready() -> void:
 	mute_button.toggled.connect(func(value: bool) -> void:
 		if is_instance_valid(sound): sound.set_muted(value))
 	controls.add_child(mute_button)
-	var preview := Button.new()
-	preview.name = "PreviewSound"
-	preview.text = "试听音效"
-	preview.custom_minimum_size = Vector2(124, 38)
-	preview.pressed.connect(func() -> void:
+	preview_button = Button.new()
+	preview_button.name = "PreviewSound"
+	preview_button.text = "试听音效"
+	preview_button.custom_minimum_size = Vector2(124, 38)
+	preview_button.pressed.connect(func() -> void:
 		if is_instance_valid(sound): sound.cue("purchase"))
-	controls.add_child(preview)
+	controls.add_child(preview_button)
 	note = Label.new()
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.custom_minimum_size = Vector2(420, 36)
 	note.add_theme_font_size_override("font_size", 14)
 	column.add_child(note)
+	var help_panel := PanelContainer.new()
+	help_panel.add_theme_stylebox_override("panel", GameTheme.box(GameTheme.BG, 10))
+	column.add_child(help_panel)
+	var quick_help := Label.new()
+	quick_help.name = "QuickControls"
+	quick_help.text = "操作速记\n左键选卡 / 拖放 · 右键取消 · Esc 设置\n点击火苗补充热量，点击紫色灵感收集收益。"
+	quick_help.add_theme_font_size_override("font_size", 14)
+	quick_help.add_theme_color_override("font_color", GameTheme.MUTED)
+	quick_help.add_theme_constant_override("line_spacing", 5)
+	quick_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	help_panel.add_child(quick_help)
 	var divider := HSeparator.new()
 	var divider_style := StyleBoxFlat.new()
 	divider_style.bg_color = GameTheme.BORDER
@@ -218,7 +230,7 @@ func open(run: RunController = null, allow_menu: bool = false) -> void:
 		sound.set_game_paused(true)
 	sound.cue("ui_click")
 	_refresh()
-	popup_centered_clamped(Vector2i(560, 490), 0.9)
+	popup_centered_clamped(Vector2i(560, 564), 0.9)
 
 func handle_escape() -> void:
 	if not visible: return
@@ -320,6 +332,8 @@ func _refresh() -> void:
 		sliders[bus].set_value_no_signal(value)
 		percentages[bus].text = "%d%%" % value
 	mute_button.set_pressed_no_signal(sound.muted)
+	preview_button.disabled = sound.muted or sound.get_level("Master") <= 0.0 or sound.get_level("SFX") <= 0.0
+	preview_button.tooltip_text = "先取消静音，并调高总音量与游戏音效。" if preview_button.disabled else "播放一次购买音效，检查当前音量。"
 	get_ok_button().text = "继续游戏" if _paused_for_session else "返回"
 	if _paused_for_session:
 		status_label.text = "游戏已暂停"
@@ -334,5 +348,5 @@ func _refresh() -> void:
 		status_label.text = "声音与游戏"
 		_status_detail.text = "按你的喜好，调整食堂的声音。"
 	var error: String = _session_error if not _session_error.is_empty() else sound.settings_error
-	note.text = error if not error.is_empty() else "音量设置即时生效并自动保存。Esc 返回原页面。"
+	note.text = error if not error.is_empty() else ("当前已静音 · 音量设置自动保存。" if sound.muted else "音量即时生效 · 自动保存")
 	note.add_theme_color_override("font_color", GameTheme.DANGER if not error.is_empty() else GameTheme.MUTED)

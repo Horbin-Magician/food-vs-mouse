@@ -64,16 +64,38 @@ func clear_page() -> void:
 	page.add_child(background)
 	var shade := ColorRect.new()
 	shade.size = page.size
-	shade.color = Color(0.025, 0.07, 0.075, 0.86)
+	shade.color = Color(0.025, 0.07, 0.055, 0.82)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	page.add_child(shade)
 	var surface := Panel.new()
-	surface.position = Vector2(744, 80)
-	surface.size = Vector2(452, 560)
-	surface.add_theme_stylebox_override("panel", GameTheme.box(GameTheme.SURFACE, 24, GameTheme.BORDER))
+	surface.position = Vector2(744, 84)
+	surface.size = Vector2(452, 572)
+	var surface_style := GameTheme.box(GameTheme.SURFACE, 20, GameTheme.BORDER)
+	surface_style.shadow_color = Color(0.0, 0.0, 0.0, 0.25)
+	surface_style.shadow_size = 12
+	surface.add_theme_stylebox_override("panel", surface_style)
 	page.add_child(surface)
-	text_line("MIDNIGHT KITCHEN  /  深夜营业", Vector2(84, 84), Vector2(610, 30), 16, GameTheme.GOLD)
-	text_line("美食守卫 · 八关鼠潮", Vector2(84, 652), Vector2(600, 28), 15, GameTheme.MUTED)
+	divider(Vector2(792, 96), 356, GameTheme.GOLD)
+	text_line("夜 间 限 定  /  MIDNIGHT KITCHEN", Vector2(84, 84), Vector2(610, 30), 15, GameTheme.GOLD)
+	text_line("选好美食   →   布阵守夜   →   食谱构筑", Vector2(84, 650), Vector2(600, 28), 15, GameTheme.MUTED)
+
+func divider(pos: Vector2, width: float, color: Color = GameTheme.BORDER) -> void:
+	var line := ColorRect.new()
+	line.position = pos
+	line.size = Vector2(width, 2)
+	line.color = color
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	page.add_child(line)
+
+func result_stat(title: String, value: String, pos: Vector2, tint: Color = GameTheme.TEXT) -> void:
+	var tile := Panel.new()
+	tile.position = pos
+	tile.size = Vector2(172, 82)
+	tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tile.add_theme_stylebox_override("panel", GameTheme.box(GameTheme.BG, 10))
+	page.add_child(tile)
+	text_line(title, pos + Vector2(14, 9), Vector2(144, 22), 13, GameTheme.MUTED)
+	text_line(value, pos + Vector2(14, 32), Vector2(144, 38), 28, tint)
 
 func text_line(value: String, pos: Vector2, bounds: Vector2, font_size: int, color: Color = GameTheme.TEXT) -> Label:
 	var label := Label.new()
@@ -92,6 +114,8 @@ func action(title: String, pos: Vector2, callback: Callable, primary: bool = fal
 	button.text = title
 	button.position = pos
 	button.size = Vector2(356, 54)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", 18)
 	button.pressed.connect(func() -> void: sound.cue("ui_click"))
 	button.pressed.connect(callback)
 	if primary: GameTheme.primary(button)
@@ -127,16 +151,26 @@ func show_menu() -> void:
 	portrait(art.food_portrait("toast"), Vector2(90, 434), Vector2(170, 170))
 	portrait(art.food_portrait("bun"), Vector2(250, 382), Vector2(260, 240))
 	portrait(art.mouse("gray"), Vector2(500, 460), Vector2(160, 150))
-	text_line("今夜，开张", Vector2(792, 124), Vector2(360, 56), 32)
-	text_line("布置美食阵地，抵御八关鼠潮。\n关间购买食谱，打造你的守卫阵容。", Vector2(792, 196), Vector2(356, 66), 17, GameTheme.MUTED)
+	text_line("今夜，开张", Vector2(792, 124), Vector2(360, 48), 32)
+	text_line("让美食守住粮仓，迎战八关鼠潮。", Vector2(792, 186), Vector2(356, 36), 17, GameTheme.MUTED)
 	var snapshot: Dictionary = saves.load_run(data)
 	var load_error: String = saves.error
-	continue_button = action("继续游戏  ·  第 %d 关" % int(snapshot.get("wave", 1)), Vector2(792, 296), continue_run, true)
+	var has_run: bool = not snapshot.is_empty()
+	continue_button = action("继续游戏  ·  第 %d 关  →" % int(snapshot.get("wave", 1)) if has_run else "暂无可继续的对局", Vector2(792, 246 if has_run else 350), continue_run, has_run)
+	continue_button.name = "ContinueRun"
 	continue_button.disabled = snapshot.is_empty()
-	action("新的一局", Vector2(792, 366), request_new, snapshot.is_empty())
-	action("美食卡册 · 购卡与强化", Vector2(792, 430), func() -> void: show_hub("shop"))
-	action("退出游戏", Vector2(792, 494), quit_game)
-	notice = text_line(load_error if not load_error.is_empty() else ("暂无可继续的守卫，开始新的一局吧。" if snapshot.is_empty() else "准备阶段自动保存。战斗中退出后，\n继续游戏会回到本关开战前。"), Vector2(792, 558), Vector2(356, 66), 15, GameTheme.MUTED)
+	continue_button.tooltip_text = "继续本关开战前的准备进度。" if has_run else "开始一局后，会自动保存关前准备进度。"
+	var new_button := action("新的一局  ·  选择阵容  →", Vector2(792, 350 if has_run else 246), request_new, not has_run)
+	new_button.name = "NewRun"
+	text_line("回到本关开战前，已赚灵感保留。" if has_run else "选 1～5 种美食，搭配你的守卫阵容。", Vector2(796, 307), Vector2(350, 28), 14, GameTheme.MUTED)
+	text_line("结束旧局，重新搭配美食与难度。" if has_run else "关前自动保存，随时回来接着守夜。", Vector2(796, 411), Vector2(350, 28), 14, GameTheme.MUTED)
+	var collection := action("美食卡册  ·  购卡与强化", Vector2(792, 450), func() -> void: show_hub("shop"))
+	collection.name = "OpenCardHub"
+	text_line("用灵感添新菜，让美食永久成长。", Vector2(796, 511), Vector2(350, 26), 14, GameTheme.MUTED)
+	var quit_button := action("打烊离开", Vector2(792, 558), quit_game)
+	quit_button.size.y = 40
+	quit_button.add_theme_font_size_override("font_size", 15)
+	notice = text_line(load_error if not load_error.is_empty() else "鼠群从右侧来袭，守住左侧粮仓。", Vector2(792, 608), Vector2(356, 40), 13, GameTheme.DANGER if not load_error.is_empty() else GameTheme.MUTED)
 	overwrite = ConfirmationDialog.new()
 	overwrite.title = "开始新的一局？"
 	overwrite.dialog_text = "现有守卫进度将结束，阵地和热量将重置。\n已赚灵感与食谱解锁保留，卡店刷新。"
@@ -258,12 +292,19 @@ func show_result() -> void:
 	text_line("今夜，守住了" if won else "明晚，再来", Vector2(80, 166), Vector2(650, 88), 58, GameTheme.GOLD if won else GameTheme.DANGER)
 	text_line("八关告捷，食堂安然无恙。" if won else "第 %d 关粮仓失守。换个阵容，再试一次。" % state.wave, Vector2(88, 280), Vector2(585, 68), 22, GameTheme.MUTED)
 	portrait(art.food_portrait("bun") if won else art.mouse("boss"), Vector2(178, 362), Vector2(380, 264))
-	text_line("今 夜 战 报", Vector2(792, 112), Vector2(360, 44), 28)
-	text_line("通过关卡       %d / 8\n守卫时长       %02d:%02d\n击退鼠群       %d\n粮仓损失       %d\n美食阵亡       %d\n已购食谱       %d\n本夜灵感       +%d" % [state.metrics.passed, int(state.elapsed) / 60, int(state.elapsed) % 60, state.metrics.kills, state.metrics.leaks, state.metrics.deaths, state.recipes.size(), run_inspiration(state)], Vector2(792, 170), Vector2(356, 244), 21)
-	action("再守一夜  →", Vector2(792, 424), func() -> void: leave_result("new"), true)
-	action("返回主菜单", Vector2(792, 488), func() -> void: leave_result("menu"))
-	action("退出游戏", Vector2(792, 552), func() -> void: leave_result("quit"))
-	notice = text_line(game.run.message, Vector2(792, 612), Vector2(356, 44), 13, GameTheme.MUTED)
+	text_line("今夜战报", Vector2(792, 114), Vector2(360, 42), 28)
+	result_stat("通过关卡", "%d / 8" % state.metrics.passed, Vector2(792, 172), GameTheme.GOLD)
+	result_stat("击退鼠群", str(state.metrics.kills), Vector2(976, 172))
+	result_stat("守卫时间", "%02d:%02d" % [int(state.elapsed) / 60, int(state.elapsed) % 60], Vector2(792, 266))
+	result_stat("本夜灵感 · 跨局保留", "+%d" % run_inspiration(state), Vector2(976, 266), GameTheme.ACCENT)
+	text_line("粮仓损失 %d   ·   美食阵亡 %d   ·   食谱 %d" % [state.metrics.leaks, state.metrics.deaths, state.recipes.size()], Vector2(792, 360), Vector2(356, 30), 14, GameTheme.MUTED)
+	divider(Vector2(792, 400), 356)
+	action("再守一夜  ·  调整阵容  →", Vector2(792, 420), func() -> void: leave_result("new"), true).name = "PlayAgain"
+	action("美食卡册  ·  购卡与强化", Vector2(792, 484), func() -> void: leave_result("cards")).name = "ResultCardHub"
+	var back := action("返回主菜单", Vector2(792, 550), func() -> void: leave_result("menu"))
+	back.size.y = 40
+	back.add_theme_font_size_override("font_size", 15)
+	notice = text_line(game.run.message, Vector2(792, 606), Vector2(356, 42), 13, GameTheme.MUTED)
 
 func leave_result(destination: String) -> void:
 	if not is_instance_valid(game) or not showing_result: return
@@ -277,6 +318,7 @@ func leave_result(destination: String) -> void:
 		return
 	show_menu()
 	if destination == "new": prepare_new()
+	elif destination == "cards": show_hub("shop")
 
 func run_inspiration(state: RunState) -> int:
 	var amount: int = state.collected_inspiration()

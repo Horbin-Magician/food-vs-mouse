@@ -48,6 +48,8 @@ var shovel_button: Button
 var panel_open: bool = true
 var layout_phase: String = ""
 var header: Label
+var operation_hint: Label
+var recipe_hint: Label
 var cards: HBoxContainer
 var panel: VBoxContainer
 var sound: SoundService
@@ -111,7 +113,18 @@ func _ready() -> void:
 	inspiration_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	inspiration_label.tooltip_text = "本局已赚灵感，跨局保留，用于局外购卡与刷新。\n点击鼠群掉落的紫色灵感即可收集；过关自动收取余下灵感。"
 	header = label(Vector2(948, 674), 14)
+	header.size = Vector2(306, 25)
+	header.add_theme_font_size_override("font_size", 13)
+	header.mouse_filter = Control.MOUSE_FILTER_STOP
 	header.tooltip_text = "进度表示计划鼠潮的生成比例；全部生成后仍需清除剩余敌人。"
+	operation_hint = label(Vector2(184, 684), 13)
+	operation_hint.size = Vector2(514, 24)
+	operation_hint.add_theme_color_override("font_color", GameTheme.MUTED)
+	operation_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	recipe_hint = label(Vector2(728, 684), 13)
+	recipe_hint.size = Vector2(202, 24)
+	recipe_hint.add_theme_color_override("font_color", GameTheme.GOLD)
+	recipe_hint.mouse_filter = Control.MOUSE_FILTER_STOP
 	speed_button = button("1× 速度", Vector2(34, 47), func() -> void:
 		if run.state.phase == "battle" and not placement_modal_visible(): run.speed = 3.0 - run.speed)
 	speed_button.name = "SpeedButton"
@@ -349,6 +362,13 @@ func rebuild() -> void:
 		cooldown.material = mask_material
 		node.add_child(cooldown)
 		cooldown.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		var cooldown_time := card_label(node, "", Vector2(14, 20), Vector2(44, 28), 20, GameTheme.TEXT)
+		cooldown_time.name = "CooldownTime"
+		cooldown_time.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cooldown_time.add_theme_color_override("font_shadow_color", Color("102023"))
+		cooldown_time.add_theme_constant_override("shadow_offset_x", 1)
+		cooldown_time.add_theme_constant_override("shadow_offset_y", 2)
+		cooldown_time.visible = false
 		var selection := Panel.new()
 		selection.name = "Selection"
 		selection.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -398,49 +418,79 @@ func build_shop() -> void:
 	for child: Node in shop_surface.get_children():
 		shop_surface.remove_child(child)
 		child.queue_free()
-	card_label(shop_surface, "打烊小铺", Vector2(24, 20), Vector2(380, 36), 26, GameTheme.TEXT)
-	card_label(shop_surface, "食谱与布阵共用热量，剩余热量跨关保留", Vector2(24, 61), Vector2(480, 22), 14, GameTheme.MUTED)
-	card_label(shop_surface, "热量  %d" % run.state.heat, Vector2(576, 28), Vector2(216, 28), 20, GameTheme.GOLD)
+	var definition: DifficultyDef = run.data.difficulties[run.state.difficulty]
+	card_label(shop_surface, "第 %02d / 08 关开战前  ·  %s" % [run.state.wave, definition.title], Vector2(24, 18), Vector2(520, 20), 12, GameTheme.GOLD)
+	card_label(shop_surface, "打烊小铺", Vector2(24, 42), Vector2(420, 36), 28, GameTheme.TEXT)
+	card_label(shop_surface, "选购食谱，为现有与后续美食添一道拿手菜。", Vector2(24, 84), Vector2(550, 22), 14, GameTheme.MUTED)
+	var budget := card_label(shop_surface, "%d 热量" % run.state.heat, Vector2(572, 35), Vector2(244, 36), 26, GameTheme.GOLD)
+	budget.name = "Budget"
+	budget.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var budget_note := card_label(shop_surface, "购物 / 布阵共用 · 准备时不恢复", Vector2(566, 79), Vector2(250, 22), 12, GameTheme.MUTED)
+	budget_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	shop_items = HBoxContainer.new()
 	shop_items.position = Vector2(24, 96)
 	shop_items.size = Vector2(792, 222)
 	shop_items.add_theme_constant_override("separation", 12)
 	shop_surface.add_child(shop_items)
 	var focus_buttons: Array[Button] = []
-	card_label(shop_surface, "每张 %d 热量 · 购买后整局生效" % run.data.rules.recipe_price, Vector2(24,  90), Vector2(760, 28), 17, GameTheme.GOLD)
 	if run.state.choices.is_empty():
-		card_label(shop_surface, "暂无可购食谱\n可以刷新，或完成购物直接开战。", Vector2(80, 210), Vector2(680, 100), 24, GameTheme.MUTED)
+		var has_candidates: bool = false
+		for id: String in run.data.recipes:
+			if run.recipes.eligible(id, run.shop.unlocked): has_candidates = true
+		var empty_title := card_label(shop_surface, "本轮食谱已售罄" if has_candidates else "本关暂无可购食谱", Vector2(72, 210), Vector2(696, 40), 24, GameTheme.TEXT)
+		empty_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var empty_text := card_label(shop_surface, "可刷新选购，也可以保留热量直接开战。" if has_candidates else "当前阵容没有已解锁、尚未购买的食谱。\n保留热量，完成购物即可开战。", Vector2(72, 262), Vector2(696, 72), 16, GameTheme.MUTED, true)
+		empty_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	for index: int in range(run.state.choices.size()):
 		var id: String = run.state.choices[index]
-		var item := shop_button("", Vector2(24 + index * 268, 142), Vector2(256, 276), func() -> void: report(run.shop.buy_recipe(id), "purchase"))
+		var item := shop_button("", Vector2(24 + index * 268, 128), Vector2(256, 284), func() -> void: report(run.shop.buy_recipe(id), "purchase"))
 		item.name = "Recipe_" + id
 		item.disabled = run.state.heat < run.data.rules.recipe_price
-		item.tooltip_text = run.data.recipes[id].stats.description
+		var required: String = run.data.recipes[id].stats.requires
+		var target: String = run.data.foods[required].title if run.data.foods.has(required) else ("范围美食" if required == "area" else "全阵容")
+		item.tooltip_text = "%s · %s\n%s\n购买立即生效，持续至本局结束。" % [run.data.recipes[id].title, target, run.data.recipes[id].stats.description]
+		card_label(item, target + " · 本局加成", Vector2(18, 13), Vector2(220, 22), 12, GameTheme.ACCENT)
 		var portrait := TextureRect.new()
 		portrait.texture = art.recipe(id)
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		portrait.position = Vector2(80,16)
-		portrait.size = Vector2(96,96)
+		portrait.position = Vector2(86, 39)
+		portrait.size = Vector2(84, 80)
 		portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		item.add_child(portrait)
-		card_label(item,run.data.recipes[id].title,Vector2(20,126),Vector2(216,30),22,GameTheme.TEXT)
-		card_label(item,run.data.recipes[id].stats.description,Vector2(20,166),Vector2(216,64),16,GameTheme.MUTED,true)
-		card_label(item,"%d 热量 · %s" % [run.data.rules.recipe_price,"热量不足" if item.disabled else "购买食谱"],Vector2(20,234),Vector2(216,28),18,GameTheme.GOLD)
+		card_label(item, run.data.recipes[id].title, Vector2(20, 122), Vector2(216, 30), 22, GameTheme.TEXT)
+		card_label(item, run.data.recipes[id].stats.description, Vector2(20, 160), Vector2(216, 56), 15, GameTheme.MUTED, true)
+		card_label(item, "%d 热量  ·  %s" % [run.data.rules.recipe_price, "热量不足" if item.disabled else "购买"], Vector2(20, 226), Vector2(216, 26), 17, GameTheme.GOLD)
+		var after_purchase: int = floori(run.state.heat) - run.data.rules.recipe_price
+		var purchase_note := card_label(item, "还差 %d 热量" % -after_purchase if item.disabled else "买后余 %d 热量布阵" % after_purchase, Vector2(20, 253), Vector2(216, 22), 13, GameTheme.DANGER if item.disabled else GameTheme.ACCENT)
+		purchase_note.name = "PurchaseNote"
 		focus_buttons.append(item)
-	var definition: DifficultyDef = run.data.difficulties[run.state.difficulty]
-	card_label(shop_surface, "本局难度：%s · 属性/通关收益 ×%s · 整局固定" % [definition.title, str(definition.hp_multiplier)], Vector2(24, 430), Vector2(792, 28), 16, GameTheme.MUTED)
-	var feedback := card_label(shop_surface, run.message, Vector2(24, 465), Vector2(792, 22), 13, GameTheme.ACCENT)
+	var start_budget := card_label(shop_surface, "开战可用 %d 热量  ·  余额跨关保留" % run.state.heat, Vector2(24, 429), Vector2(480, 26), 16, GameTheme.TEXT)
+	start_budget.name = "StartBudget"
+	start_budget.tooltip_text = "食谱购买、刷新和美食布阵使用同一份热量。难度 %s 在整局固定。" % definition.title
+	start_budget.mouse_filter = Control.MOUSE_FILTER_STOP
+	var owned := card_label(shop_surface, "已购食谱 %02d  ·  悬停查看" % run.state.recipes.size(), Vector2(562, 431), Vector2(254, 24), 13, GameTheme.GOLD)
+	owned.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	owned.mouse_filter = Control.MOUSE_FILTER_STOP
+	owned.tooltip_text = owned_recipe_tooltip()
+	var shop_message: String = run.message
+	if run.state.heat < run.data.rules.recipe_price and run.message == "购买食谱，购物完成后立即开战。":
+		shop_message = "先开战积攒热量；食谱可留到后续关卡选购。"
+	var feedback := card_label(shop_surface, shop_message, Vector2(24, 465), Vector2(792, 22), 13, GameTheme.ACCENT)
 	feedback.clip_text = true
-	feedback.tooltip_text = run.message
-	shop_refresh = shop_button("刷新 · %d 热量    %d/%d" % [run.data.rules.refresh_cost, run.state.refreshes, run.data.rules.refresh_limit], Vector2(24, 500), Vector2(240, 36), func() -> void: report(run.shop.refresh(), "refresh"))
+	feedback.tooltip_text = shop_message
+	feedback.mouse_filter = Control.MOUSE_FILTER_STOP
+	var refresh_left: int = maxi(0, run.data.rules.refresh_limit - run.state.refreshes)
+	var refresh_text: String = "换一批 · %d 热量  /  余 %d 次" % [run.data.rules.refresh_cost, refresh_left]
+	if refresh_left == 0: refresh_text = "本关刷新已用完"
+	elif run.state.heat < run.data.rules.refresh_cost: refresh_text = "刷新还差 %d 热量 · 余 %d 次" % [ceili(run.data.rules.refresh_cost - run.state.heat), refresh_left]
+	shop_refresh = shop_button(refresh_text, Vector2(24, 500), Vector2(280, 36), func() -> void: report(run.shop.refresh(), "refresh"))
+	shop_refresh.add_theme_font_size_override("font_size", 14)
 	shop_refresh.disabled = run.state.refreshes >= run.data.rules.refresh_limit or run.state.heat < run.data.rules.refresh_cost
 	shop_refresh.tooltip_text = "刷新次数已用完" if run.state.refreshes >= run.data.rules.refresh_limit else ("热量不足" if shop_refresh.disabled else "更换食谱商品，消耗 %d 热量" % run.data.rules.refresh_cost)
-	var owned := card_label(shop_surface, "已购食谱 %02d · 悬停查看" % run.state.recipes.size(), Vector2(288, 507), Vector2(280, 24), 13, GameTheme.MUTED)
-	owned.mouse_filter = Control.MOUSE_FILTER_STOP
-	owned.tooltip_text = "尚未购买食谱；在小铺用热量购买。" if run.state.recipes.is_empty() else "本局食谱\n"
-	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
-	var done := shop_button("购物完成  →", Vector2(620, 500), Vector2(196, 36), finish_shopping)
+	card_label(shop_surface, "食谱整局生效", Vector2(332, 507), Vector2(238, 24), 13, GameTheme.MUTED)
+	var done := shop_button("购物完成 · 开战  →", Vector2(620, 500), Vector2(196, 36), finish_shopping)
+	done.add_theme_font_size_override("font_size", 15)
 	done.name = "Done"
 	done.tooltip_text = "完成购物并立即开始本关；准备状态自动保存。"
 	GameTheme.primary(done)
@@ -515,9 +565,11 @@ func _process(delta: float) -> void:
 	inspiration_label.text = "%02d" % earned_inspiration()
 	inspiration_pickup_view.queue_redraw()
 	header.text = wave_status()
-	header.tooltip_text = "战斗中退出会回到本关开战前。已购食谱："
-	for id: String in run.state.recipes:
-		header.tooltip_text += "\n" + run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description
+	header.tooltip_text = "进度表示计划鼠潮的生成比例；满条后仍需清除全部余鼠。\n战斗中退出会回到本关开战前。\n" + owned_recipe_tooltip()
+	operation_hint.text = operation_status()
+	operation_hint.add_theme_color_override("font_color", GameTheme.GOLD if shovel or not selected.is_empty() else GameTheme.MUTED)
+	recipe_hint.text = "食谱 %02d · 悬停查看" % run.state.recipes.size()
+	recipe_hint.tooltip_text = owned_recipe_tooltip()
 	update_controls()
 	feedback_remaining = maxf(0.0, feedback_remaining - delta)
 	update_inspector()
@@ -530,6 +582,22 @@ func earned_inspiration() -> int:
 			amount += run.state.inspiration_for_wave(index, run.data)
 	return amount
 
+func owned_recipe_tooltip() -> String:
+	if run.state.recipes.is_empty(): return "尚未购买食谱。关前小铺用热量购买，持续至本局结束。"
+	var text: String = "本局已购食谱 · 对现有与后续美食生效"
+	for id: String in run.state.recipes:
+		text += "\n%s · %s" % [run.data.recipes[id].title, run.data.recipes[id].stats.description]
+	return text
+
+func operation_status() -> String:
+	if run.state.phase == "prepare": return "开战前 · 选购食谱，留足布阵热量"
+	if run.state.phase != "battle": return "今夜收摊 · 灵感跨局保留"
+	if run.paused: return "已暂停 · 从设置继续游戏"
+	if shovel: return "锅铲已拿起 · 点击立即铲除，无返还 · 右键放回"
+	if not selected.is_empty():
+		return "%s · %d 热量 · %s" % [run.data.foods[selected].title, run.data.foods[selected].stats.cost, card_status(selected)]
+	return "选美食，守住粮仓  ·  点击火苗与灵感收取"
+
 func wave_progress() -> float:
 	if run.state.phase == "prepare": return 0.0
 	if run.state.phase == "won": return 1.0
@@ -540,7 +608,7 @@ func wave_status() -> String:
 	if run.state.phase == "battle":
 		status = "清理余鼠 %d" % run.combat.enemies.size() if wave_progress() >= 1.0 else "鼠潮 %d%% · 余鼠 %d" % [roundi(wave_progress() * 100), run.combat.enemies.size()]
 		if run.paused: status = "暂停 · " + status
-	return "第 %02d / 08 关 · %s · %s" % [run.state.wave, run.data.difficulties[run.state.difficulty].title, status]
+	return "%02d/08 关 · %s · %s" % [run.state.wave, run.data.difficulties[run.state.difficulty].title, status]
 
 func draw_wave_progress() -> void:
 	var bar := Rect2(948, 705, 300, 5)
@@ -577,6 +645,9 @@ func update_controls() -> void:
 		cooldown.visible = phase == "battle" and ratio > 0
 		cooldown.material.set_shader_parameter("remaining_ratio", ratio)
 		cooldown.material.set_shader_parameter("card_size", card.size)
+		var cooldown_time: Label = card.get_node("CooldownTime")
+		cooldown_time.visible = cooldown.visible
+		cooldown_time.text = "%d" % ceili(remaining)
 
 func update_shovel_cursor() -> void:
 	if shop_overlay == null or run.state == null: return

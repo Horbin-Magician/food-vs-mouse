@@ -29,6 +29,10 @@
 
 | [art/battle_environment.md](art/battle_environment.md) | 深夜厨房背景、瓷砖与战斗 HUD 视觉及生成提示词 | 已接入，原生鼠标复验待完成 |
 | [testing/battle_environment.md](testing/battle_environment.md) | 战斗美术的导入、回归与双尺寸渲染验证 | 已完成，窗口工具限制见正文 |
+| [art/ui_refresh.md](art/ui_refresh.md) | 全操作界面的主题、菜单／战报层级与设置速记 | 已实现，验收与限制见专项 |
+| [art/ui_card_hub.md](art/ui_card_hub.md) | 卡店用途、强化预览、五槽阵容与难度信息 | 已实现 |
+| [art/ui_battle_refresh.md](art/ui_battle_refresh.md) | 战斗 HUD 去重、冷却秒数及小铺预算 | 已实现 |
+| [testing/ui_refresh.md](testing/ui_refresh.md) | 本轮全界面自动、双尺寸渲染及原生鼠标验收 | 36 项回归、38 张原生画面与关键鼠标链路通过，八关试玩待验 |
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 锅铲光标回归、两尺寸渲染及 macOS 编辑器旧光标缓存重载复验通过 |
 | [art/damage_feedback.md](art/damage_feedback.md) | 双方伤害数字、shader、事件及生命周期 | 已实现，原生画面通过 |

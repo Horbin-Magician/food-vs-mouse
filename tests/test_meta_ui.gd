@@ -29,15 +29,28 @@ func check() -> void:
 	assert(hub.model.profile.meta.inspiration == 36)
 	var buy_other: Button = hub.find_child("Buy_1",true,false)
 	buy_other.pressed.emit()
+	# A high-level guaranteed attempt must not present an impossible downgrade.
+	p = front.saves.load_profile(front.data)
+	for uid: String in ["card_1","card_4","card_5"]:
+		MetaProgression.card(p.meta,uid).level = 6
+	assert(front.saves.commit_profile(p,int(p.revision)))
+	hub.model.reload()
 	hub.tab = "enhance"
 	hub.main_uid = "card_1"
+	hub.materials = ["card_4"]
+	hub.rebuild()
+	var outcome: Label = hub.find_child("EnhanceOutcome",true,false)
+	assert(outcome.text == "失败退到 +5" and outcome.get_theme_color("font_color") == GameTheme.DANGER)
 	hub.materials = ["card_4","card_5"]
 	hub.rebuild()
 	await process_frame
+	outcome = hub.find_child("EnhanceOutcome",true,false)
+	assert(hub.model.preview(hub.main_uid,hub.materials).chance == 1.0)
+	assert(outcome.text == "本次必定成功" and outcome.get_theme_color("font_color") == GameTheme.ACCENT)
 	var enhance: Button = hub.find_child("Enhance",true,false)
 	assert(not enhance.disabled)
 	enhance.pressed.emit()
-	assert(MetaProgression.card(hub.model.profile.meta,"card_1").level == 1)
+	assert(MetaProgression.card(hub.model.profile.meta,"card_1").level == 7)
 	assert(hub.materials.is_empty() and hub.model.profile.meta.cards.size() == 3)
 	assert("强化成功" in hub.feedback)
 	hub.tab = "loadout"
@@ -49,7 +62,7 @@ func check() -> void:
 	assert(not launch.disabled)
 	launch.pressed.emit()
 	assert(front.game != null and front.game.run.state.cards.size() == 2)
-	assert(front.game.run.state.level("bun") == 1 and front.game.shop_overlay.visible)
+	assert(front.game.run.state.level("bun") == 7 and front.game.shop_overlay.visible)
 	front.game.finish_shopping()
 	assert(front.game.run.state.phase == "battle")
 	front.game.run.finish_wave()

@@ -57,7 +57,10 @@ func check() -> void:
 	screen.game.run.finish_wave()
 	screen._process(0)
 	assert(screen.showing_result and screen.game.run.state.metrics.passed == 8)
-	screen.leave_result("menu")
+	screen.leave_result("cards")
+	assert(screen.game == null and screen.hub.tab == "shop")
+	assert(screen.hub.model.editable(), "result card-hub action must settle before allowing purchases")
+	screen.show_menu()
 	assert(screen.game == null and screen.continue_button.disabled)
 	var damaged: Dictionary = screen.saves.load_profile(screen.data)
 	damaged.run = {"broken":true}

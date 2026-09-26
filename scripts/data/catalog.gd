@@ -1,6 +1,8 @@
 class_name Catalog
 extends RefCounted
 
+var progression: ProgressionDef = preload("res://resources/progression.tres")
+var difficulties: Dictionary = {}
 var foods: Dictionary = {}
 var enemies: Dictionary = {}
 var recipes: Dictionary = {}
@@ -8,6 +10,10 @@ var waves: Array[Resource] = []
 var rules: Dictionary = preload("res://resources/rules.tres").stats
 
 func _init() -> void:
+	for id: String in ["easy", "normal", "hard"]:
+		var definition: DifficultyDef = load("res://resources/difficulties/" + id + ".tres")
+		assert(definition.id == id)
+		difficulties[id] = definition
 	for folder: String in ["foods", "enemies", "recipes", "waves"]:
 		var files: PackedStringArray = ResourceLoader.list_directory("res://resources/" + folder)
 		files.sort()
@@ -32,10 +38,20 @@ func _init() -> void:
 
 func validate() -> PackedStringArray:
 	var errors: PackedStringArray = []
+	for id: String in difficulties:
+		var difficulty: DifficultyDef = difficulties[id]
+		for multiplier: float in [difficulty.hp_multiplier, difficulty.damage_multiplier, difficulty.reward_multiplier]:
+			if not is_finite(multiplier) or multiplier <= 0: errors.append(id + ": invalid difficulty multiplier")
 	var summon_interval: float = rules.get("boss_summon_interval", 0.0)
 	var rage_interval: float = rules.get("boss_rage_summon_interval", 0.0)
 	if not is_finite(summon_interval) or not is_finite(rage_interval) or summon_interval <= 0 or rage_interval <= 0 or rage_interval > summon_interval:
 		errors.append("invalid boss summon intervals")
+	if progression.loadout_limit < 1 or progression.loadout_limit > 8 or progression.max_level < 7: errors.append("invalid progression limits")
+	if progression.card_price <= 0 or progression.refresh_base <= 0 or progression.refresh_limit > 30: errors.append("invalid progression prices")
+	if progression.inspiration_rewards.size() != 8: errors.append("eight inspiration rewards required")
+	for reward: int in progression.inspiration_rewards:
+		if reward < 0: errors.append("negative inspiration reward")
+	if progression.material_base <= 0 or progression.material_base > 1 or progression.material_decay <= 0 or progression.material_decay > 1: errors.append("invalid enhancement probability")
 	for id: String in foods:
 		var stats: Dictionary = foods[id].stats
 		for key: String in ["cost","cooldown","hp","damage","interval","reach","price"]:

@@ -6,7 +6,7 @@ func _init() -> void:
 func check() -> void:
 	var screen = load("res://scenes/front_end.tscn").instantiate()
 	root.add_child(screen)
-	screen.saves.folder = "user://qa_screens/"
+	screen.saves.folder = "user://qa_screens_%d/" % Time.get_ticks_usec()
 	DirAccess.make_dir_recursive_absolute(screen.saves.folder)
 	screen.saves.delete_run()
 	screen.show_menu()
@@ -48,6 +48,8 @@ func check() -> void:
 	assert(screen.showing_result and not screen.notice.text.is_empty())
 	screen.saves.folder = good_folder
 	screen.leave_result("new")
+	assert(screen.hub != null and screen.game == null)
+	screen.start_new()
 	assert(not screen.showing_result and screen.game.run.state.run_id != id)
 	assert(not screen.game.run.paused and screen.game.run.speed == 1.0)
 	screen.game.run.state.wave = 8
@@ -57,7 +59,9 @@ func check() -> void:
 	assert(screen.showing_result and screen.game.run.state.metrics.passed == 8)
 	screen.leave_result("menu")
 	assert(screen.game == null and screen.continue_button.disabled)
-	assert(screen.saves.write_json("run.json", {"broken":true}))
+	var damaged: Dictionary = screen.saves.load_profile(screen.data)
+	damaged.run = {"broken":true}
+	assert(screen.saves.commit_profile(damaged,int(damaged.revision)))
 	screen.show_menu()
 	assert(screen.continue_button.disabled and "不合法" in screen.notice.text)
 	screen.start_new()

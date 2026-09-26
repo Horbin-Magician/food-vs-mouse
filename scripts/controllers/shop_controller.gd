@@ -23,30 +23,10 @@ func open() -> void:
 
 func generate() -> void:
 	state.offers.clear()
-	var pool: Array = []
-	for id: String in data.foods:
-		if state.cards.get(id,0) < 6: pool.append(id)
-	for i: int in range(3):
-		state.offers.append({"id": pool[rng.randi_range(0,pool.size()-1)] if not pool.is_empty() else "", "bought": false})
 	recipes.offer(rng, unlocked)
 
-func buy(index: int) -> String:
-	if state.phase != "prepare": return "仅准备阶段可购买"
-	if index < 0 or index >= state.offers.size(): return "商品不存在"
-	var offer: Dictionary = state.offers[index]
-	if offer.bought or offer.id.is_empty() or state.cards.get(offer.id,0) >= 6: return "商品已售罄"
-	var price: int = data.foods[offer.id].stats.price
-	if state.coins < price: return "金币不足"
-	var previous_hp: float = board.max_hp(offer.id)
-	var previous_star: int = state.star(offer.id)
-	state.coins -= price
-	offer.bought = true
-	state.cards[offer.id] = state.cards.get(offer.id,0) + 1
-	if state.star(offer.id) != previous_star:
-		for unit: Dictionary in state.units:
-			if unit.id == offer.id: unit.hp += board.max_hp(offer.id) - previous_hp
-		card_upgraded.emit(offer.id,state.star(offer.id))
-	return ""
+func buy(_index: int) -> String:
+	return "卡片请在局外卡店购买；本局只出售食谱"
 
 func refresh() -> String:
 	if state.phase != "prepare": return "仅准备阶段可刷新"

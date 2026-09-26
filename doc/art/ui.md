@@ -127,3 +127,13 @@ Godot 4.6.3 的 `platform/macos/display_server_macos.mm:3052` 位于 `cursor_set
 Godot 4.6.3 的 macOS 嵌入调试接收端在收到清除自定义光标的空字节数组时，仍实例化 `Image`；`LayerHost::cursor_set_custom_image` 无条件将其写入 `custom_cursors`。鼠标进入区域时重放该缓存，空尺寸 Image 被传给原生位图创建函数；`EmbeddedProcessMacOS::reset` 仅清除系统光标，没有清空 LayerHost 的缓存。因此旧游戏注册／清除过的箭头与手形可能在后续运行中继续报两条错误，即使当前游戏代码已不再注册原生光标。
 
 依据：[嵌入消息接收](https://github.com/godotengine/godot/blob/4.6.3-stable/platform/macos/editor/embedded_game_view_plugin.mm#L56-L71)、[缓存、鼠标进入重放和 reset](https://github.com/godotengine/godot/blob/4.6.3-stable/platform/macos/editor/embedded_process_macos.mm)。处理方式遵循上文：保留游戏内光标，重新加载编辑器项目清空旧缓存，无须升级引擎、删除 `.godot`、修改存档或关闭嵌入功能。验收见 [UI 记录](../testing/ui.md#编辑器旧光标缓存复验2026-09-25)。
+
+## 战斗环境与 HUD 精修（2026-09-25）
+
+当前战斗背景、瓷砖、资源区及边框的权威规范见 [战斗环境](battle_environment.md)。顶部卡牌保持 72×76 与间隔 8，改为在 x=190–822 区域居中，右侧留给粮仓和金币仪表；此项替代早期顶栏资源全部集中左侧的外观。冷却、灰显、等级与输入规则不变。
+
+## 卡片成长界面（2026-09-25）
+
+状态：已接入，实际验证见 [成长验收](../testing/meta_progression.md)。菜单新增卡册入口，卡册使用同一深绿／奶油／薄荷主题和已有角色图像，分为四槽灵感卡店、滚动库存＋右侧强化台、滚动库存＋出战列表三页。主卡金边、材料薄荷边，并配文字勾选；成功率、材料数量与失败后等级在提交按钮前展示，不能仅用颜色提示降级。基础保护卡不可作为材料，可升级。
+
+新局顶部沿用现有卡框和冷却遮罩，右上显示永久 `+N`，旧星级仅用于旧快照兼容模式。局内小铺改为三张大食谱卡横排，展示图标、名称、效果和金币价，无局内卡片商品。战报增加灵感统计，再战先返回出战选择。新布局的渲染与交互限制见专项验收，不追溯修改上文历史样式记录。

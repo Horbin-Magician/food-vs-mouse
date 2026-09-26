@@ -8,16 +8,22 @@
 |---|---|---|
 | [TODO.md](TODO.md) | 首版玩法、内容数值、实现方案、里程碑及验收基线 | 首版代码已接入，真人与平衡验收待完成 |
 | [engineering.md](engineering.md) | 工程基线、模块约束、代码与资源规范、验证和交付流程 | 工程约定；现状差异见正文 |
+| [design/meta_progression.md](design/meta_progression.md) | 灵感购卡、有限携卡、翻倍刷新与耗材概率强化 | 已接入，初始参数与验收边界见专项记录 |
+| [technical/card_progression.md](technical/card_progression.md) | 卡片参数、概率、经济、模块和 v2 迁移规格 | 已接入，数值待真人平衡 |
+| [decisions/ADR-001-profile-transactions.md](decisions/ADR-001-profile-transactions.md) | 卡片资产与对局单文件原子事务的取舍 | 已采用 |
+| [testing/meta_progression.md](testing/meta_progression.md) | 成长体系逻辑、存档、界面与经济试算验收 | 见实际检查与限制 |
 
 | [technical/runtime.md](technical/runtime.md) | 模块、时间、随机、阶段与存档设计 | 已确定，逐步实现 |
 | [design/screens.md](design/screens.md) | 主菜单、继续／新局与全屏胜败战报 | 已实现，窗口鼠标验收待完成 |
 | [testing/screens.md](testing/screens.md) | 菜单与战报流程、存档及渲染验证 | 导入、16 组回归与原生渲染通过 |
-| [design/shop.md](design/shop.md) | 食谱与灵感统一商店购买、价格与存档兼容规则 | 已实现，经济平衡待验证 |
+| [design/shop.md](design/shop.md) | 局内商店实现记录与新版只售食谱的变更入口 | 新版仅食谱已接入，历史记录保留 |
 | [testing/shop.md](testing/shop.md) | 统一商店的交易、购物完成开战、存档与窗口验收 | 最新流程自动／渲染通过，鼠标复验待完成 |
 | [design/heat.md](design/heat.md) | 热量自然恢复、生产火苗与点击飞行收取 | 已实现，验证边界见专页 |
 | [testing/heat.md](testing/heat.md) | 热量拾取的逻辑、输入与窗口验证 | 拾取回归及上限调整验证通过，范围与限制见正文 |
 | [testing/implementation.md](testing/implementation.md) | 分步实现与实际验证记录 | 持续更新 |
 
+| [art/battle_environment.md](art/battle_environment.md) | 深夜厨房背景、瓷砖与战斗 HUD 视觉及生成提示词 | 已接入，原生鼠标复验待完成 |
+| [testing/battle_environment.md](testing/battle_environment.md) | 战斗美术的导入、回归与双尺寸渲染验证 | 已完成，窗口工具限制见正文 |
 | [art/ui.md](art/ui.md) | 全局 UI 主题、图上费下与星内等级卡牌、拖放与冷却、小铺弹窗规范 | 已接入，验证见专页 |
 | [testing/ui.md](testing/ui.md) | 全界面优化的自动、渲染与鼠标验收 | 锅铲光标回归、两尺寸渲染及 macOS 编辑器旧光标缓存重载复验通过 |
 | [art/damage_feedback.md](art/damage_feedback.md) | 双方伤害数字、shader、事件及生命周期 | 已实现，原生画面通过 |
@@ -40,6 +46,8 @@
 | [testing/layout.md](testing/layout.md) | 正交棋盘与顶部 UI 验证 | 自动及渲染检查通过，鼠标复验待完成 |
 | [releases/0.1.0.md](releases/0.1.0.md) | macOS 导出与启动、存档兼容性 | 本机导出启动通过 |
 
+| [design/difficulty.md](design/difficulty.md) | 每关三级难度、倍率与兼容规则 | 已实现，整局平衡待试玩 |
+| [testing/difficulty.md](testing/difficulty.md) | 难度及收益、存档及界面验证 | 收益补充 27 组回归与双尺寸渲染通过；鼠标验证范围见正文 |
 | [design/waves.md](design/waves.md) | 组合波次、重点路线、后期生命及首领召唤调整 | 已实现，真人平衡待验 |
 | [testing/balance.md](testing/balance.md) | 压力测试、组合鼠潮回归和真人验收缺口 | 新波次回归及渲染通过，真人待验收 |
 

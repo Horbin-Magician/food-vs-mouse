@@ -1,5 +1,7 @@
 # 运行模型与首版实现约定
 
+卡片体系更新（2026-09-25）：已接入有限携卡和永久强化快照；ShopController 仅负责食谱，MetaProgression 负责局外卡片，SaveService 使用 v2 单文件事务。详见 [实施规格](card_progression.md)。下文旧星级、v1 分文件结算与卡片商品部分保留为历史记录，冲突处以新版规格为准。
+
 状态：设计已确定，按提交逐步实现；验收状态见 [验证记录](../testing/implementation.md)。上游：[玩法基线](../TODO.md)。
 
 ## 模块与时间
@@ -56,3 +58,7 @@ CombatController 在统一扣血入口新增 `damage_resolved(unit, actual, is_f
 ## 铲除表现接口（2026-09-25）
 
 BoardController.remove(row, col, paused) 移除旧 confirmed 参数；成功移除发送 removed(unit)，空格不发送。ShovelFeedback 订阅当前 board 并复制绘图所需的纹理与位置，不保留可变单位引用；绑定新局时断开旧信号并清空快照。主场景用统一 visual_delta 推进，在棋盘角色后、界面前绘制。规则及验收依据 [UI 规范](../art/ui.md#直接铲除与动画2026-09-25)。
+
+## 关前难度（2026-09-26）
+
+DifficultyDef 与 RunState.difficulty、RunController.select_difficulty、生成倍率和旧档默认值见 [难度设计](../design/difficulty.md)。准备阶段持久化选择，战斗拒绝修改；不改变随机源调用。

@@ -19,7 +19,7 @@ func at(row: int, col: int) -> Dictionary:
 	return {}
 
 func max_hp(id: String) -> float:
-	return data.foods[id].stats.hp * data.rules.star_hp[state.star(id) - 1]
+	return data.foods[id].stats.hp * state.stat_multiplier(id, data)
 
 func placement_error(id: String, row: int, col: int, paused: bool) -> String:
 	if state.phase != "battle" or paused: return "仅可在未暂停的战斗中放置"

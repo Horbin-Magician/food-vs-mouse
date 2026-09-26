@@ -43,7 +43,7 @@ func interval(unit: Dictionary) -> float:
 	return maxf(data.rules.min_interval,stats.interval / (1.0 + bonus))
 
 func damage(unit: Dictionary) -> float:
-	var result: float = data.foods[unit.id].stats.damage * data.rules.star_hp[state.star(unit.id)-1]
+	var result: float = data.foods[unit.id].stats.damage * state.stat_multiplier(unit.id, data)
 	if has("breakfast") and adjacent(unit,"pudding"): result *= value("breakfast","multiplier")
 	return result
 

@@ -19,7 +19,7 @@ func _init() -> void:
 	assert(run.combat.heat_pickups.size() == 1)
 	var first: Dictionary = run.combat.heat_pickups[0]
 	assert(first.amount == 15 and first.flight == -1)
-	run.state.cards.pudding = 3
+	run.state.levels.pudding = 10
 	run.state.recipes = ["caramel"]
 	tick(run, 600)
 	assert(run.combat.heat_pickups.size() == 1 and first.amount == 38, "merge snapshots 15 + 18 + 5")
@@ -59,7 +59,7 @@ func _init() -> void:
 	tick(run, 1)
 	assert(run.combat.heat_pickups.is_empty() and run.state.heat == run.data.rules.heat_cap)
 	assert(absf(run.state.metrics.overflow - overflow - (23 + 28.0 / 60.0 * 2.0 - 10)) < 0.001)
-	# Full heat does not prevent production; stars and recipes stay immutable.
+	# Full heat does not prevent production; permanent levels and recipes stay immutable.
 	run.state.cooldowns.clear()
 	assert(run.board.place("pudding", 1, 0, false).is_empty())
 	run.state.heat = run.data.rules.heat_cap

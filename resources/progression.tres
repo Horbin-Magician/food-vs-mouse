@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ProgressionDef" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/data/progression_def.gd" id="1"]
+[resource]
+script = ExtResource("1")
+loadout_limit = 5
+max_level = 10
+shop_slots = 4
+card_price = 4
+refresh_base = 2
+refresh_limit = 30
+inspiration_rewards = Array[int]([4, 5, 6, 8, 8, 10, 12, 16])
+stat_per_level = 0.05
+production_per_level = 0.02
+material_base = 0.6
+material_decay = 0.9
+protected_target = 6

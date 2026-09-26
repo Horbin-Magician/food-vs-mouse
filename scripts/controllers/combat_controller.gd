@@ -44,6 +44,9 @@ func spawn(id: String, row: int, wave: Resource) -> void:
 	var stats: Dictionary = data.enemies[id].stats
 	var hp_scale: float = 1.0 if id == "boss" else wave.stats.hp_scale
 	var damage_scale: float = 1.0 if id == "boss" else wave.stats.damage_scale
+	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
+	hp_scale *= difficulty.hp_multiplier
+	damage_scale *= difficulty.damage_multiplier
 	enemies.append({"uid": state.uid(), "id": id, "row": row, "x": float(RunState.BOARD_WIDTH + 52), "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0})
 
 	spawned.emit(enemies[-1])
@@ -53,7 +56,7 @@ func add_heat(amount: float) -> void:
 	state.heat = minf(data.rules.heat_cap, state.heat + amount)
 
 func produce_heat(unit: Dictionary) -> void:
-	var amount: float = data.rules.production * data.rules.star_production[state.star(unit.id) - 1] + recipes.value("caramel", "heat")
+	var amount: float = data.rules.production * state.production_multiplier(unit.id, data) + recipes.value("caramel", "heat")
 	for pickup: Dictionary in heat_pickups:
 		if pickup.source_uid == unit.uid and pickup.flight < 0.0:
 			pickup.amount += amount

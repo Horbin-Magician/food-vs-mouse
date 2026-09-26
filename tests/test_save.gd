@@ -3,7 +3,7 @@ extends SceneTree
 func _init() -> void:
 	var run: RunController = RunController.new()
 	run.new_run(987654)
-	var path: String = "user://qa_save/"
+	var path: String = "user://qa_save_%d/" % Time.get_ticks_usec()
 	DirAccess.make_dir_recursive_absolute(path)
 	run.saves.folder = path
 	run.state.run_id = "qa_roundtrip"
@@ -62,11 +62,10 @@ func _init() -> void:
 	assert(meta.kills == 100 and meta.unlocked.size() == 3)
 	assert(run.saves.settle(run.state,run.data))
 	assert(run.saves.load_meta(run.data).kills == 100)
-	var file: FileAccess = FileAccess.open(path.path_join("run.json"),FileAccess.WRITE)
-	file.store_string('{"version":999,"payload":{}}')
-	file.close()
+	var damaged: Dictionary = run.saves.load_profile(run.data)
+	damaged.run = {"invalid":true}
+	assert(run.saves.commit_profile(damaged,int(damaged.revision)))
 	assert(run.saves.load_run(run.data).is_empty() and run.saves.error != "")
 	assert(run.saves.load_meta(run.data).unlocked.size() == 3)
-	for name: String in ["run.json","meta.json","runs/" + run.state.run_id.sha256_text() + ".json"]: DirAccess.remove_absolute(path.path_join(name))
 	print("PASS save: roundtrip, rng, reward phase, validation, independent meta, idempotent unlocks")
 	quit()

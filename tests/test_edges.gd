@@ -31,7 +31,7 @@ func _init() -> void:
 	assert(run.board.at(1,1).uid == first.uid and run.board.at(1,1).hp == 31.0)
 	assert(run.board.at(0,0).uid == second.uid and run.board.at(0,0).hp == 80.0)
 	assert(run.state.units.size() == 63)
-	run.saves.folder = "user://qa_grid/"
+	run.saves.folder = "user://qa_grid_%d/" % Time.get_ticks_usec()
 	DirAccess.make_dir_recursive_absolute(run.saves.folder)
 	assert(run.saves.save_run(run.state,run.rng))
 	var loaded: Dictionary = run.saves.load_run(run.data)

@@ -73,11 +73,11 @@ func run_test() -> void:
 	await process_frame
 	assert(scene.cards.get_child_count() == 8)
 	for count: int in [1, 3, 6]:
-		scene.run.state.cards["bun"] = count
+		scene.run.state.levels["bun"] = count
 		scene.rebuild()
 		await process_frame
 		var card: Button = scene.cards.get_child(0)
-		assert(card.get_node("UpgradeStar/Level").text == str(scene.run.state.star("bun")))
+		assert(card.get_node("UpgradeStar/Level").text == "+%d" % scene.run.state.level("bun"))
 		assert(card.get_node("Cost").text == "100")
 		assert(card.get_node("Portrait").get_rect().end.y <= card.get_node("Cost").position.y)
 		assert(card.get_node("UpgradeStar").mouse_filter == Control.MOUSE_FILTER_IGNORE)
@@ -209,14 +209,12 @@ func run_test() -> void:
 	await process_frame
 	await process_frame
 	assert(scene.shop_overlay.visible and not scene.panel.visible)
-	assert(scene.shop_items.get_child_count() == 3)
-	var last_right: float = 0.0
-	for item: Button in scene.shop_items.get_children():
-		assert(item.position.x >= last_right and item.position.y == 0)
+	assert(scene.shop_items.get_child_count() == 0 and scene.run.state.offers.is_empty())
+	for id: String in scene.run.state.choices:
+		var item: Button = scene.shop_surface.get_node("Recipe_" + id)
 		assert(scene.SHOP_RECT.encloses(item.get_global_rect()))
-		last_right = item.position.x + item.size.x
 		for content: Control in item.get_children():
-			assert(Rect2(Vector2.ZERO, item.size).encloses(content.get_rect()))
+			assert(Rect2(Vector2.ZERO,item.size).encloses(content.get_rect()))
 	event.position = scene.projection.project(Vector2(48, 48))
 	scene._unhandled_input(event)
 	assert(scene.move_from == Vector2i(-1, -1))
@@ -225,16 +223,8 @@ func run_test() -> void:
 	scene._input(cancel)
 	assert(scene.shop_overlay.visible and scene.run.state.phase == "prepare")
 	assert(scene.run.state.offers == offers and scene.run.rng.state == rng_state)
-	var offer_id: String = offers[0].id
 	var coins_before: int = scene.run.state.coins
-	var count_before: int = scene.run.state.cards.get(offer_id, 0)
-	scene.shop_items.get_child(0).pressed.emit()
-	assert(scene.shop_overlay.visible and scene.shop_items.get_child(0).disabled)
-	assert(scene.run.state.coins == coins_before - scene.run.data.foods[offer_id].stats.price)
-	assert(scene.run.state.cards[offer_id] == count_before + 1)
-	scene.shop_items.get_child(0).pressed.emit()
-	assert(scene.run.state.cards[offer_id] == count_before + 1)
-	assert(scene.run.state.coins == coins_before - scene.run.data.foods[offer_id].stats.price)
+	assert(not scene.run.shop.buy(0).is_empty() and scene.run.state.coins == coins_before)
 	scene.run.state.coins = 20
 	scene.rebuild()
 	var recipe_id: String = scene.run.state.choices[0]
@@ -252,7 +242,7 @@ func run_test() -> void:
 	scene.run.state.coins = 0
 	scene.rebuild()
 	for item: Button in scene.shop_items.get_children(): assert(item.disabled)
-	for id: String in ArtCatalog.FOOD_IDS: scene.run.state.cards[id] = 6
+	for id: String in ArtCatalog.FOOD_IDS: scene.run.state.cards[id] = 1
 	scene.run.shop.generate()
 	scene.rebuild()
 	for item: Button in scene.shop_items.get_children():

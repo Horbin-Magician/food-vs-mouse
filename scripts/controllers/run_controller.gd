@@ -18,16 +18,35 @@ var speed: float = 1.0
 var accumulator: float = 0.0
 var message: String = "购物完成后自动开战，再选卡放置。"
 
-func new_run(seed_value: int = 1) -> void:
-	if persistence and state != null and state.phase not in ["won","lost"]:
+func new_run(seed_value: int = 1, selected: Array = []) -> void:
+	if persistence and state != null:
 		if not saves.settle(state,data):
 			message = saves.error
 			return
+	var meta: Dictionary = MetaProgression.initial(data)
+	if persistence:
+		var profile: Dictionary = saves.load_profile(data)
+		if profile.is_empty() or not saves.error.is_empty():
+			message = saves.error
+			return
+		meta = profile.meta
+	var chosen: Array = selected if not selected.is_empty() else meta.loadout
+	if chosen.is_empty(): chosen = ["card_1","card_2","card_3"]
+	var selection_error: String = MetaProgression.loadout_error(meta, chosen, data)
+	if not selection_error.is_empty():
+		message = selection_error
+		return
 	state = RunState.new()
 	state.run_id = "%d_%d" % [Time.get_unix_time_from_system(),Time.get_ticks_usec()]
-	if persistence:
-		var meta: Dictionary = saves.load_meta(data)
-		unlocked = meta.unlocked
+	state.cards.clear()
+	state.levels.clear()
+	for uid: String in chosen:
+		var item: Dictionary = MetaProgression.card(meta, uid)
+		state.cards[item.id] = 1
+		state.levels[item.id] = int(item.level)
+		state.loadout.append({"uid":uid, "id":item.id, "level":int(item.level)})
+	state.rewards_enabled = not (OS.is_debug_build() and "--dev" in OS.get_cmdline_user_args())
+	unlocked = meta.unlocked
 	state.seed_value = seed_value
 	rng.seed = seed_value
 	board = BoardController.new(state, data)
@@ -37,10 +56,23 @@ func new_run(seed_value: int = 1) -> void:
 	combat = CombatController.new(state, data, board, recipes, rng)
 	director = WaveDirector.new()
 	paused = false
+	speed = 1.0
 	accumulator = 0.0
-	message = "购买所需美食与食谱，购物完成后立即开战。"
+	message = "购买食谱，购物完成后立即开战。"
 	persist()
 	changed.emit()
+
+func select_difficulty(id: String) -> String:
+	if state == null or state.phase != "prepare": return "只能在关卡开始前选择难度"
+	if not data.difficulties.has(id): return "未知难度"
+	if state.difficulty == id: return ""
+	var previous: String = state.difficulty
+	state.difficulty = id
+	if not persist():
+		state.difficulty = previous
+		return message
+	changed.emit()
+	return ""
 
 func start() -> void:
 	if state.phase != "prepare": return
@@ -84,18 +116,21 @@ func finish_wave() -> void:
 	if state.phase != "battle": return
 	combat.heat_pickups.clear()
 	state.metrics.passed = state.wave
+	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
+	state.inspiration_earned[str(state.wave)] = difficulty.reward(data.progression.inspiration_rewards[state.wave - 1]) if state.rewards_enabled else 0
 	board.heal(recipes.value("reheat","heal",data.rules.heal))
 	if state.wave == data.waves.size():
 		state.phase = "won"
 		message = "今夜粮仓守住了！"
 		settle()
 		return
-	state.coins += data.rules.rewards[state.wave - 1] + (data.rules.bonus if state.leaks <= 1 else 0)
+	state.coins += difficulty.reward(data.rules.rewards[state.wave - 1] + (data.rules.bonus if state.leaks <= 1 else 0))
 	state.wave += 1
 	state.phase = "prepare"
 	shop.open()
 	state.heat = data.rules.heat_start
-	message = "通关奖励与免费恢复已到账。购物完成后开始下一关。"
+	message = "本关灵感 +%d，金币与免费恢复已到账。" % state.inspiration_for_wave(state.wave - 2, data)
+	persist()
 
 func persist() -> bool:
 	if not persistence or state.phase != "prepare": return true
@@ -110,6 +145,9 @@ func resume_run() -> bool:
 	var meta: Dictionary = saves.load_meta(data)
 	unlocked = meta.unlocked
 	var meta_error: String = saves.error
+	if not meta_error.is_empty():
+		message = meta_error
+		return false
 	var payload: Dictionary = saves.load_run(data)
 	if payload.is_empty():
 		message = saves.error if not saves.error.is_empty() else meta_error

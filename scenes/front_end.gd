@@ -10,6 +10,7 @@ var notice: Label
 var continue_button: Button
 var overwrite: ConfirmationDialog
 var showing_result: bool = false
+var hub: CardHub
 
 func _ready() -> void:
 	get_viewport().gui_embed_subwindows = true
@@ -98,14 +99,15 @@ func show_menu() -> void:
 	continue_button = action("继续游戏  ·  第 %d 关" % int(snapshot.get("wave", 1)), Vector2(792, 296), continue_run, true)
 	continue_button.disabled = snapshot.is_empty()
 	action("新的一局", Vector2(792, 366), request_new, snapshot.is_empty())
-	action("退出游戏", Vector2(792, 436), func() -> void: get_tree().quit())
-	notice = text_line(load_error if not load_error.is_empty() else ("暂无可继续的守卫，开始新的一局吧。" if snapshot.is_empty() else "准备阶段自动保存。战斗中退出后，\n继续游戏会回到本关开战前。"), Vector2(792, 520), Vector2(356, 90), 15, GameTheme.MUTED)
+	action("美食卡册 · 购卡与强化", Vector2(792, 430), func() -> void: show_hub("shop"))
+	action("退出游戏", Vector2(792, 494), func() -> void: get_tree().quit())
+	notice = text_line(load_error if not load_error.is_empty() else ("暂无可继续的守卫，开始新的一局吧。" if snapshot.is_empty() else "准备阶段自动保存。战斗中退出后，\n继续游戏会回到本关开战前。"), Vector2(792, 558), Vector2(356, 66), 15, GameTheme.MUTED)
 	overwrite = ConfirmationDialog.new()
 	overwrite.title = "开始新的一局？"
-	overwrite.dialog_text = "现有守卫进度将结束，阵地和金币将重置。\n已达成的食谱解锁会结算保留。"
+	overwrite.dialog_text = "现有守卫进度将结束，阵地和金币将重置。\n已赚灵感与食谱解锁保留，卡店刷新。"
 	overwrite.ok_button_text = "开始新局"
 	overwrite.cancel_button_text = "返回"
-	overwrite.confirmed.connect(start_new)
+	overwrite.confirmed.connect(prepare_new)
 	page.add_child(overwrite)
 
 func controller() -> RunController:
@@ -126,18 +128,51 @@ func request_new() -> void:
 	if not saves.load_run(data).is_empty():
 		overwrite.popup_centered(Vector2i(480, 190))
 	else:
-		start_new()
+		prepare_new()
 
-func start_new() -> void:
+func prepare_new() -> void:
+	var snapshot: Dictionary = saves.load_run(data)
+	if not snapshot.is_empty():
+		if not saves.settle(saves.restore(snapshot),data):
+			notice.text = saves.error
+			return
+	elif not saves.error.is_empty():
+		var profile: Dictionary = saves.load_profile(data)
+		if profile.is_empty():
+			notice.text = saves.error
+			return
+		profile.run = {}
+		if not saves.commit_profile(profile,int(profile.revision)):
+			notice.text = saves.error
+			return
+	show_hub("loadout")
+
+func show_hub(initial_tab: String = "shop") -> void:
+	if is_instance_valid(page):
+		remove_child(page)
+		page.queue_free()
+	page = Control.new()
+	page.size = Vector2(1280,720)
+	add_child(page)
+	hub = CardHub.new()
+	page.add_child(hub)
+	hub.back_requested.connect(show_menu)
+	hub.launch_requested.connect(start_new)
+	hub.setup(saves,data,initial_tab)
+
+func start_new(selected: Array = []) -> void:
 	if is_instance_valid(game): return
 	var run := controller()
 	if not saves.load_run(data).is_empty() and not run.resume_run():
 		notice.text = run.message
 		return
 	var previous: RunState = run.state
-	run.new_run(int(Time.get_unix_time_from_system()))
+	run.new_run(int(Time.get_unix_time_from_system()), selected)
 	if run.state == previous or not saves.error.is_empty():
-		notice.text = run.message
+		if is_instance_valid(hub) and hub.is_inside_tree():
+			hub.feedback = run.message
+			hub.rebuild()
+		elif is_instance_valid(notice): notice.text = run.message
 		return
 	enter_game(run)
 
@@ -166,11 +201,11 @@ func show_result() -> void:
 	text_line("八关告捷，食堂安然无恙。" if won else "第 %d 关粮仓失守。换个阵容，再试一次。" % state.wave, Vector2(88, 280), Vector2(585, 68), 22, GameTheme.MUTED)
 	portrait(art.food_portrait("bun") if won else art.mouse("boss"), Vector2(178, 362), Vector2(380, 264))
 	text_line("今 夜 战 报", Vector2(792, 112), Vector2(360, 44), 28)
-	text_line("通过关卡       %d / 8\n守卫时长       %02d:%02d\n击退鼠群       %d\n粮仓损失       %d\n美食阵亡       %d\n已购食谱       %d" % [state.metrics.passed, int(state.elapsed) / 60, int(state.elapsed) % 60, state.metrics.kills, state.metrics.leaks, state.metrics.deaths, state.recipes.size()], Vector2(792, 170), Vector2(356, 204), 21)
-	action("再守一夜  →", Vector2(792, 394), func() -> void: leave_result("new"), true)
-	action("返回主菜单", Vector2(792, 460), func() -> void: leave_result("menu"))
-	action("退出游戏", Vector2(792, 526), func() -> void: leave_result("quit"))
-	notice = text_line(game.run.message, Vector2(792, 590), Vector2(356, 44), 13, GameTheme.MUTED)
+	text_line("通过关卡       %d / 8\n守卫时长       %02d:%02d\n击退鼠群       %d\n粮仓损失       %d\n美食阵亡       %d\n已购食谱       %d\n本夜灵感       +%d" % [state.metrics.passed, int(state.elapsed) / 60, int(state.elapsed) % 60, state.metrics.kills, state.metrics.leaks, state.metrics.deaths, state.recipes.size(), run_inspiration(state)], Vector2(792, 170), Vector2(356, 244), 21)
+	action("再守一夜  →", Vector2(792, 424), func() -> void: leave_result("new"), true)
+	action("返回主菜单", Vector2(792, 488), func() -> void: leave_result("menu"))
+	action("退出游戏", Vector2(792, 552), func() -> void: leave_result("quit"))
+	notice = text_line(game.run.message, Vector2(792, 612), Vector2(356, 44), 13, GameTheme.MUTED)
 
 func leave_result(destination: String) -> void:
 	if not is_instance_valid(game) or not showing_result: return
@@ -182,4 +217,11 @@ func leave_result(destination: String) -> void:
 		get_tree().quit()
 		return
 	show_menu()
-	if destination == "new": start_new()
+	if destination == "new": prepare_new()
+
+func run_inspiration(state: RunState) -> int:
+	var amount: int = 0
+	if state.rewards_enabled:
+		for index: int in range(state.reward_floor,mini(int(state.metrics.passed),8)):
+			amount += state.inspiration_for_wave(index, data)
+	return amount

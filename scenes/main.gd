@@ -615,10 +615,8 @@ func _draw() -> void:
 				var pos: Vector2 = projection.foot(shot.x, row) - Vector2(0, 27 * projection.depth_scale(row))
 				ProjectileArt.draw_shot(self, shot, pos, projection.depth_scale(row))
 	if run.state.phase == "battle":
-		for i: int in range(run.director.cursor,mini(run.director.cursor + 3,run.director.events.size())):
-			var event: Dictionary = run.director.events[i]
-			if event.time - run.director.elapsed <= 5:
-				text_at(projection.foot(RunState.BOARD_WIDTH + 7, event.row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
+		for row: int in run.director.warning_rows():
+			text_at(projection.foot(RunState.BOARD_WIDTH + 7, row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
 	shovel_feedback.draw(self)
 	draw_style_box(top_style, TOP_RECT)
 	draw_texture_rect(preload("res://assets/ui/flame.svg"), Rect2(38, 14, 26, 30), false)

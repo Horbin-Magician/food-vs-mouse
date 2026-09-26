@@ -47,4 +47,28 @@ func validate() -> PackedStringArray:
 		if wave.stats.get("composition",[]).is_empty() or wave.stats.get("duration",0) < 5: errors.append(wave.id + ": empty wave")
 		for id: String in wave.stats.get("composition",[]):
 			if not enemies.has(id): errors.append(wave.id + ": missing enemy " + id)
+		if wave.stats.has("batches"):
+			var rows: Array = wave.stats.get("rows", [])
+			var unique: Dictionary = {}
+			for row: Variant in rows:
+				if not row is int or row < 0 or row >= RunState.ROWS: errors.append(wave.id + ": invalid row")
+				unique[row] = true
+			if unique.size() < 3 or unique.size() != rows.size(): errors.append(wave.id + ": three distinct rows required")
+			var count: int = 0
+			var last_time: float = -1.0
+			for batch: Dictionary in wave.stats.batches:
+				var lanes: Array = batch.get("lanes", [])
+				var start: float = batch.get("time", -1.0)
+				var gap: float = batch.get("gap", 0.0)
+				if lanes.is_empty() or not is_finite(start) or not is_finite(gap) or start < 5 or start <= last_time or gap <= 0:
+					errors.append(wave.id + ": invalid batch timing")
+				if not lanes.is_empty() and lanes[0] != 0: errors.append(wave.id + ": batch must start at lane zero")
+				for i: int in range(lanes.size()):
+					if not lanes[i] is int or lanes[i] < 0 or lanes[i] > 2: errors.append(wave.id + ": invalid lane slot")
+					if i >= 2 and lanes[i] == lanes[i-1] and lanes[i] == lanes[i-2]: errors.append(wave.id + ": lane streak")
+				if count == 0 and (lanes.size() < 3 or lanes[0] == lanes[1] or lanes[1] == lanes[2] or lanes[0] == lanes[2]):
+					errors.append(wave.id + ": first three lanes must differ")
+				count += lanes.size()
+				last_time = start + (lanes.size() - 1) * gap
+			if count != wave.stats.composition.size(): errors.append(wave.id + ": batch count mismatch")
 	return errors

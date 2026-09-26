@@ -9,6 +9,9 @@ func begin(definition: Resource, rng: RandomNumberGenerator) -> void:
 	events.clear()
 	cursor = 0
 	elapsed = 0.0
+	if definition.stats.has("batches"):
+		begin_batches(definition, rng)
+		return
 	var rows: Array = definition.stats.rows.duplicate()
 	var first: Array = []
 	while not rows.is_empty():
@@ -28,6 +31,32 @@ func begin(definition: Resource, rng: RandomNumberGenerator) -> void:
 		previous = row
 		if composition[i] == "boss": row = RunState.CENTER_ROW
 		events.append({"time": lerpf(5.0, definition.stats.duration * 0.7, float(i) / maxf(1.0, composition.size() - 1.0)), "id": composition[i], "row": row})
+
+func begin_batches(definition: Resource, rng: RandomNumberGenerator) -> void:
+	var index: int = 0
+	var previous: int = -1
+	for batch: Dictionary in definition.stats.batches:
+		var available: Array = definition.stats.rows.duplicate()
+		var lanes: Array = []
+		for slot: int in range(3):
+			var choices: Array = available.duplicate()
+			if slot == 0: choices.erase(previous)
+			var row: int = choices[rng.randi_range(0, choices.size() - 1)]
+			lanes.append(row)
+			available.erase(row)
+		for offset: int in range(batch.lanes.size()):
+			var id: String = definition.stats.composition[index]
+			var row: int = RunState.CENTER_ROW if id == "boss" else lanes[batch.lanes[offset]]
+			events.append({"time": batch.time + offset * batch.gap, "id": id, "row": row})
+			previous = row
+			index += 1
+
+func warning_rows(lead_time: float = 5.0) -> Array[int]:
+	var rows: Array[int] = []
+	for i: int in range(cursor, events.size()):
+		if events[i].time > elapsed + lead_time: break
+		if not rows.has(events[i].row): rows.append(events[i].row)
+	return rows
 
 func advance(delta: float) -> Array:
 	elapsed += delta

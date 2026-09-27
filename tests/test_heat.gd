@@ -110,7 +110,7 @@ func _init() -> void:
 	quit()
 
 func test_wave_carry() -> void:
-	for timeout: bool in [false, true]:
+	for has_survivor: bool in [false, true]:
 		var run := RunController.new()
 		run.new_run(57)
 		run.start()
@@ -120,11 +120,10 @@ func test_wave_carry() -> void:
 		run.collect_heat(flying.uid)
 		run.combat.produce_heat(run.state.units[0])
 		var waiting: Dictionary = run.combat.heat_pickups[1]
-		if timeout:
+		if has_survivor:
 			run.combat.spawn("gray", 2, run.data.waves[0])
-			run.director.elapsed = run.director.duration
-		else:
-			run.director.cursor = run.director.events.size()
+		run.director.advance(float(run.director.events.back().time))
+		run.director.elapsed = run.director.duration
 		tick(run, 1)
 		assert(run.state.phase == "prepare" and run.combat.heat_pickups.size() == 2)
 		var frozen: Array = run.combat.heat_pickups.duplicate(true)

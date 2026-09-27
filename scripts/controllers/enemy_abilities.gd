@@ -230,7 +230,7 @@ func _finish_action(enemy: Dictionary) -> void:
 			enemy.order_members = []
 			var targets: Array = []
 			for row: int in skills.rows:
-				var child: Dictionary = combat.spawn(skills.order_ids[enemy.order_index], row, combat.current_wave)
+				var child: Dictionary = combat.spawn(skills.order_ids[enemy.order_index], row, enemy.get("wave", combat.current_wave))
 				if not child.is_empty():
 					enemy.order_members.append(child.uid)
 					targets.append(child)

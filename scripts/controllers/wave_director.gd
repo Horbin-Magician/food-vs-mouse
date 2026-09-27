@@ -5,12 +5,16 @@ var events: Array = []
 var cursor: int = 0
 var elapsed: float = 0.0
 var duration: float = 0.0
+var transition_delay: float = 10.0
+var last_spawn_elapsed: float = -1.0
 
 func begin(definition: Resource, rng: RandomNumberGenerator) -> void:
 	events.clear()
 	cursor = 0
 	elapsed = 0.0
-	duration = float(definition.stats.duration)
+	transition_delay = definition.transition_delay
+	last_spawn_elapsed = -1.0
+	duration = transition_delay
 	if definition.stats.has("batches"):
 		begin_batches(definition, rng)
 		apply_spawn_rate(definition)
@@ -40,6 +44,7 @@ func begin(definition: Resource, rng: RandomNumberGenerator) -> void:
 func apply_spawn_rate(definition: Resource) -> void:
 	for event: Dictionary in events:
 		event.time = 5.0 + (event.time - 5.0) / definition.spawn_rate
+	if not events.is_empty(): duration = float(events.back().time) + transition_delay
 
 func begin_batches(definition: Resource, rng: RandomNumberGenerator) -> void:
 	if definition.stats.get("balanced_lanes", false):
@@ -119,10 +124,13 @@ func advance(delta: float) -> Array:
 	while cursor < events.size() and events[cursor].time <= elapsed:
 		due.append(events[cursor])
 		cursor += 1
+	if finished() and last_spawn_elapsed < 0.0:
+		last_spawn_elapsed = elapsed
+		duration = elapsed + transition_delay
 	return due
 
 func finished() -> bool:
 	return cursor >= events.size()
 
-func can_complete(enemy_count: int) -> bool:
-	return elapsed >= duration or (finished() and enemy_count == 0)
+func can_complete(_enemy_count: int) -> bool:
+	return finished() and last_spawn_elapsed >= 0.0 and elapsed + 0.000001 >= duration

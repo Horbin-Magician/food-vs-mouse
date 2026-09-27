@@ -675,6 +675,8 @@ func wave_status() -> String:
 	var status: String = {"prepare":"大关间购物" if run.shop.is_open() else "准备开战", "won":"守卫成功", "lost":"粮仓失守"}.get(run.state.phase, "")
 	if run.state.phase == "battle":
 		status = "剩余 %d 秒 · 余鼠 %d" % [ceili(maxf(0.0, run.director.duration - run.director.elapsed)), run.combat.enemies.size()]
+		if run.director.can_complete(run.combat.enemies.size()) and run.waiting_for_boss():
+			status = "等待击败 BOSS · 余鼠 %d" % run.combat.enemies.size()
 		if run.paused: status = "暂停 · " + status
 	return "%d-%d · 总 %02d/%d · %s\n%s" % [run.data.chapters[run.state.chapter_id].order,run.state.wave,run.state.global_wave(),run.data.scene_wave_count(run.state.scene_id),run.data.difficulties[run.state.difficulty].title,status]
 

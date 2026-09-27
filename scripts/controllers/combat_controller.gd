@@ -43,6 +43,11 @@ func reset_inspiration_rng() -> void:
 	# Replaying a wave rebuilds drops without consuming the gameplay random stream.
 	_inspiration_rng.seed = ("inspiration:%d:%d" % [state.seed_value, state.global_wave()]).hash()
 
+func begin_wave() -> void:
+	inspiration_pickups.clear()
+	inspiration_collected = 0
+	reset_inspiration_rng()
+
 func clear(preserve_heat: bool = false) -> void:
 	abilities.clear()
 	warning_summons.clear()
@@ -67,7 +72,7 @@ func spawn(id: String, row: int, wave: Resource) -> Dictionary:
 	var difficulty: DifficultyDef = data.difficulties[state.difficulty]
 	hp_scale *= difficulty.hp_multiplier
 	damage_scale *= difficulty.damage_multiplier
-	var enemy: Dictionary = {"uid": state.uid(), "id": id, "rank":definition.rank, "art_id":definition.art_id, "hp_scale":hp_scale, "damage_scale":damage_scale, "row": row, "x": float(RunState.BOARD_WIDTH + 52), "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0}
+	var enemy: Dictionary = {"uid": state.uid(), "id": id, "wave":wave, "rank":definition.rank, "art_id":definition.art_id, "hp_scale":hp_scale, "damage_scale":damage_scale, "row": row, "x": float(RunState.BOARD_WIDTH + 52), "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0}
 	enemies.append(enemy)
 	abilities.setup(enemy)
 	spawned.emit(enemy)
@@ -211,10 +216,10 @@ func _step(delta: float) -> void:
 		abilities.tick(enemy, delta)
 		if enemy.id == "boss":
 			enemy.summon += delta
-			var summon_interval: float = boss_interval(enemy.rage)
+			var summon_interval: float = boss_interval(enemy.rage, enemy)
 			if enemy.summon + 0.000001 >= summon_interval:
 				enemy.summon = maxf(0.0, enemy.summon - summon_interval)
-				request_summons(boss_configuration().get("rage_id" if enemy.rage else "normal_id", "gray"), enemy)
+				request_summons(boss_configuration(enemy).get("rage_id" if enemy.rage else "normal_id", "gray"), enemy)
 		var blocker: Dictionary = blocker_for(enemy)
 		if not blocker.is_empty(): abilities.on_blocked(enemy, blocker)
 		if blocker.is_empty():
@@ -286,9 +291,9 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 	state.metrics.damage[source] = state.metrics.damage.get(source, 0.0) + actual
 	if enemy.id == "boss" and not enemy.rage and enemy.hp > 0 and enemy.hp < enemy.max_hp * data.rules.boss_rage_threshold:
 		enemy.rage = true
-		enemy.summon *= boss_interval(true) / boss_interval(false)
+		enemy.summon *= boss_interval(true, enemy) / boss_interval(false, enemy)
 		skill_used.emit("rage", enemy, [])
-		request_summons(boss_configuration().get("burst_id", "lid"), enemy)
+		request_summons(boss_configuration(enemy).get("burst_id", "lid"), enemy)
 	if enemy.hp > 0: abilities.after_damage(enemy, previous_shield, previous_armor)
 	if enemy.hp <= 0:
 		if enemy.id == "flour":
@@ -348,9 +353,9 @@ func summon_pair(id: String, caster: Dictionary = {}) -> void:
 	var first: int = rng.randi_range(0,RunState.ROWS-1)
 	var second: int = rng.randi_range(0,RunState.ROWS-2)
 	if second >= first: second += 1
-	spawn(id,first,current_wave)
+	spawn(id,first,caster.get("wave", current_wave))
 	var first_unit: Dictionary = enemies[-1]
-	spawn(id,second,current_wave)
+	spawn(id,second,caster.get("wave", current_wave))
 	if not caster.is_empty():
 		skill_used.emit("reinforce" if id == "lid" else "summon", caster, [first_unit, enemies[-1]])
 
@@ -364,11 +369,12 @@ func movement_multiplier(enemy: Dictionary, sources: Array) -> float:
 	var result: float = 1.0 + (data.rules.boss_rage_speed if enemy.rage else 0.0)
 	return result * (1.0 + data.rules.drummer_speed) if is_drummer_boosted(enemy, sources) else result
 
-func boss_configuration() -> Dictionary:
-	return current_wave.stats.get("boss", {}) if current_wave != null else {}
+func boss_configuration(caster: Dictionary = {}) -> Dictionary:
+	var wave: Resource = caster.get("wave", current_wave)
+	return wave.stats.get("boss", {}) if wave != null else {}
 
-func boss_interval(rage: bool) -> float:
-	return boss_configuration().get("rage_interval" if rage else "interval", data.rules.boss_rage_summon_interval if rage else data.rules.boss_summon_interval)
+func boss_interval(rage: bool, caster: Dictionary = {}) -> float:
+	return boss_configuration(caster).get("rage_interval" if rage else "interval", data.rules.boss_rage_summon_interval if rage else data.rules.boss_summon_interval)
 
 func enemy_title(id: String) -> String:
 	if not data.enemies.has(id): return "未知老鼠"
@@ -376,7 +382,7 @@ func enemy_title(id: String) -> String:
 
 func request_summons(id: String, caster: Dictionary) -> void:
 	if not data.enemies.has(id) or not enemies.has(caster) or caster.hp <= 0: return
-	var configuration: Dictionary = boss_configuration()
+	var configuration: Dictionary = boss_configuration(caster)
 	if configuration.is_empty():
 		summon_pair(id, caster)
 		return
@@ -393,6 +399,6 @@ func advance_summons(delta: float) -> void:
 		warning_summons.erase(warning)
 		var targets: Array = []
 		for row: int in warning.rows:
-			spawn(warning.id, row, current_wave)
+			spawn(warning.id, row, casters[0].get("wave", current_wave))
 			targets.append(enemies[-1])
 		skill_used.emit("reinforce" if warning.id == "lid" else "summon", casters[0], targets)

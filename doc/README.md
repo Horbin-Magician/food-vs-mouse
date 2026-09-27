@@ -87,8 +87,8 @@
 | [design/difficulty.md](design/difficulty.md) | 开局统一难度、整局锁定、倍率与兼容规则 | 已实现，整局平衡待试玩 |
 | [testing/difficulty.md](testing/difficulty.md) | 难度及收益、存档及界面验证 | 整局锁定 31 组回归与双尺寸渲染通过；鼠标复验限制见正文 |
 | [testing/spawn_rate.md](testing/spawn_rate.md) | 全部 40 小关出兵频率提高 50% 的排程、回归及原生画面验证 | 已通过专项检查，整局平衡未重采 |
-| [design/waves.md](design/waves.md) | 组合波次、重点路线、生命与召唤，以及计时或清场通关 | 已实现，计时制整局平衡待验 |
-| [testing/wave_completion.md](testing/wave_completion.md) | 计时或清场、自动衔接、失败优先及倒计时界面 | 7 组回归、导入与双尺寸原生画面通过 |
+| [design/waves.md](design/waves.md) | 组合波次、重点路线、生命与召唤，以及末波后 10 秒通关 | 已实现，余鼠跨关整局平衡待验 |
+| [testing/wave_completion.md](testing/wave_completion.md) | 末波后 10 秒、余鼠保留、大关 BOSS 击败门槛及界面 | 9 组回归、导入与双尺寸原生画面通过 |
 | [testing/balance.md](testing/balance.md) | 压力测试、组合鼠潮回归和真人验收缺口 | 新波次回归及渲染通过，真人待验收 |
 
 ## 后续文档归档

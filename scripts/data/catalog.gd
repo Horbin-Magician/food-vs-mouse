@@ -108,6 +108,7 @@ func validate() -> PackedStringArray:
 		for definition: Resource in chapter.waves:
 			if not checked_waves.has(definition): checked_waves.append(definition)
 	for wave: Resource in checked_waves:
+		if not is_finite(wave.transition_delay) or wave.transition_delay <= 0: errors.append(wave.id + ": invalid transition delay")
 		if not is_finite(wave.spawn_rate) or wave.spawn_rate <= 0: errors.append(wave.id + ": invalid spawn rate")
 		if wave.stats.get("composition",[]).is_empty() or wave.stats.get("duration",0) < 5: errors.append(wave.id + ": empty wave")
 		var boss_count: int = 0

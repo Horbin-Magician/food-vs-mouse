@@ -17,6 +17,7 @@ var paused: bool = false
 var speed: float = 1.0
 var accumulator: float = 0.0
 var automatic_start_pending: bool = false
+var boss_defeated: bool = false
 var message: String = "大关内连续作战，通关后可进入小铺购买食谱。"
 
 func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "easy", scene_id: String = "kitchen") -> void:
@@ -70,6 +71,7 @@ func new_run(seed_value: int = 1, selected: Array = [], difficulty: String = "ea
 	recipes = RecipeSystem.new(state,data)
 	shop = ShopController.new(state,data,board,rng,recipes,unlocked)
 	combat = CombatController.new(state, data, board, recipes, rng)
+	combat.enemy_killed.connect(on_enemy_killed)
 	director = WaveDirector.new()
 	paused = false
 	speed = 1.0
@@ -86,7 +88,8 @@ func start() -> void:
 	state.cooldowns.clear()
 	state.leaks = 0
 	accumulator = 0.0
-	combat.clear(true)
+	boss_defeated = false
+	combat.begin_wave()
 	director.begin(data.chapter_waves(state.chapter_id)[state.wave - 1], rng)
 	message = "鼠潮来袭！左键选卡再点格子，右键取消。"
 	changed.emit()
@@ -131,11 +134,20 @@ func advance(delta: float) -> void:
 			state.phase = "lost"
 			message = "粮仓失守。调整阵型，再试一次。"
 			settle()
-		elif director.can_complete(combat.enemies.size()):
+		elif director.can_complete(combat.enemies.size()) and not waiting_for_boss():
 			finish_wave()
 		if state.phase != "battle":
-			combat.clear(state.phase == "prepare")
+			if state.phase in ["won", "lost"]: combat.clear()
 			changed.emit()
+
+func waiting_for_boss() -> bool:
+	return state.wave == data.chapter_waves(state.chapter_id).size() and not boss_defeated
+
+func on_enemy_killed(id: String) -> void:
+	if state.phase != "battle": return
+	var wave: Resource = data.chapter_waves(state.chapter_id)[state.wave - 1]
+	if id == wave.stats.get("boss_id", "boss"):
+		boss_defeated = true
 
 func finish_wave() -> void:
 	if state.phase != "battle": return
@@ -165,7 +177,6 @@ func finish_wave() -> void:
 		state.wave = 1
 	else:
 		state.wave += 1
-	combat.clear(true)
 	state.phase = "prepare"
 	if shop.is_open():
 		shop.open()
@@ -204,6 +215,7 @@ func resume_run() -> bool:
 	state.phase = "prepare"
 	if not shop.is_open(): shop.close()
 	combat = CombatController.new(state,data,board,recipes,rng)
+	combat.enemy_killed.connect(on_enemy_killed)
 	director = WaveDirector.new()
 	paused = false
 	accumulator = 0.0

@@ -6,4 +6,4 @@
 script = ExtResource("1")
 id = "bun"
 title = "小笼包"
-stats = {"cost": 100, "cooldown": 7, "hp": 180, "damage": 12, "interval": 3, "reach": 8, "price": 3, "kind": "shot"}
+stats = {"cost": 100, "cooldown": 7, "hp": 180, "damage": 12, "interval": 2, "reach": 8, "price": 3, "kind": "shot"}

@@ -4,4 +4,4 @@
 script = ExtResource("1")
 id = "noodles"
 title = "拉面碗"
-stats = {"cost": 150, "cooldown": 10, "hp": 180, "damage": 11, "interval": 4, "reach": 8, "price": 4, "kind": "shot", "pierce": 3}
+stats = {"cost": 150, "cooldown": 10, "hp": 180, "damage": 11, "interval": 2.6666666666666665, "reach": 8, "price": 4, "kind": "shot", "pierce": 3}

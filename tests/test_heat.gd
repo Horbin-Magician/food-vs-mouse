@@ -25,11 +25,11 @@ func _init() -> void:
 	assert(absf(run.state.heat - 901.0 / 60.0 * 2.0) < 0.001)
 	assert(run.combat.heat_pickups.size() == 1)
 	var first: Dictionary = run.combat.heat_pickups[0]
-	assert(first.amount == 15 and first.flight == -1)
+	assert(first.amount == 30 and first.flight == -1)
 	run.state.levels.pudding = 10
 	run.state.recipes = ["caramel"]
 	tick(run, 900)
-	assert(run.combat.heat_pickups.size() == 1 and first.amount == 38, "merge snapshots 15 + 18 + 5")
+	assert(run.combat.heat_pickups.size() == 1 and first.amount == 71, "merge snapshots 30 + 36 + 5")
 	var before: float = run.state.heat
 	run.paused = true
 	var frozen: Array = run.combat.heat_pickups.duplicate(true)
@@ -49,9 +49,9 @@ func _init() -> void:
 	run.paused = false
 	# New production during flight is a separate pickup.
 	run.combat.produce_heat(run.state.units[0])
-	assert(run.combat.heat_pickups.size() == 2 and run.combat.heat_pickups[1].amount == 23)
+	assert(run.combat.heat_pickups.size() == 2 and run.combat.heat_pickups[1].amount == 41)
 	tick(run, 15)
-	assert(absf(run.state.heat - before - 38.9) < 0.001)
+	assert(absf(run.state.heat - before - 71.9) < 0.001)
 	assert(run.combat.heat_pickups.size() == 1)
 	run.collect_heat(first.uid)
 	assert(run.combat.heat_pickups[0].flight == -1, "stale UID cannot collect another pickup")
@@ -65,13 +65,13 @@ func _init() -> void:
 	assert(run.combat.heat_pickups.size() == 1 and run.state.heat < run.data.rules.heat_cap - 9)
 	tick(run, 1)
 	assert(run.combat.heat_pickups.is_empty() and run.state.heat == run.data.rules.heat_cap)
-	assert(absf(run.state.metrics.overflow - overflow - (23 + 28.0 / 60.0 * 2.0 - 10)) < 0.001)
+	assert(absf(run.state.metrics.overflow - overflow - (41 + 28.0 / 60.0 * 2.0 - 10)) < 0.001)
 	# Full heat does not prevent production; permanent levels and recipes stay immutable.
 	run.state.cooldowns.clear()
 	assert(run.board.place("pudding", 1, 0, false).is_empty())
 	run.state.heat = run.data.rules.heat_cap
 	run.combat.produce_heat(run.state.units[0])
-	assert(run.combat.heat_pickups[0].amount == 23)
+	assert(run.combat.heat_pickups[0].amount == 41)
 	run.combat.damage_unit(run.state.units[0], 9999)
 	assert(run.combat.heat_pickups.size() == 1)
 	run.finish_wave()
@@ -134,7 +134,7 @@ func test_wave_carry() -> void:
 		assert(is_equal_approx(run.state.heat, before + flying.amount + 1.0))
 		assert(run.combat.heat_pickups.size() == 1 and waiting.flight < 0)
 		run.combat.produce_heat(run.state.units[0])
-		assert(waiting.amount == 30, "retained source merges future production")
+		assert(waiting.amount == 60, "retained source merges future production")
 		run.state.wave = 8
 		run.finish_wave()
 		assert(run.shop.is_open() and run.combat.heat_pickups.size() == 1)

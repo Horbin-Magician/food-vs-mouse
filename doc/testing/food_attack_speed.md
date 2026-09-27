@@ -1,4 +1,4 @@
-# 美食攻速降低 50% 验证
+# 美食攻速与布丁产量验证
 
 日期：2026-09-26。状态：已实现，专项回归通过。范围：内容数值和平衡迭代，权威规则见 [玩法基线](../TODO.md)。
 
@@ -19,3 +19,16 @@
 - 执行方式：Godot `--headless --path . --log-file /tmp/food-speed-<name>.log --script res://tests/test_<name>.gd`；导入用 `--editor --import`，场景冒烟用 `--quit-after 120`。`git diff --check` 通过。
 
 本次未做新的首次／连续攻击逐帧窗口验收，不将无界面测试视为视觉验证；完整四十关平衡、性能及发行包未重新验证。
+
+## 攻速增加 50% 与布丁产量翻倍（2026-09-27）
+
+状态：已实现，八组相关回归通过；额外边界回归受存档权限限制。范围：内容数值和平衡迭代，当前数值以 [玩法基线](../TODO.md) 为准；上文为历史记录。
+
+- 六种攻击美食 interval 除以 1.5；布丁基础 production 翻倍，生产周期沿用 15 秒。「焦糖加倍」固定收益仍为 5。更新既有热量与光环测试期望，验证基础火苗 30、强化与食谱火苗 41、跨周期合并 71、到账及溢出。
+- 环境：macOS，Godot 4.6.3.stable.official.7d41c59c4，本次工作区。保留原有 project.godot 用户改动。
+- 通过：test_core（72 项）、test_builds、test_status_feedback、test_enemy_abilities、test_chapter_bosses、test_heat、test_heat_ui、test_wave_completion。覆盖伤害、光环／减速、生产周期、生成时快照、暂停倍速、点击防重、飞行到账与关卡生命周期。
+- Godot 导入及主场景无界面 120 帧加载完成；无新增解析或资源引用错误。仍有系统证书读取、编辑器设置目录写入权限及退出资源未释放日志。
+- 额外 test_edges 在创建 user://qa_grid_* 与保存测试快照处失败，随后超时终止；受当前沙盒目录权限限制，本次不记为通过。
+- 执行：Godot --headless --path . --log-file /tmp/food-buff-<name>.log --script res://tests/test_<name>.gd；导入使用 --editor --import，主场景使用 --quit-after 120。git diff --check 通过。
+
+本次数值调整未执行新的原生视觉或人工交互验收；无界面输入回归不等同于人工验证。完整四十关经济／战斗平衡、性能和发行包未复验。

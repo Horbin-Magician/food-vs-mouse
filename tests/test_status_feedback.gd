@@ -27,7 +27,7 @@ func _init() -> void:
 	assert(view.statuses[bun.uid] == ["haste", "power", "pressure"])
 	assert(view.statuses[pudding.uid].is_empty())
 	assert(view.statuses[toast.uid] == ["crust"])
-	assert(is_equal_approx(run.recipes.interval(bun), 3.0 / 1.15))
+	assert(is_equal_approx(run.recipes.interval(bun), 2.0 / 1.15))
 	run.board.remove(garlic.row, garlic.col, false)
 	view.advance(0)
 	assert(view.statuses[bun.uid].count("haste") == 1)

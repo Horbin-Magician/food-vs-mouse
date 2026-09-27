@@ -25,7 +25,7 @@ func _init() -> void:
 	assert(enemy.max_hp == 3500.0 and enemy.shield == 500.0 and enemy.dps == 60.0)
 	assert(enemy.hp_scale == 1.25 and enemy.damage_scale == 1.25 and enemy.rank == "boss")
 	var guard: Dictionary = run.combat.spawn("rivet_guard", 0, run.data.chapter_waves("kitchen_3")[0])
-	assert(is_equal_approx(guard.max_hp, 638.0))
+	assert(is_equal_approx(guard.max_hp, 726.0))
 	# Windwhistle replaces a contact attack with one dash impact, then exposes itself.
 	run = arena()
 	var wall: Dictionary = food(run, 3, 4)
@@ -148,7 +148,7 @@ func _init() -> void:
 	run.combat.step(5.0)
 	assert(enemy.order_status == "active" and enemy.order_remaining == 2 and run.combat.enemies.size() == 3)
 	assert(run.combat.enemies[1].id == "spoon_skater" and run.combat.enemies[2].row == 4)
-	assert(is_equal_approx(run.combat.enemies[1].max_hp, 80.0 * 3.24))
+	assert(is_equal_approx(run.combat.enemies[1].max_hp, 80.0 * 4.48))
 	run.combat.abilities.grant_shield(enemy, 100.0, 8.0)
 	for child: Dictionary in run.combat.enemies.duplicate():
 		if child.uid != enemy.uid: run.combat.damage_enemy(child, 10000.0, "bun")

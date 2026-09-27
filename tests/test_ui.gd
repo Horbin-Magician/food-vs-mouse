@@ -93,10 +93,9 @@ func run_test() -> void:
 	scene.rebuild()
 	scene._process(0)
 	scene.shovel = false
-	event.position = scene.PANEL_RECT.get_center()
+	event.position = scene.SHOP_RECT.get_center()
 	scene._unhandled_input(event)
 	assert(scene.move_from == Vector2i(-1,-1))
-	scene.panel_open = false
 	scene._process(0)
 	event.position = scene.projection.project(Vector2(816,624))
 	scene._unhandled_input(event)
@@ -129,10 +128,8 @@ func run_test() -> void:
 	assert(not scene.run.board.has_method("repair"))
 	assert("选购食谱" in scene.card_status("bun"))
 	assert(not scene.cards.get_child(0).get_node("Cooldown").visible)
-	for child: Node in scene.panel.get_children():
-		if child is Button: assert(child.disabled)
-	assert(scene.panel.get_global_rect().end.x <= scene.PANEL_RECT.end.x)
-	assert(scene.panel.get_global_rect().end.y <= scene.PANEL_RECT.end.y)
+	# The right-side info panel was removed; only board and HUD remain outside the shop.
+	assert(not "panel" in scene)
 	scene.run.state.phase = "battle"
 	scene.run.paused = true
 	scene._process(0)
@@ -198,13 +195,12 @@ func run_test() -> void:
 	scene.rebuild()
 	await process_frame
 	await process_frame
-	assert(scene.panel.get_global_rect().end.y <= scene.PANEL_RECT.end.y)
-	for child: Node in scene.panel.get_children():
-		if child is Button:
-			for content: Node in child.get_children():
-				if content is Control:
-					assert(content.position.x + content.size.x <= child.size.x)
-					assert(content.position.y + content.size.y <= child.size.y)
+	assert(recipe_buttons(scene).size() == 3, "long recipe copy stays inside its shop card")
+	for child: Node in recipe_buttons(scene):
+		for content: Node in child.get_children():
+			if content is Control:
+				assert(content.position.x + content.size.x <= child.size.x)
+				assert(content.position.y + content.size.y <= child.size.y)
 	assert(is_equal_approx(scene.projection.ORIGIN.x + scene.projection.CANVAS_SIZE.x / 2.0, 640.0))
 	# Shop modal: transaction rebuilding, horizontal layout, closing and input isolation.
 	scene.run.new_run(25)
@@ -212,10 +208,10 @@ func run_test() -> void:
 	scene.run.state.wave = 1
 	scene.run.shop.open()
 	scene.rebuild()
-	scene.set_panel_open(true)
+	scene.update_controls()
 	await process_frame
 	await process_frame
-	assert(scene.shop_overlay.visible and not scene.panel.visible)
+	assert(scene.shop_overlay.visible)
 	assert(scene.run.state.offers.is_empty())
 	assert(recipe_buttons(scene).size() == scene.run.state.choices.size())
 	for id: String in scene.run.state.choices:
@@ -265,7 +261,7 @@ func run_test() -> void:
 	var begin_rng: int = scene.run.rng.state
 	scene.finish_shopping()
 	assert(scene.run.rng.state == begin_rng)
-	scene.set_panel_open(true)
+	scene.update_controls()
 	assert(not scene.shop_overlay.visible)
 	scene.shovel_button.pressed.emit()
 	assert(scene.shovel_cursor_active)

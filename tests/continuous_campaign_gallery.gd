@@ -30,22 +30,25 @@ func capture() -> void:
 		launch.pressed.emit()
 		assert(front.game.run.state.scene_id == "kitchen" and front.game.run.state.chapter_id == "kitchen_1")
 		front.game.set_process(false)
-		await snap("shop_1_1_%d" % dimensions.x)
 		# UI route fixture: normal transitions and saves; combat itself is sampled separately.
 		var run: RunController = front.game.run
+		# A new run goes straight into the 1-1 battle with no shop; only chapter boundaries open one.
+		assert(run.state.phase == "battle" and not run.shop.is_open())
+		assert(not front.game.shop_overlay.visible and run.state.choices.is_empty())
 		run.state.heat = 1400
 		run.state.pantry = 7
-		assert(run.shop.buy_recipe(run.state.choices[0]).is_empty())
-		var expected_recipes: Array = run.state.recipes.duplicate()
+		var expected_recipes: Array = []
 		var expected_heat: float = run.state.heat - 175
 		for index: int in range(40):
-			front.game.finish_shopping()
+			# Normal waves auto-start from their saved snapshot; boundary waves start from the shop.
+			if run.shop.is_open(): front.game.finish_shopping()
+			elif run.state.phase == "prepare": run.advance(0.0)
 			if index == 0:
 				assert(run.board.place("bun",2,1,false).is_empty())
 				assert(run.board.place("toast",2,5,false).is_empty())
 				run.state.units[0].hp *= 0.6
 			assert(run.state.phase == "battle")
-			if index in [8,39]:
+			if index in [0,8,39]:
 				run.paused = true
 				await snap("battle_%d_%d_%d" % [front.data.chapters[run.state.chapter_id].order,run.state.wave,dimensions.x])
 				run.paused = false
@@ -54,8 +57,16 @@ func capture() -> void:
 			front._process(0)
 			if index < 39:
 				assert(not front.showing_result and run.state.phase == "prepare")
+				assert(run.shop.is_open() == (index in [7,15,23,31]) and front.game.shop_overlay.visible == run.shop.is_open())
 			if index in [7,15,23,31]:
 				assert(run.state.wave == 1 and run.state.global_wave() == index + 2)
+				if index == 7:
+					# Buy through the shop button so the purchase is saved like a real click.
+					var recipe_id: String = run.state.choices[0]
+					front.game.shop_surface.get_node("Recipe_" + recipe_id).pressed.emit()
+					assert(recipe_id in run.state.recipes)
+					expected_recipes = run.state.recipes.duplicate()
+					expected_heat -= run.data.rules.recipe_price
 				assert(run.state.units.size() == 2 and run.state.pantry == 7 and run.state.recipes == expected_recipes)
 				assert(run.state.heat == expected_heat)
 				assert(front.game.earned_inspiration() == front.run_inspiration(run.state))

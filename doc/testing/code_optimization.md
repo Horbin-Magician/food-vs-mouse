@@ -41,7 +41,7 @@
 - 窗口压力（`--disable-vsync`，1280×720，各 1 次，仅作参考）：`stress.tscn` 平均 96.5 → 110.6 FPS、p95 13.4 → 11.4 ms；`status_stress.tscn` 78.0 → 83.2 FPS。
 - 视觉：`chapter_boss_gallery.gd`、`economy_gallery.gd`、`screens_gallery.gd` 通过；人工查看首领面板、粮签高亮、灵感拾取、进度条及同行美食／老鼠遮挡顺序正常。
 
-## 剩余问题
+## 后续处理（2026-09-27）
 
-- `tests/continuous_campaign_gallery.gd` 第 38 行在基线与本次均报越界：画廊仍假设 1-1 有小铺，现行设计仅大关间开放。不在回归清单内，本次未修改。
-- `main.gd` 的 `panel_open`／`layout_phase` 只写不读，信息面板恒隐藏但 `rebuild()` 仍构建其标签；测试依赖 `set_panel_open()` 与面板子节点，清理需先确认面板去留，本次未处理。
+- 用户确认不再需要右侧信息面板：删除 `panel`、`PANEL_RECT`、`panel_open`／`layout_phase`、`set_panel_open()` 与 `panel_label()`，`sync_panel_visibility()` 更名为 `sync_overlay_visibility()`，只保留小铺与存档重试遮罩逻辑。面板原本恒隐藏，点击、悬停和拖放中的面板区域判断恒为假，删除后行为不变。设计依据见 [UI 规范](../art/ui.md)。`test_ui.gd`／`test_shovel.gd` 移除面板断言，原面板区点击改为小铺区点击，长文案检查改为针对小铺食谱卡。
+- `tests/continuous_campaign_gallery.gd` 按现行小铺时机更新并通过，记录见 [连续战役验证](continuous_campaign.md#原生画面与鼠标)。

@@ -9,7 +9,6 @@ var damage_feedback: DamageFeedback = DamageFeedback.new()
 var status_feedback: StatusFeedback = StatusFeedback.new()
 var enemy_skill_feedback: EnemySkillFeedback = EnemySkillFeedback.new()
 const SHOP_RECT := Rect2(220, 82, 840, 556)
-const PANEL_RECT := Rect2(974, 180, 282, 444)
 const CARD_DRAG_THRESHOLD := 6.0
 const FOOD_ROLES := {"bun":"蒸汽输出", "toast":"前排守卫", "pudding":"热量生产", "tea":"冰霜减速", "pepper":"近距爆发", "popcorn":"范围清群", "noodles":"穿透输出", "garlic":"相邻增益"}
 var shop_overlay: Control
@@ -48,8 +47,6 @@ var first_clear_inspiration: int = 0
 var first_clear_key: String = ""
 var inspiration_pickup_view: InspirationPickupView
 var shovel_button: Button
-var panel_open: bool = true
-var layout_phase: String = ""
 var header: Label
 var operation_hint: Label
 var operation_hint_gold: bool = false
@@ -58,7 +55,6 @@ var wave_fill_style: StyleBoxFlat = GameTheme.box(GameTheme.ACCENT, 3)
 var wave_lost_style: StyleBoxFlat = GameTheme.box(GameTheme.DANGER, 3)
 var recipe_hint: Label
 var cards: HBoxContainer
-var panel: VBoxContainer
 var sound: SoundService
 var audio_settings: AudioSettings
 var inspect: Label
@@ -186,12 +182,6 @@ func _ready() -> void:
 	cards.position = Vector2(190, 6)
 	cards.add_theme_constant_override("separation", 8)
 	ui.add_child(cards)
-	panel = VBoxContainer.new()
-	panel.position = PANEL_RECT.position + Vector2(18, 18)
-	panel.size.x = 246
-	panel.add_theme_constant_override("separation", 10)
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	ui.add_child(panel)
 	heat_pickup_view = HeatPickupView.new()
 	heat_pickup_view.run = run
 	heat_pickup_view.projection = projection
@@ -307,26 +297,9 @@ func rebuild() -> void:
 	for child: Node in cards.get_children():
 		cards.remove_child(child)
 		child.queue_free()
-	for child: Node in panel.get_children():
-		panel.remove_child(child)
-		child.queue_free()
-	if layout_phase != run.state.phase:
-		panel_open = run.state.phase != "battle"
-		layout_phase = run.state.phase
-	panel_label({"prepare":"打烊小铺", "battle":"本局食谱", "won":"今夜，守住了", "lost":"明晚，再来"}.get(run.state.phase,""), 24, GameTheme.TEXT)
-	var victory_caption: String = "接续守卫完成 · 食堂安然无恙" if run.state.start_wave > 1 else "五大关告捷 · 食堂安然无恙"
-	panel_label({"prepare":"购买食谱，强化本局携带阵容", "battle":"已获得的加成持续生效", "won":victory_caption, "lost":"粮仓失守 · 换个阵容再试试"}.get(run.state.phase,""), 13, GameTheme.MUTED)
 	if run.shop.is_open():
 		build_shop()
 	save_retry_message.text = run.message
-	if run.state.phase in ["won","lost"]:
-		panel_label("今 夜 战 报", 13, GameTheme.GOLD)
-		for line: String in ["守卫时长        %.1f 分钟" % (run.state.elapsed/60.0), "击退鼠群        %d" % run.state.metrics.kills, "粮仓损失        %d" % run.state.metrics.leaks, "美食阵亡        %d" % run.state.metrics.deaths]:
-			panel_label(line, 18, GameTheme.TEXT)
-	var owned: Label = panel_label("已购食谱 %02d  ·  悬停查看" % run.state.recipes.size(), 13, GameTheme.MUTED)
-	owned.mouse_filter = Control.MOUSE_FILTER_STOP
-	owned.tooltip_text = "尚未购买食谱；在小铺用热量购买。" if run.state.recipes.is_empty() else "本局食谱\n"
-	for id: String in run.state.recipes: owned.tooltip_text += run.data.recipes[id].title + " · " + run.data.recipes[id].stats.description + "\n"
 	for id: String in run.state.cards:
 		var node: Button = Button.new()
 		var stats: Dictionary = run.data.foods[id].stats
@@ -403,15 +376,9 @@ func rebuild() -> void:
 			if event.is_action_pressed("board_select"): begin_card_drag(id))
 		cards.add_child(node)
 	cards.position.x = 190 + (632 - (run.state.cards.size() * 80 - 8)) * 0.5
-	sync_panel_visibility()
+	sync_overlay_visibility()
 
-func set_panel_open(value: bool) -> void:
-	panel_open = value
-	sync_panel_visibility()
-
-
-func sync_panel_visibility() -> void:
-	panel.visible = false
+func sync_overlay_visibility() -> void:
 	var show_shop: bool = run.shop.is_open()
 	var show_retry: bool = run.state.phase == "prepare" and not show_shop and not run.automatic_start_pending
 	if show_shop or show_retry:
@@ -580,14 +547,6 @@ func card_label(parent: Control, text: String, pos: Vector2, bounds: Vector2, fo
 	parent.add_child(caption)
 	return caption
 
-func panel_label(text: String, font_size: int, color: Color) -> Label:
-	var caption := Label.new()
-	caption.text = text
-	caption.add_theme_font_size_override("font_size", font_size)
-	caption.add_theme_color_override("font_color", color)
-	panel.add_child(caption)
-	return caption
-
 func _process(delta: float) -> void:
 	if damage_feedback.get_parent() == null:
 		add_child(damage_feedback)
@@ -681,7 +640,7 @@ func draw_wave_progress() -> void:
 
 func update_controls() -> void:
 	var phase: String = run.state.phase
-	sync_panel_visibility()
+	sync_overlay_visibility()
 	speed_button.text = "%.0f× 速度" % run.speed
 	speed_button.disabled = phase != "battle" or placement_modal_visible()
 	speed_button.set_pressed_no_signal(run.speed == 2.0)
@@ -750,7 +709,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if debug_enabled and event.is_action_pressed("debug_panel"): debug_window.popup_centered()
 	if event.is_action_pressed("board_select"):
 		if placement_modal_visible(): return
-		if panel.visible and PANEL_RECT.has_point(event.position): return
 		if collect_inspiration_at(event.position): return
 		var pickup_uid: int = heat_pickup_view.pickup_at(event.position)
 		if pickup_uid >= 0:
@@ -819,7 +777,6 @@ func _draw() -> void:
 	enemy_skill_feedback.draw_effects(self)
 	battle_art.hud(self, run.state, run.paused)
 	enemy_skill_feedback.draw_boss_panel(self)
-	if panel.visible: draw_style_box(panel_style, PANEL_RECT)
 	draw_wave_progress()
 	if drag_active:
 		var cell: Vector2i = projection.cell_at(pointer)
@@ -931,7 +888,6 @@ func by_row(items: Array) -> Array:
 func hovered_unit() -> Dictionary:
 	if drag_active: return {}
 	if shop_overlay.visible: return {}
-	if panel.visible and PANEL_RECT.has_point(pointer): return {}
 	var cell: Vector2i = projection.cell_at(pointer)
 	if cell.x < 0: return {}
 	return run.board.at(cell.y, cell.x)
@@ -967,7 +923,7 @@ func update_inspector() -> void:
 	inspect.position = Vector2(clampf(pointer.x + 16, 12, 908), clampf(pointer.y + 20, 180, 720 - inspect.size.y - 12))
 
 func hovered_enemy() -> Dictionary:
-	if drag_active or shop_overlay.visible or (panel.visible and PANEL_RECT.has_point(pointer)): return {}
+	if drag_active or shop_overlay.visible: return {}
 	# Reverse the renderer's lane and insertion order so the visible mouse wins.
 	for row: int in range(RunState.ROWS - 1, -1, -1):
 		for index: int in range(run.combat.enemies.size() - 1, -1, -1):
@@ -1087,7 +1043,7 @@ func cancel_card_drag() -> void:
 
 func drag_placement_error() -> String:
 	var cell: Vector2i = projection.cell_at(pointer)
-	if cell.x < 0 or (panel.visible and PANEL_RECT.has_point(pointer)):
+	if cell.x < 0:
 		return "移到棋盘格子 · 在此松手取消"
 	return run.board.placement_error(drag_card, cell.y, cell.x, run.paused)
 
@@ -1124,7 +1080,7 @@ func _input(event: InputEvent) -> void:
 				var cell: Vector2i = projection.cell_at(pointer)
 				cancel_card_drag()
 				get_viewport().set_input_as_handled()
-				if cell.x >= 0 and not (panel.visible and PANEL_RECT.has_point(pointer)):
+				if cell.x >= 0:
 					report(run.board.place(id, cell.y, cell.x, run.paused))
 			else:
 				# A click keeps selection; only a completed drag clears it.

@@ -21,7 +21,6 @@ func run_test() -> void:
 	scene.run.persistence = false
 	scene.run.new_run(25)
 	scene.run.start()
-	scene.set_panel_open(false)
 	scene.set_process(false)
 	await process_frame
 	await process_frame

@@ -8,14 +8,12 @@ var shovel_feedback: ShovelFeedback = ShovelFeedback.new()
 var damage_feedback: DamageFeedback = DamageFeedback.new()
 var status_feedback: StatusFeedback = StatusFeedback.new()
 var enemy_skill_feedback: EnemySkillFeedback = EnemySkillFeedback.new()
-const TOP_RECT := Rect2(12, -16, 1256, 100)
 const SHOP_RECT := Rect2(220, 82, 840, 556)
 const PANEL_RECT := Rect2(974, 180, 282, 444)
 const CARD_DRAG_THRESHOLD := 6.0
 const FOOD_ROLES := {"bun":"蒸汽输出", "toast":"前排守卫", "pudding":"热量生产", "tea":"冰霜减速", "pepper":"近距爆发", "popcorn":"范围清群", "noodles":"穿透输出", "garlic":"相邻增益"}
 var shop_overlay: Control
 var shop_surface: Panel
-var shop_items: HBoxContainer
 var shop_refresh: Button
 var save_retry_overlay: Control
 var save_retry_message: Label
@@ -47,12 +45,17 @@ var heat_label: Label
 var heat_pickup_view: HeatPickupView
 var inspiration_label: Label
 var first_clear_inspiration: int = 0
+var first_clear_key: String = ""
 var inspiration_pickup_view: InspirationPickupView
 var shovel_button: Button
 var panel_open: bool = true
 var layout_phase: String = ""
 var header: Label
 var operation_hint: Label
+var operation_hint_gold: bool = false
+var wave_bar_style: StyleBoxFlat = GameTheme.box(GameTheme.RAISED, 3)
+var wave_fill_style: StyleBoxFlat = GameTheme.box(GameTheme.ACCENT, 3)
+var wave_lost_style: StyleBoxFlat = GameTheme.box(GameTheme.DANGER, 3)
 var recipe_hint: Label
 var cards: HBoxContainer
 var panel: VBoxContainer
@@ -288,9 +291,13 @@ func report(error: String, success_cue: String = "") -> void:
 func rebuild() -> void:
 	if not is_inside_tree(): return
 	# Refresh the persisted chapter bonus with UI state changes, never from the frame loop.
-	first_clear_inspiration = 0
-	if run.persistence and run.state != null:
-		first_clear_inspiration = int(run.saves.load_meta(run.data).get("ledger", {}).get(run.state.run_id, {}).get("first_clear_reward", 0))
+	# The ledger bonus is only written while preparing or settling, so one read per battle suffices.
+	var bonus_key: String = "%s:%d:%s" % [run.state.run_id, run.state.global_wave(), run.state.phase] if run.persistence and run.state != null else ""
+	if bonus_key.is_empty():
+		first_clear_inspiration = 0
+	elif run.state.phase != "battle" or bonus_key != first_clear_key:
+		first_clear_inspiration = run.saves.first_clear_reward(run.state.run_id, run.data)
+	first_clear_key = bonus_key
 	if sound != null: sound.bind_run(run)
 	shovel_feedback.bind(run, projection, art)
 	status_feedback.bind(run, projection)
@@ -489,11 +496,6 @@ func build_shop() -> void:
 	budget.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var budget_note := card_label(shop_surface, "购物 / 布阵共用 · 准备时不恢复", Vector2(566, 79), Vector2(250, 22), 12, GameTheme.MUTED)
 	budget_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	shop_items = HBoxContainer.new()
-	shop_items.position = Vector2(24, 96)
-	shop_items.size = Vector2(792, 222)
-	shop_items.add_theme_constant_override("separation", 12)
-	shop_surface.add_child(shop_items)
 	var focus_buttons: Array[Button] = []
 	if run.state.choices.is_empty():
 		var has_candidates: bool = false
@@ -586,21 +588,6 @@ func panel_label(text: String, font_size: int, color: Color) -> Label:
 	panel.add_child(caption)
 	return caption
 
-func row_content(node: Button, texture: Texture2D, title: String, description: String, price: String = "") -> void:
-	var portrait := TextureRect.new()
-	portrait.texture = texture
-	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.position = Vector2(10, 10)
-	portrait.size = Vector2(38, 24)
-	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	node.add_child(portrait)
-	card_label(node, title, Vector2(56,10), Vector2(134,24), 16, GameTheme.MUTED if node.disabled else GameTheme.TEXT)
-	if not price.is_empty():
-		card_label(node, price, Vector2(191,12), Vector2(48,22), 13, GameTheme.MUTED if node.disabled else GameTheme.GOLD)
-	card_label(node, description, Vector2(12,48), Vector2(222,node.custom_minimum_size.y - 54), 12, GameTheme.MUTED, true)
-	if node.disabled: portrait.modulate.a = 0.45
-
 func _process(delta: float) -> void:
 	if damage_feedback.get_parent() == null:
 		add_child(damage_feedback)
@@ -629,22 +616,23 @@ func _process(delta: float) -> void:
 	inspiration_label.text = "%02d" % earned_inspiration()
 	inspiration_pickup_view.queue_redraw()
 	header.text = wave_status()
-	header.tooltip_text = "进度表示计划鼠潮的生成比例；满条后仍需清除全部余鼠。\n战斗中退出会回到本关开战前。\n" + owned_recipe_tooltip()
+	var recipe_tooltip: String = owned_recipe_tooltip()
+	header.tooltip_text = "进度表示计划鼠潮的生成比例；满条后仍需清除全部余鼠。\n战斗中退出会回到本关开战前。\n" + recipe_tooltip
 	operation_hint.text = operation_status()
-	operation_hint.add_theme_color_override("font_color", GameTheme.GOLD if shovel or not selected.is_empty() else GameTheme.MUTED)
+	# Theme overrides trigger a relayout even when unchanged, so only apply on transitions.
+	var hint_gold: bool = shovel or not selected.is_empty()
+	if hint_gold != operation_hint_gold:
+		operation_hint_gold = hint_gold
+		operation_hint.add_theme_color_override("font_color", GameTheme.GOLD if hint_gold else GameTheme.MUTED)
 	recipe_hint.text = "食谱 %02d · 悬停查看" % run.state.recipes.size()
-	recipe_hint.tooltip_text = owned_recipe_tooltip()
+	recipe_hint.tooltip_text = recipe_tooltip
 	update_controls()
 	feedback_remaining = maxf(0.0, feedback_remaining - delta)
 	update_inspector()
 	queue_redraw()
 
 func earned_inspiration() -> int:
-	var amount: int = run.state.collected_inspiration() + first_clear_inspiration
-	if run.state.rewards_enabled:
-		for index: int in range(run.state.reward_floor, mini(int(run.state.metrics.passed), run.data.scene_wave_count(run.state.scene_id))):
-			amount += run.state.inspiration_for_wave(index, run.data)
-	return amount
+	return run.state.earned_inspiration(run.data, first_clear_inspiration)
 
 func owned_recipe_tooltip() -> String:
 	if run.state.recipes.is_empty(): return "尚未购买食谱。大关通关后可在小铺用热量购买，持续至本局结束。"
@@ -682,10 +670,10 @@ func wave_status() -> String:
 
 func draw_wave_progress() -> void:
 	var bar := Rect2(948, 714, 300, 3)
-	draw_style_box(GameTheme.box(GameTheme.RAISED, 3), bar)
+	draw_style_box(wave_bar_style, bar)
 	var fill_width: float = bar.size.x * wave_progress()
 	if fill_width > 0:
-		draw_style_box(GameTheme.box(GameTheme.DANGER if run.state.phase == "lost" else GameTheme.ACCENT, 3), Rect2(bar.position, Vector2(fill_width,bar.size.y)))
+		draw_style_box(wave_lost_style if run.state.phase == "lost" else wave_fill_style, Rect2(bar.position, Vector2(fill_width,bar.size.y)))
 	for index: int in range(1,8):
 		var x: float = bar.position.x + bar.size.x * index / 8.0
 		draw_line(Vector2(x,bar.position.y),Vector2(x,bar.end.y),GameTheme.BG,2)
@@ -701,8 +689,9 @@ func update_controls() -> void:
 	if phase not in ["prepare", "battle"]: shovel = false
 	shovel_button.set_pressed_no_signal(shovel)
 	update_shovel_cursor()
+	var card_ids: Array = run.state.cards.keys()
 	for index: int in range(cards.get_child_count()):
-		var id: String = run.state.cards.keys()[index]
+		var id: String = card_ids[index]
 		var card: Button = cards.get_child(index)
 		card.set_pressed_no_signal(id == selected)
 		card.get_node("Selection").visible = id == selected
@@ -803,19 +792,20 @@ func _draw() -> void:
 		var reach: float = minf(run.recipes.reach(hovered.id) * 96, RunState.BOARD_WIDTH - start_x)
 		draw_colored_polygon(projection.polygon(Rect2(start_x, hovered.row * 96, reach, 96)), Color(0.5, 0.85, 0.9, 0.14))
 	# Draw each lane back to front; all objects share the same projected ground.
+	# Bucket once so each list is walked a single time instead of once per lane.
+	var food_corpses: Array = by_row(animator.food_corpses)
+	var units: Array = by_row(run.state.units)
+	var mouse_corpses: Array = by_row(animator.corpses)
+	var enemies: Array = by_row(run.combat.enemies)
+	var shots: Array = by_row(run.combat.projectiles)
 	for row: int in range(RunState.ROWS):
-		for corpse: Dictionary in animator.food_corpses:
-			if corpse.row == row: draw_food(corpse)
-		for unit: Dictionary in run.state.units:
-			if unit.row == row: draw_food(unit)
-		for corpse: Dictionary in animator.corpses:
-			if corpse.row == row: draw_mouse(corpse)
-		for enemy: Dictionary in run.combat.enemies:
-			if enemy.row == row: draw_mouse(enemy)
-		for shot: Dictionary in run.combat.projectiles:
-			if shot.row == row:
-				var pos: Vector2 = projection.foot(shot.x, row) - Vector2(0, 27 * projection.depth_scale(row))
-				ProjectileArt.draw_shot(self, shot, pos, projection.depth_scale(row))
+		for corpse: Dictionary in food_corpses[row]: draw_food(corpse)
+		for unit: Dictionary in units[row]: draw_food(unit)
+		for corpse: Dictionary in mouse_corpses[row]: draw_mouse(corpse)
+		for enemy: Dictionary in enemies[row]: draw_mouse(enemy)
+		for shot: Dictionary in shots[row]:
+			var pos: Vector2 = projection.foot(shot.x, row) - Vector2(0, 27 * projection.depth_scale(row))
+			ProjectileArt.draw_shot(self, shot, pos, projection.depth_scale(row))
 	if run.state.phase == "battle":
 		for row: int in run.director.warning_rows():
 			text_at(projection.foot(RunState.BOARD_WIDTH + 7, row) + Vector2(0, -8),"◀",Color("ffbe75"), 20)
@@ -929,15 +919,14 @@ func draw_actor(texture: Texture2D, foot: Vector2, size: Vector2, uid: int, pose
 	damage_feedback.capture_actor(uid, texture, foot, size, pose, depth)
 	draw_set_transform(Vector2.ZERO)
 
-func panel_button(title: String, action: Callable, tip: String = "") -> Button:
-	var node: Button = Button.new()
-	node.text = title
-	node.tooltip_text = tip
-	node.custom_minimum_size = Vector2(246,36)
-	node.pressed.connect(action)
-	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	panel.add_child(node)
-	return node
+# Splits items into per-lane arrays, preserving list order and skipping off-board rows.
+func by_row(items: Array) -> Array:
+	var lanes: Array = []
+	for row: int in range(RunState.ROWS): lanes.append([])
+	for item: Dictionary in items:
+		var row: int = int(item.row)
+		if row >= 0 and row < RunState.ROWS: lanes[row].append(item)
+	return lanes
 
 func hovered_unit() -> Dictionary:
 	if drag_active: return {}

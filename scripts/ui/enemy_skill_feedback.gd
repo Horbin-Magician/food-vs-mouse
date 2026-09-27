@@ -6,6 +6,10 @@ const TINTS: Dictionary = {"dash": Color("7de0d0"), "switch": Color("9be7ff"), "
 const LABELS: Dictionary = {"dash": "起跑", "switch": "换路", "heavy": "重砸", "acid": "酸滴", "proof": "醒面", "ration": "配给", "order": "粮签"}
 const IMPACTS: Array[String] = ["dash", "switch", "heavy", "acid", "proof", "ration", "order", "shield", "exposed", "armor_break", "skewer", "order_success", "order_failed"]
 const BOSS_RECT := Rect2(1028, 112, 230, 240)
+# Shared read-only styles; building StyleBoxFlat inside draw calls allocates every frame.
+var boss_panel_style: StyleBoxFlat = GameTheme.box(Color("182f35"), 12, GameTheme.BORDER)
+var order_style: StyleBoxFlat = GameTheme.box(GameTheme.RAISED, 4, GameTheme.BORDER)
+var order_active_style: StyleBoxFlat = GameTheme.box(GameTheme.RAISED, 4, GameTheme.GOLD)
 var run: RunController
 var combat: CombatController
 var projection: BoardProjection
@@ -196,7 +200,7 @@ func draw_boss_panel(canvas: Node2D) -> void:
 	if run.state.phase != "battle": return
 	var boss: Dictionary = active_boss()
 	if boss.is_empty() or boss.id == "boss": return
-	canvas.draw_style_box(GameTheme.box(Color("182f35"), 12, GameTheme.BORDER), BOSS_RECT)
+	canvas.draw_style_box(boss_panel_style, BOSS_RECT)
 	var origin: Vector2 = BOSS_RECT.position + Vector2(14, 24)
 	var title: String = combat.enemy_title(boss.id)
 	text(canvas, origin, title, GameTheme.GOLD, 16)
@@ -214,7 +218,7 @@ func draw_boss_panel(canvas: Node2D) -> void:
 		var index: int = int(boss.get("order_index", -1))
 		for i: int in range(3):
 			var p: Vector2 = origin + Vector2(i * 68, 107)
-			canvas.draw_style_box(GameTheme.box(GameTheme.RAISED, 4, GameTheme.GOLD if i == index else GameTheme.BORDER), Rect2(p, Vector2(61, 27)))
+			canvas.draw_style_box(order_active_style if i == index else order_style, Rect2(p, Vector2(61, 27)))
 			text(canvas, p + Vector2(6, 18), names[i], GameTheme.GOLD if i == index else GameTheme.MUTED, 12)
 		text(canvas, origin + Vector2(0, 156), "余 %d 单 · %s" % [int(boss.get("order_remaining", 3)), {"idle": "等待粮签", "warning": "第 3 / 5 行来援", "active": "护送 %.1fs" % boss.get("order_time", 0.0), "success": "签收口粮", "failed": "断单露出破绽", "done": "订单已结束"}.get(boss.get("order_status", "idle"), "")], GameTheme.ACCENT, 12)
 	else:

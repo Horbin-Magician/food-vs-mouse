@@ -26,6 +26,8 @@ var food_corpses: Array[Dictionary] = []
 var entries: Dictionary = {}
 var state: RunState
 var projection: BoardProjection
+var board: BoardController
+var combat: CombatController
 var time: float = 0.0
 var phase: String = ""
 
@@ -38,14 +40,19 @@ func bind(run: RunController, board_projection: BoardProjection) -> void:
 	food_corpses.clear()
 	time = 0.0
 	phase = state.phase
-	run.board.placed.connect(appear)
-	run.board.moved.connect(move)
-	run.combat.spawned.connect(appear)
-	run.combat.acted.connect(act)
-	run.combat.enemy_hurt.connect(hurt)
-	run.combat.enemy_fallen.connect(fall)
-	run.combat.food_hurt.connect(food_hurt)
-	run.combat.food_fallen.connect(food_fall)
+	# Release the previous controllers so a reused board or combat is never connected twice.
+	set_connections(false)
+	board = run.board
+	combat = run.combat
+	set_connections(true)
+
+func set_connections(enabled: bool) -> void:
+	if board == null or combat == null: return
+	var links: Array = [[board.placed, appear], [board.moved, move], [combat.spawned, appear], [combat.acted, act], [combat.enemy_hurt, hurt], [combat.enemy_fallen, fall], [combat.food_hurt, food_hurt], [combat.food_fallen, food_fall]]
+	for link: Array in links:
+		var sig: Signal = link[0]
+		if enabled and not sig.is_connected(link[1]): sig.connect(link[1])
+		elif not enabled and sig.is_connected(link[1]): sig.disconnect(link[1])
 
 func entry(unit: Dictionary) -> Dictionary:
 	if not entries.has(unit.uid):

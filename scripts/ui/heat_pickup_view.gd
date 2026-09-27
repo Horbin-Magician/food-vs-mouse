@@ -30,12 +30,14 @@ func pickup_at(point: Vector2) -> int:
 
 func _draw() -> void:
 	if run.state == null or run.state.phase != "battle": return
+	# Hit-test once per frame; each pickup_at call scans every pickup.
+	var hovered_uid: int = pickup_at(get_global_mouse_position())
 	for pickup: Dictionary in run.combat.heat_pickups:
 		var pos: Vector2 = pickup_position(pickup)
 		var flying: bool = pickup.flight >= 0.0
 		var progress: float = clampf(pickup.flight / run.data.rules.heat_flight_duration, 0.0, 1.0)
 		var scale_value: float = lerpf(1.0, 0.45, progress) if flying else lerpf(0.6, 1.0, clampf(pickup.age / POP_DURATION, 0.0, 1.0))
-		var hovered: bool = not flying and pickup_at(get_global_mouse_position()) == pickup.uid
+		var hovered: bool = not flying and hovered_uid == pickup.uid
 		draw_circle(pos, (25.0 if hovered else 22.0) * scale_value, Color(1.0, 0.62, 0.15, 0.2))
 		draw_circle(pos, 17.0 * scale_value, Color(1.0, 0.77, 0.28, 0.16))
 		var size_value: Vector2 = Vector2(32, 38) * scale_value

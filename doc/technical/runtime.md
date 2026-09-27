@@ -76,3 +76,12 @@ DifficultyDef 与 RunState.difficulty、RunController.new_run 的整局难度参
 ## 灵感掉落与热量经济（2026-09-26）
 
 热量跨关保留并用于食谱／刷新，金币删除。CombatController 独立掉落 RNG、拾取物与飞行计时；RunController.collect_inspiration 先调用 SaveService.collect_inspiration 成功记账，再启动飞行；同关重新开始以最高收集累计防刷。失败写入保持拾取物，关末自动收取若失败则暂停并允许恢复后重试；粮仓归零仍优先判负。SaveService 在 v2 快照与流水添加可选 inspiration_collected 字典，旧 coins 忽略，既有余额与奖励保留。权威边界与参数见 [经济设计](../design/economy.md)。
+
+## 战斗查询索引（2026-09-27）
+
+纯性能约定，不改变结算规则或顺序；验证见 [代码性能与清理](../testing/code_optimization.md)。
+
+- **敌人存活**：`CombatController.alive` 以 uid 映射当前在场的敌人字典，`is_alive(enemy)` 按对象身份判定，取代 `enemies.has()` 的逐项内容比较。`enemies` 的增删只能经过 `spawn()`、`clear()` 及漏怪／死亡结算，两处数组和映射需同步维护；测试和其他模块不得直接修改 `enemies`。
+- **美食相邻**：`RecipeSystem.index_units()` 为当前 `state.units` 建立「美食 ID → 占用格」快照，`adjacent()` 在快照有效时做四邻查找，否则回退全表扫描。调用方负责在快照期间不增删或移动美食，结束时调用 `clear_index()`。当前仅战斗步美食行动循环和 `StatusFeedback.refresh()` 使用；该循环内伤害只作用于敌人，美食的移除和换位只发生在敌人行动、地面效果及棋盘操作中。
+- **首通灵感**：战斗 HUD 每场战斗只读取一次账本中的 `first_clear_reward`，准备、胜败阶段仍每次重读；该值只在准备存档和最终结算时写入。
+

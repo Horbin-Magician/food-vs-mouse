@@ -6,6 +6,7 @@
 
 | 文档 | 用途 | 状态 |
 |---|---|---|
+| [testing/code_optimization.md](testing/code_optimization.md) | 帧内绘制、战斗查询索引、重复逻辑与死代码清理，五项旧断言修正及前后确定性与性能对比 | 已实现；47 项回归通过，32 小关确定性一致 |
 | [testing/chapter_enemy_edges.md](testing/chapter_enemy_edges.md) | 新鼠 37 张图集、780 帧边界碎片修复及复验 | 透明边、尺寸、4 项回归与双尺寸原生画面通过 |
 | [testing/food_attack_speed.md](testing/food_attack_speed.md) | 全部攻击美食攻速降低 50% 的配置与回归验证 | 配置及七组回归通过；整局平衡未重验 |
 | [testing/food_damage.md](testing/food_damage.md) | 全部美食及食谱灼烧两次减半的配置与回归验证 | 本轮配置及六组回归通过；整局平衡未重验 |

@@ -57,7 +57,7 @@ func prepare(delta: float) -> void:
 	refresh_proof()
 
 func tick(enemy: Dictionary, delta: float) -> void:
-	if not combat.enemies.has(enemy) or enemy.hp <= 0: return
+	if not combat.is_alive(enemy) or enemy.hp <= 0: return
 	var kind: String = behavior(enemy)
 	if kind == "legacy": return
 	var skills: Dictionary = configuration(enemy)
@@ -285,7 +285,7 @@ func after_attack(enemy: Dictionary, primary: Dictionary, original: float) -> vo
 	_event("skewer", enemy, [primary, second])
 
 func after_damage(enemy: Dictionary, previous_shield: float, previous_armor: int) -> void:
-	if not combat.enemies.has(enemy) or enemy.hp <= 0: return
+	if not combat.is_alive(enemy) or enemy.hp <= 0: return
 	var kind: String = behavior(enemy)
 	var skills: Dictionary = configuration(enemy)
 	if previous_armor > 0 and enemy.armor <= 0 and skills.has("unarmored_speed"):

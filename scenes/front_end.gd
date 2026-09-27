@@ -308,7 +308,8 @@ func show_result() -> void:
 	result_stat("本局通过", "%d / %d" % [maxi(0,int(state.metrics.passed)-state.start_wave+1),total-state.start_wave+1], Vector2(792, 172), GameTheme.GOLD)
 	result_stat("击退鼠群", str(state.metrics.kills), Vector2(976, 172))
 	result_stat("守卫时间", "%02d:%02d" % [int(state.elapsed) / 60, int(state.elapsed) % 60], Vector2(792, 266))
-	result_stat("本局灵感 · 跨局保留", "+%d" % run_inspiration(state), Vector2(976, 266), GameTheme.ACCENT)
+	var clear_reward: int = saves.first_clear_reward(state.run_id, data)
+	result_stat("本局灵感 · 跨局保留", "+%d" % state.earned_inspiration(data, clear_reward), Vector2(976, 266), GameTheme.ACCENT)
 	text_line("粮仓损失 %d   ·   美食阵亡 %d   ·   食谱 %d" % [state.metrics.leaks, state.metrics.deaths, state.recipes.size()], Vector2(792, 360), Vector2(356, 30), 14, GameTheme.MUTED)
 	divider(Vector2(792, 400), 356)
 	action("再守一夜  ·  调整阵容  →", Vector2(792, 420), func() -> void: leave_result("new"), true).name = "PlayAgain"
@@ -316,7 +317,6 @@ func show_result() -> void:
 	var back := action("返回主菜单", Vector2(792, 550), func() -> void: leave_result("menu"))
 	back.size.y = 40
 	back.add_theme_font_size_override("font_size", 15)
-	var clear_reward: int = int(saves.load_meta(data).get("ledger", {}).get(state.run_id, {}).get("first_clear_reward", 0))
 	var report_message: String = game.run.message
 	if clear_reward > 0:
 		report_message += " 本局大关首通共 +%d 灵感。" % clear_reward
@@ -337,12 +337,7 @@ func leave_result(destination: String) -> void:
 	elif destination == "cards": show_hub("shop")
 
 func run_inspiration(state: RunState) -> int:
-	var amount: int = state.collected_inspiration()
-	if state.rewards_enabled:
-		for index: int in range(state.reward_floor,mini(int(state.metrics.passed),data.scene_wave_count(state.scene_id))):
-			amount += state.inspiration_for_wave(index, data)
-	amount += int(saves.load_meta(data).get("ledger", {}).get(state.run_id, {}).get("first_clear_reward", 0))
-	return amount
+	return state.earned_inspiration(data, saves.first_clear_reward(state.run_id, data))
 
 func open_settings() -> void:
 	if audio_settings.visible: return

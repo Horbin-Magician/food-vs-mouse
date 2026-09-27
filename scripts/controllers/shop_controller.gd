@@ -1,7 +1,6 @@
 class_name ShopController
 extends RefCounted
 
-signal card_upgraded(food_id: String, star: int)
 var state: RunState
 var data: Catalog
 var board: BoardController

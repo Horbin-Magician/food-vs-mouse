@@ -64,7 +64,8 @@ func _init() -> void:
 			if boundary:
 				assert(run.state.wave == 1 and run.state.heat == 321.0 and run.state.pantry == 7)
 				assert(run.state.units.size() == 1 and run.state.units[0].hp == 127.0)
-				assert(run.state.units[0].timer == 0.0 and run.state.units[0].flour == 0.0)
+				# Chapter transitions keep the battlefield running; only final win or loss clears it.
+				assert(run.state.units[0].timer == 2.0 and run.state.units[0].flour == 2.0)
 				assert(saves.load_meta(data).chapter_clears.size() == stage / 8)
 				var before: Dictionary = saves.load_meta(data)
 				assert(run.resume_run() and run.persist())

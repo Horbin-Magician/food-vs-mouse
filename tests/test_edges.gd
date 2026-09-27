@@ -63,7 +63,7 @@ func _init() -> void:
 	run.state.recipes = ["burn","ice"]
 	enemy.burn_time = 3.0
 	for i: int in range(181): run.combat.step(1.0/60.0)
-	assert(is_equal_approx(enemy.hp,242.0) and enemy.armor == 3,"burn three ticks ignores armor")
+	assert(is_equal_approx(enemy.hp,260.0 - 3.0 * run.recipes.value("burn","damage")) and enemy.armor == 3,"burn three ticks ignores armor")
 	run.combat.hit({"source":"tea","damage":12.0,"radius":0.0},enemy)
 	assert(enemy.slow == 0.4)
 	var timer: float = enemy.slow_time

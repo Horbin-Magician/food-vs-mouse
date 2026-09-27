@@ -439,6 +439,9 @@ func collect_inspiration(state: RunState, wave_total: int, data: Catalog) -> boo
 	state.inspiration_collected = collected_maximum(state.inspiration_collected, collected)
 	return true
 
+func first_clear_reward(run_id: String, data: Catalog) -> int:
+	return int(load_meta(data).get("ledger", {}).get(run_id, {}).get("first_clear_reward", 0))
+
 func ledger_entry(meta: Dictionary, state: RunState) -> Dictionary:
 	return meta.ledger.get(state.run_id, {"scene_id":state.scene_id,"start_wave":state.start_wave,"chapter_id":state.chapter_id,"passed":state.reward_floor,"settled":false,"cleared_chapters":[],"first_clear_rewards":{},"first_clear_reward":0})
 

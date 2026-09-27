@@ -8,8 +8,8 @@ class NoStatusDrawing extends StatusFeedback:
 func _ready() -> void:
 	super._ready()
 	run.state.recipes.assign(["breakfast", "crust", "pressure", "burn", "cold_spice", "wide"])
+	run.combat.clear()
 	for unit: Dictionary in run.state.units: unit.flour = 60.0
-	run.combat.enemies.clear()
 	for i: int in range(100):
 		run.combat.spawn("drummer" if i % 10 == 0 else "lid", i % 5, run.data.waves[7])
 		var enemy: Dictionary = run.combat.enemies[-1]

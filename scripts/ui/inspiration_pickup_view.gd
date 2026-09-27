@@ -38,12 +38,14 @@ func sparkle(pos: Vector2, radius: float, color: Color) -> void:
 
 func _draw() -> void:
 	if run.state == null or run.state.phase != "battle": return
+	# Hit-test once per frame; each pickup_at call scans every pickup.
+	var hovered_uid: int = pickup_at(get_global_mouse_position())
 	for pickup: Dictionary in run.combat.inspiration_pickups:
 		var pos: Vector2 = pickup_position(pickup)
 		var flying: bool = pickup.flight >= 0.0
 		var progress: float = clampf(pickup.flight / run.data.progression.inspiration_flight_duration, 0.0, 1.0)
 		var scale_value: float = lerpf(1.0, 0.45, progress) if flying else lerpf(0.6, 1.0, clampf(pickup.age / POP_DURATION, 0.0, 1.0))
-		var hovered: bool = not flying and pickup_at(get_global_mouse_position()) == pickup.uid
+		var hovered: bool = not flying and hovered_uid == pickup.uid
 		draw_circle(pos, (26.0 if hovered else 23.0) * scale_value, Color(VIOLET, 0.22))
 		draw_circle(pos, 17.0 * scale_value, Color(VIOLET, 0.18))
 		sparkle(pos, 20.0 * scale_value, VIOLET)

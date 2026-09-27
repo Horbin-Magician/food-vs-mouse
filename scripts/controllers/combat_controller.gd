@@ -23,6 +23,8 @@ var rng: RandomNumberGenerator
 var warning_summons: Array[Dictionary] = []
 var current_wave: Resource
 var enemies: Array = []
+# uid -> live enemy; identity lookup instead of content-comparing Array.has().
+var alive: Dictionary = {}
 var projectiles: Array = []
 var heat_pickups: Array[Dictionary] = []
 var inspiration_pickups: Array[Dictionary] = []
@@ -52,6 +54,7 @@ func clear(preserve_heat: bool = false) -> void:
 	abilities.clear()
 	warning_summons.clear()
 	enemies.clear()
+	alive.clear()
 	projectiles.clear()
 	if not preserve_heat: heat_pickups.clear()
 	inspiration_pickups.clear()
@@ -74,6 +77,7 @@ func spawn(id: String, row: int, wave: Resource) -> Dictionary:
 	damage_scale *= difficulty.damage_multiplier
 	var enemy: Dictionary = {"uid": state.uid(), "id": id, "wave":wave, "rank":definition.rank, "art_id":definition.art_id, "hp_scale":hp_scale, "damage_scale":damage_scale, "row": row, "x": float(RunState.BOARD_WIDTH + 52), "hp": stats.hp * hp_scale, "max_hp": stats.hp * hp_scale, "dps": stats.dps * damage_scale, "summon": 0.0, "rage": false, "slow": 0.0, "slow_time": 0.0, "burn_time": 0.0, "burn_tick": 0.0, "armor": stats.get("armor_hits", 0), "timer": 0.0, "flash": 0.0}
 	enemies.append(enemy)
+	alive[enemy.uid] = enemy
 	abilities.setup(enemy)
 	spawned.emit(enemy)
 	return enemy
@@ -142,7 +146,8 @@ func advance_inspiration_pickups(delta: float) -> void:
 
 func step(delta: float) -> void:
 	if delta <= 0 or not is_finite(delta): return
-	if abilities.has_active_content():
+	# A single fixed-rate frame is already one slice; skip the per-enemy content scan.
+	if delta > 1.0 / 60.0 and abilities.has_active_content():
 		var remaining: float = delta
 		while remaining > 0.000001:
 			var slice: float = minf(remaining, 1.0 / 60.0)
@@ -159,6 +164,8 @@ func _step(delta: float) -> void:
 	advance_inspiration_pickups(delta)
 	for id: String in state.cooldowns:
 		state.cooldowns[id] = maxf(0.0, state.cooldowns[id] - delta)
+	# Food never moves or dies inside this loop, so adjacency can use a snapshot.
+	recipes.index_units()
 	for unit: Dictionary in state.units.duplicate():
 		unit.flash = maxf(0.0, unit.flash - delta)
 		unit.flour = maxf(0.0,unit.flour - delta)
@@ -184,13 +191,17 @@ func _step(delta: float) -> void:
 			damage_enemy(target,recipes.damage(unit),unit.id)
 		else:
 			projectiles.append({"row": unit.row, "x": unit.col * 96.0 + 48.0, "damage": recipes.damage(unit), "source": unit.id, "radius": recipes.radius(unit) * 96.0, "remaining": stats.get("pierce",1), "hit": []})
+	recipes.clear_index()
 	for projectile: Dictionary in projectiles.duplicate():
 		var distance: float = data.rules.projectile_speed * delta
-		var targets: Array = enemies.filter(func(e: Dictionary) -> bool: return e.row == projectile.row and e.x >= projectile.x - 15.0 and e.x <= projectile.x + distance + 15.0 and e.uid not in projectile.hit)
+		var targets: Array = []
+		for e: Dictionary in enemies:
+			if e.row == projectile.row and e.x >= projectile.x - 15.0 and e.x <= projectile.x + distance + 15.0 and e.uid not in projectile.hit:
+				targets.append(e)
 		targets.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return a.x < b.x)
 		projectile.x += distance
 		for target: Dictionary in targets:
-			if not enemies.has(target): continue
+			if not is_alive(target): continue
 			projectile.hit.append(target.uid)
 			hit(projectile,target)
 			projectile.remaining -= 1
@@ -207,12 +218,12 @@ func _step(delta: float) -> void:
 			if enemy.burn_tick + 0.000001 >= data.rules.burn_tick:
 				enemy.burn_tick -= data.rules.burn_tick
 				damage_enemy(enemy,recipes.value("burn","damage"),"pepper",false)
-				if not enemies.has(enemy): continue
+				if not is_alive(enemy): continue
 	# Resolve every enemy's incoming damage before any due ability or ground burst.
 	var acting: Array = enemies.duplicate()
 	acting.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.uid < b.uid)
 	for enemy: Dictionary in acting:
-		if not enemies.has(enemy): continue
+		if not is_alive(enemy): continue
 		abilities.tick(enemy, delta)
 		if enemy.id == "boss":
 			enemy.summon += delta
@@ -220,16 +231,19 @@ func _step(delta: float) -> void:
 			if enemy.summon + 0.000001 >= summon_interval:
 				enemy.summon = maxf(0.0, enemy.summon - summon_interval)
 				request_summons(boss_configuration(enemy).get("rage_id" if enemy.rage else "normal_id", "gray"), enemy)
-		var blocker: Dictionary = blocker_for(enemy)
+		# One unit scan serves both the contact test and the movement clamp.
+		var ahead: Dictionary = blocker_ahead(enemy)
+		var blocker: Dictionary = blocker_in_contact(enemy, ahead)
 		if not blocker.is_empty(): abilities.on_blocked(enemy, blocker)
 		if blocker.is_empty():
 			enemy.timer = 0.0
 			if abilities.can_move(enemy):
 				var next_x: float = enemy.x - abilities.movement_speed(enemy) * movement_multiplier(enemy, drummers) * (1.0-enemy.slow) * delta
-				var ahead: Dictionary = blocker_ahead(enemy)
 				if not ahead.is_empty(): next_x = maxf(next_x, ahead.col * 96.0 + 96.0)
+				# Moving left cannot uncover a nearer unit, so the earlier scan stays valid.
+				var moved_back: bool = next_x > enemy.x
 				enemy.x = next_x
-				var reached: Dictionary = blocker_for(enemy)
+				var reached: Dictionary = blocker_for(enemy) if moved_back else blocker_in_contact(enemy, ahead)
 				if not reached.is_empty(): abilities.on_blocked(enemy, reached)
 		elif abilities.can_attack(enemy):
 			enemy.timer += delta
@@ -243,6 +257,7 @@ func _step(delta: float) -> void:
 		if enemy.x < 0.0:
 			abilities.removed(enemy, true)
 			enemies.erase(enemy)
+			alive.erase(enemy.uid)
 			var loss: int = data.enemies[enemy.id].stats.leak
 			state.pantry = maxi(0, state.pantry - loss)
 			state.leaks += loss
@@ -259,8 +274,13 @@ func blocker_ahead(enemy: Dictionary) -> Dictionary:
 	return result
 
 func blocker_for(enemy: Dictionary) -> Dictionary:
-	var result: Dictionary = blocker_ahead(enemy)
-	return result if not result.is_empty() and enemy.x - (result.col * 96.0 + 48.0) <= 48.000001 else {}
+	return blocker_in_contact(enemy, blocker_ahead(enemy))
+
+func blocker_in_contact(enemy: Dictionary, ahead: Dictionary) -> Dictionary:
+	return ahead if not ahead.is_empty() and enemy.x - (ahead.col * 96.0 + 48.0) <= 48.000001 else {}
+
+func is_alive(enemy: Dictionary) -> bool:
+	return is_same(alive.get(enemy.get("uid", -1)), enemy)
 
 func nearest(row: int, x: float, reach: float) -> Dictionary:
 	var result: Dictionary = {}
@@ -270,7 +290,7 @@ func nearest(row: int, x: float, reach: float) -> Dictionary:
 	return result
 
 func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool = true) -> void:
-	if not enemies.has(enemy) or enemy.hp <= 0.0 or amount <= 0.0 or not is_finite(amount): return
+	if not is_alive(enemy) or enemy.hp <= 0.0 or amount <= 0.0 or not is_finite(amount): return
 	if direct and source == "pepper" and enemy.slow_time > 0:
 		amount *= recipes.value("cold_spice","multiplier",1.0)
 		if recipes.has("cold_spice"): skill_used.emit("cold_spice", enemy, [])
@@ -306,6 +326,7 @@ func damage_enemy(enemy: Dictionary, amount: float, source: String, direct: bool
 		enemy_fallen.emit(enemy)
 		abilities.removed(enemy)
 		enemies.erase(enemy)
+		alive.erase(enemy.uid)
 		warning_summons = warning_summons.filter(func(warning: Dictionary) -> bool: return warning.caster != enemy.uid)
 		drop_inspiration(enemy)
 		state.metrics.kills += 1
@@ -329,7 +350,7 @@ func damage_unit(unit: Dictionary, amount: float, direct: bool = true) -> void:
 		unit_died.emit(unit.id)
 
 func hit(projectile: Dictionary, target: Dictionary) -> void:
-	if not enemies.has(target): return
+	if not is_alive(target): return
 	var affected: Array = [target]
 	if projectile.radius > 0:
 		affected = enemies.filter(func(e: Dictionary) -> bool: return e.row == target.row and absf(e.x-target.x) <= projectile.radius)
@@ -339,7 +360,7 @@ func hit(projectile: Dictionary, target: Dictionary) -> void:
 	for enemy: Dictionary in affected:
 		var multiplier: float = recipes.value("burst","multiplier",1.0) if projectile.source == "popcorn" and enemy.uid == target.uid else 1.0
 		damage_enemy(enemy,projectile.damage * multiplier,projectile.source)
-		if not enemies.has(enemy): continue
+		if not is_alive(enemy): continue
 		if projectile.source == "tea":
 			enemy.slow = maxf(enemy.slow,recipes.value("ice","slow",data.foods.tea.stats.slow))
 			enemy.slow_time = data.foods.tea.stats.slow_duration
@@ -349,7 +370,7 @@ func hit(projectile: Dictionary, target: Dictionary) -> void:
 
 func summon_pair(id: String, caster: Dictionary = {}) -> void:
 	if not data.enemies.has(id) or current_wave == null: return
-	if not caster.is_empty() and not enemies.has(caster): return
+	if not caster.is_empty() and not is_alive(caster): return
 	var first: int = rng.randi_range(0,RunState.ROWS-1)
 	var second: int = rng.randi_range(0,RunState.ROWS-2)
 	if second >= first: second += 1
@@ -381,7 +402,7 @@ func enemy_title(id: String) -> String:
 	return boss_configuration().get("title", data.enemies[id].title) if id == "boss" else data.enemies[id].title
 
 func request_summons(id: String, caster: Dictionary) -> void:
-	if not data.enemies.has(id) or not enemies.has(caster) or caster.hp <= 0: return
+	if not data.enemies.has(id) or not is_alive(caster) or caster.hp <= 0: return
 	var configuration: Dictionary = boss_configuration(caster)
 	if configuration.is_empty():
 		summon_pair(id, caster)

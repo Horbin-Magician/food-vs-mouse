@@ -68,6 +68,14 @@ func inspiration_for_wave(index: int, data: Catalog) -> int:
 	if not rewards_enabled: return 0
 	return int(inspiration_earned.get(str(index + 1), data.progression.inspiration_rewards[index % data.progression.inspiration_rewards.size()]))
 
+# Inspiration shown for this run: pickups, unsettled wave rewards and the persisted chapter first-clear bonus.
+func earned_inspiration(data: Catalog, first_clear_reward: int) -> int:
+	var amount: int = collected_inspiration() + first_clear_reward
+	if rewards_enabled:
+		for index: int in range(reward_floor, mini(int(metrics.passed), data.scene_wave_count(scene_id))):
+			amount += inspiration_for_wave(index, data)
+	return amount
+
 func collected_inspiration() -> int:
 	var total: int = 0
 	for amount: Variant in inspiration_collected.values(): total += int(amount)

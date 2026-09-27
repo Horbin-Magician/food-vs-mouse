@@ -65,6 +65,7 @@ func advance(delta: float) -> void:
 func refresh() -> void:
 	dense = combat.enemies.size() > 45
 	statuses.clear()
+	recipes.index_units()
 	for unit: Dictionary in state.units:
 		var active: Array[String] = []
 		var attacking: bool = combat.data.foods[unit.id].stats.kind in ["shot", "melee"]
@@ -74,6 +75,7 @@ func refresh() -> void:
 		if unit.id == "toast" and recipes.has("crust"): active.append("crust")
 		if unit.id == "bun" and recipes.has("pressure") and (unit.attacks + 1) % int(recipes.value("pressure", "every")) == 0: active.append("pressure")
 		statuses[unit.uid] = active
+	recipes.clear_index()
 	var drummers: Array = combat.enemies.filter(func(enemy: Dictionary) -> bool: return enemy.id == "drummer")
 	for enemy: Dictionary in combat.enemies:
 		var active: Array[String] = []

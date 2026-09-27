@@ -112,7 +112,7 @@ func run_test() -> void:
 	scene.run.paused = true
 	assert("暂停" in scene.wave_status())
 	scene.run.director.cursor = 4
-	assert(scene.wave_progress() == 1.0 and "清理余鼠" in scene.wave_status())
+	assert(scene.wave_progress() == 1.0 and "余鼠" in scene.wave_status())
 	scene.run.state.phase = "prepare"
 	assert(scene.wave_progress() == 0.0)
 	scene.run.state.phase = "won"
@@ -216,7 +216,8 @@ func run_test() -> void:
 	await process_frame
 	await process_frame
 	assert(scene.shop_overlay.visible and not scene.panel.visible)
-	assert(scene.shop_items.get_child_count() == 0 and scene.run.state.offers.is_empty())
+	assert(scene.run.state.offers.is_empty())
+	assert(recipe_buttons(scene).size() == scene.run.state.choices.size())
 	for id: String in scene.run.state.choices:
 		var item: Button = scene.shop_surface.get_node("Recipe_" + id)
 		assert(scene.SHOP_RECT.encloses(item.get_global_rect()))
@@ -248,12 +249,14 @@ func run_test() -> void:
 	assert(scene.run.state.heat == 50 and scene.run.state.refreshes == 2 and scene.shop_refresh.disabled)
 	scene.run.state.heat = 0
 	scene.rebuild()
-	for item: Button in scene.shop_items.get_children(): assert(item.disabled)
+	assert(not recipe_buttons(scene).is_empty())
+	for item: Button in recipe_buttons(scene): assert(item.disabled)
 	for id: String in ArtCatalog.FOOD_IDS: scene.run.state.cards[id] = 1
 	scene.run.shop.generate()
 	scene.rebuild()
-	for item: Button in scene.shop_items.get_children():
-		assert(item.disabled and item.text == "已收集全部美食")
+	assert(recipe_buttons(scene).size() == scene.run.state.choices.size())
+	for item: Button in recipe_buttons(scene):
+		assert(item.disabled and item.get_node("PurchaseNote").text.begins_with("还差"))
 	scene.shop_overlay.gui_input.emit(event)
 	assert(scene.shop_overlay.visible and scene.move_from == Vector2i(-1, -1))
 	assert(not scene.shop_surface.has_node("Close"))
@@ -278,3 +281,9 @@ func run_test() -> void:
 	print("PASS UI: placement, pause, animation time, shovel cursor lifecycle and direct removal, cancel, eight-card bounds, overlay input")
 	await preload("res://tests/audio_cleanup.gd").release_scene(scene, self)
 	quit()
+
+func recipe_buttons(scene: Node) -> Array[Button]:
+	var result: Array[Button] = []
+	for child: Node in scene.shop_surface.get_children():
+		if child is Button and str(child.name).begins_with("Recipe_"): result.append(child)
+	return result

@@ -27,7 +27,7 @@ func _init() -> void:
 	assert(run.persist() and run.rng.state == rng)
 	run.start()
 	assert(run.board.place("bun",2,0,false).is_empty())
-	assert(is_equal_approx(run.recipes.damage(run.state.units[0]),31.2))
+	assert(is_equal_approx(run.recipes.damage(run.state.units[0]),run.data.foods["bun"].stats.damage * 1.3))
 	run.finish_wave()
 	assert(saves.load_meta(data).inspiration == 4)
 	assert(run.state.wave == 2 and run.state.phase == "prepare")

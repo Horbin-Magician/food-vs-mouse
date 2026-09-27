@@ -3,6 +3,9 @@ extends RefCounted
 
 var state: RunState
 var data: Catalog
+# Optional food id -> occupied cells snapshot; only valid while the caller keeps units fixed.
+var occupancy: Dictionary = {}
+var indexed: bool = false
 
 func _init(s: RunState, c: Catalog) -> void:
 	state = s
@@ -29,7 +32,24 @@ func offer(rng: RandomNumberGenerator, unlocked: Array) -> void:
 	while not pool.is_empty() and state.choices.size() < 3:
 		state.choices.append(pool.pop_at(rng.randi_range(0,pool.size()-1)))
 
+# Callers must not add, remove or move units between index_units() and clear_index().
+func index_units() -> void:
+	occupancy.clear()
+	for unit: Dictionary in state.units:
+		if not occupancy.has(unit.id): occupancy[unit.id] = {}
+		occupancy[unit.id][Vector2i(unit.col, unit.row)] = true
+	indexed = true
+
+func clear_index() -> void:
+	occupancy.clear()
+	indexed = false
+
 func adjacent(unit: Dictionary, id: String) -> bool:
+	if indexed:
+		var cells: Dictionary = occupancy.get(id, {})
+		if cells.is_empty(): return false
+		var cell := Vector2i(unit.col, unit.row)
+		return cells.has(cell + Vector2i.LEFT) or cells.has(cell + Vector2i.RIGHT) or cells.has(cell + Vector2i.UP) or cells.has(cell + Vector2i.DOWN)
 	for other: Dictionary in state.units:
 		if other.id == id and absi(other.row-unit.row) + absi(other.col-unit.col) == 1: return true
 	return false

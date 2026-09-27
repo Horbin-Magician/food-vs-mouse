@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_3_7"
 title = "灶前换班"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "前排受损会跨关保留，提前留出替换的热量。", "duration": 125.0, "composition": ["rivet_guard", "tong_breaker", "gnawer", "rivet_guard", "tong_breaker", "gnawer", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "gnawer", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "tong_breaker", "rivet_guard", "gnawer", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "gnawer", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "gnawer", "rivet_guard"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.12, "damage_scale": 2.00, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 32.94, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 45.08, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 58.42, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 71.76, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 82.7, "gap": 1.2, "lanes": [0, 1, 2, 0, 2]}]}

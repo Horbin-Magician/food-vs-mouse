@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_4_4"
 title = "醋窖守门"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "封醋大师会标记两路，两个落点都要看。", "duration": 110.0, "composition": ["vinegar_spitter", "dough_rat", "gray", "dough_rat", "vinegar_spitter", "gray", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "gray", "dough_rat", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "gray", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "gray", "vinegar_spitter", "vinegar_spitter", "dough_rat", "gray", "vinegar_spitter", "dough_rat", "vinegar_spitter", "dough_rat", "dough_rat", "gray", "gray", "vinegar_cellarer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.52, "damage_scale": 2.20, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 30.75, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 40.7, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 51.85, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 63.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}, {"time": 77.0, "gap": 1.2, "lanes": [0], "avoid_previous_ids": ["vinegar_spitter"]}], "elite_id": "vinegar_cellarer"}

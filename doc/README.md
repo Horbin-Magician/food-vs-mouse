@@ -6,6 +6,7 @@
 
 | 文档 | 用途 | 状态 |
 |---|---|---|
+| [testing/spawn_rate.md](testing/spawn_rate.md) | 出怪频率降低 25%、40 关排程不减数量及时间比例验证 | 五组回归与双尺寸原生画面通过；整局平衡待验 |
 | [testing/enemy_growth.md](testing/enemy_growth.md) | 后四大关鼠群成长加快的配置、战斗与导入验证 | 验证结果见专页，整局平衡待验 |
 | [art/project_icon.md](art/project_icon.md) | 小笼包与灰鼠项目图标、生成提示词与接入验证 | 已接入，原图及缩略图检查通过，系统 Dock／发行包待验 |
 | [testing/code_optimization.md](testing/code_optimization.md) | 帧内绘制、战斗查询索引、重复逻辑与死代码清理，五项旧断言修正及前后确定性与性能对比 | 已实现；47 项回归通过，32 小关确定性一致 |

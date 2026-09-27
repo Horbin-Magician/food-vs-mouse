@@ -4,5 +4,5 @@
 script = ExtResource("1")
 id = "wave_7"
 title = "鼠潮 7"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"duration": 120, "composition": ["lid", "runner", "drummer", "flour", "flour", "runner", "lid", "lid", "drummer", "drummer", "gnawer", "gnawer", "flour", "flour", "runner", "lid", "lid", "drummer", "drummer", "gnawer", "gnawer", "flour", "flour", "runner", "lid", "lid", "drummer", "drummer", "gnawer", "gnawer", "flour", "flour", "runner", "lid", "lid", "drummer", "drummer", "gnawer", "gnawer", "flour", "flour", "runner", "lid", "lid", "drummer", "drummer", "gnawer", "gnawer", "lid", "gnawer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 1.84, "damage_scale": 1.36, "batches": [{"time": 5.0, "gap": 0.9, "lanes": [0, 1, 2]}, {"time": 17.017, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0, 1, 0, 1]}, {"time": 29.033, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0, 1, 0, 1]}, {"time": 41.05, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0, 1, 0, 1]}, {"time": 53.067, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0, 1, 0, 1]}, {"time": 65.083, "gap": 0.9, "lanes": [0, 1, 2, 0, 1, 0, 1, 0, 1]}, {"time": 77.1, "gap": 0.9, "lanes": [0, 1]}]}

@@ -21,7 +21,7 @@ func _init() -> void:
 				assert(events[i].row in data.waves[w].stats.rows)
 				if i > 0: assert(events[i].time > events[i-1].time)
 				if i > 1: assert(not (events[i].row == events[i-1].row and events[i].row == events[i-2].row))
-				if w < 2: assert(is_equal_approx(events[i].time, 5.0 + (lerpf(5, data.waves[w].stats.duration * 0.7, float(i)/(events.size()-1)) - 5.0) / 1.5))
+				if w < 2: assert(is_equal_approx(events[i].time, 5.0 + (lerpf(5, data.waves[w].stats.duration * 0.7, float(i)/(events.size()-1)) - 5.0) / 1.125))
 			if w >= 2:
 				var offset: int = 0
 				for batch: Dictionary in data.waves[w].stats.batches:
@@ -29,7 +29,7 @@ func _init() -> void:
 						for j: int in range(i):
 							if batch.lanes[i] == batch.lanes[j]: assert(events[offset+i].row == events[offset+j].row)
 					offset += batch.lanes.size()
-				assert(is_equal_approx(events.back().time, 5.0 + (data.waves[w].stats.duration * (0.7 if w < 4 else 0.65) - 5.0) / 1.5))
+				assert(is_equal_approx(events.back().time, 5.0 + (data.waves[w].stats.duration * (0.7 if w < 4 else 0.65) - 5.0) / 1.125))
 			if w == 7: assert(events.back().id == "boss" and events.back().row == RunState.CENTER_ROW)
 			assert(director.advance(0).is_empty())
 			assert(director.advance(1000) == events)
@@ -37,7 +37,7 @@ func _init() -> void:
 	for invalid_rate: float in [0.0, -1.0, INF, NAN]:
 		data.waves[0].spawn_rate = invalid_rate
 		assert(not data.validate().is_empty())
-	data.waves[0].spawn_rate = 1.5
+	data.waves[0].spawn_rate = 1.125
 	var warnings := WaveDirector.new()
 	warnings.events = [{"time":1,"row":0},{"time":2,"row":1},{"time":3,"row":0},{"time":4,"row":2},{"time":5,"row":3},{"time":6,"row":4}]
 	assert(warnings.warning_rows() == [0,1,2,3])

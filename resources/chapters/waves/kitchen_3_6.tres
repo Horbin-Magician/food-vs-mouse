@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_3_6"
 title = "空壳追击"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "空壳鼠突然加速，趁夹钳停顿完成补位。", "duration": 115.0, "composition": ["rivet_guard", "tong_breaker", "gray", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "gray", "tong_breaker", "rivet_guard", "rivet_guard", "tong_breaker", "tong_breaker", "rivet_guard", "tong_breaker", "tong_breaker", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "rivet_guard", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "gray", "rivet_guard", "rivet_guard"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.04, "damage_scale": 1.96, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 33.025, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 45.25, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 58.675, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 72.1, "gap": 1.2, "lanes": [0, 1, 2, 1, 2, 0, 2, 1]}]}

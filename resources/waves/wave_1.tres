@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "wave_1"
 title = "打烊鼠影"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"duration": 60, "composition": ["gray", "gray", "gray", "gray", "gray", "gray", "gray", "gray", "gray", "gray"], "rows": [2, 3, 4], "hp_scale": 1.0, "damage_scale": 1.0}

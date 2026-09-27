@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_5_4"
 title = "红签点名"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "红签督运半血只领一次盾，别把后排贴得太近。", "duration": 115.0, "composition": ["ration_keeper", "skewer_lancer", "gray", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "gray", "ration_keeper", "skewer_lancer", "skewer_lancer", "ration_keeper", "gray", "skewer_lancer", "gray", "ration_keeper", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "gray", "skewer_lancer", "ration_keeper", "ration_keeper", "skewer_lancer", "gray", "skewer_lancer", "ration_keeper", "skewer_lancer", "gray", "gray", "ration_keeper", "skewer_marshal"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 4.16, "damage_scale": 2.52, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.025, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 41.25, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 52.675, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 64.1, "gap": 1.2, "lanes": [0, 1, 2, 1, 2, 0, 2, 1]}, {"time": 80.5, "gap": 1.2, "lanes": [0], "avoid_previous_ids": ["skewer_lancer"]}], "elite_id": "skewer_marshal"}

@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_2_1"
 title = "汤匙擦地"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "溜勺起跑前会停下；挡住它，趁疲劳输出。", "duration": 85.0, "composition": ["spoon_skater", "gray", "gray", "spoon_skater", "spoon_skater", "gray", "gray", "gray", "spoon_skater", "spoon_skater", "spoon_skater", "spoon_skater", "gray", "spoon_skater", "spoon_skater", "gray", "spoon_skater", "spoon_skater", "spoon_skater", "gray", "spoon_skater", "gray", "spoon_skater", "gray", "gray", "spoon_skater", "gray", "spoon_skater"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.0, "damage_scale": 1.44, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 30.9, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 41.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 52.3, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}]}

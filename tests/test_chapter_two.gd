@@ -14,15 +14,15 @@ func _init() -> void:
 			var director := WaveDirector.new()
 			director.begin(wave,random)
 			assert(director.events.size() == wave.stats.composition.size())
-			assert(director.events[0].time == 5 and is_equal_approx(director.events[1].time, 5.0 + 2.0/1.5) and is_equal_approx(director.events[2].time, 5.0 + 4.0/1.5))
-			assert(is_equal_approx(director.events[3].time, 5.0 + 17.0/1.5))
+			assert(director.events[0].time == 5 and is_equal_approx(director.events[1].time, 5.0 + 2.0/1.125) and is_equal_approx(director.events[2].time, 5.0 + 4.0/1.125))
+			assert(is_equal_approx(director.events[3].time, 5.0 + 17.0/1.125))
 			var initial_rows: Array = [director.events[0].row,director.events[1].row,director.events[2].row]
 			assert(initial_rows[0] != initial_rows[1] and initial_rows[0] != initial_rows[2] and initial_rows[1] != initial_rows[2])
 			assert(director.warning_rows() == [director.events[0].row])
 			assert(director.advance(0).is_empty())
 			var due: Array = director.advance(9)
 			assert(due.size() == 3 and director.warning_rows().is_empty())
-			assert(director.advance(7.2).is_empty())
+			assert(director.advance(10.9).is_empty())
 			assert(not director.warning_rows().is_empty())
 	var boss: EnemyDef = data.enemies[waves[7].stats.boss_id]
 	assert(boss.id == "boss_windwhistle" and boss.rank == "boss" and boss.behavior_id == "windwhistle")

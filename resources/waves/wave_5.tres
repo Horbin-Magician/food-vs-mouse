@@ -4,5 +4,5 @@
 script = ExtResource("1")
 id = "wave_5"
 title = "鼠潮 5"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"duration": 100, "composition": ["lid", "runner", "gnawer", "lid", "lid", "runner", "drummer", "drummer", "gnawer", "gnawer", "lid", "lid", "runner", "drummer", "drummer", "gnawer", "gnawer", "lid", "lid", "runner", "drummer", "drummer", "gnawer", "gnawer", "lid", "lid", "runner", "drummer", "drummer", "gnawer", "gnawer", "lid", "lid", "runner", "gnawer", "gnawer"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 1.61, "damage_scale": 1.24, "batches": [{"time": 5.0, "gap": 1.1, "lanes": [0, 1, 2]}, {"time": 16.12, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0, 1]}, {"time": 27.24, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0, 1]}, {"time": 38.36, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0, 1]}, {"time": 49.48, "gap": 1.1, "lanes": [0, 1, 2, 0, 1, 0, 1]}, {"time": 60.6, "gap": 1.1, "lanes": [0, 1, 2, 0, 1]}]}

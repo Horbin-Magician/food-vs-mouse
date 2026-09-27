@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_2_3"
 title = "快慢两拍"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "跑腿恒速，溜勺有停顿，按抵达时间补位。", "duration": 95.0, "composition": ["spoon_skater", "towel_scout", "runner", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "runner", "towel_scout", "spoon_skater", "spoon_skater", "towel_scout", "spoon_skater", "runner", "spoon_skater", "towel_scout", "spoon_skater", "towel_scout", "runner", "towel_scout", "towel_scout", "spoon_skater", "runner", "spoon_skater", "towel_scout", "spoon_skater", "spoon_skater", "runner"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.16, "damage_scale": 1.52, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 30.725, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 40.65, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 51.775, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}, {"time": 61.7, "gap": 1.2, "lanes": [0, 1, 2, 0, 2]}]}

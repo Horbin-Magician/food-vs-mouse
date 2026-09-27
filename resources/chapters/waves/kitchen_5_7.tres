@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_5_7"
 title = "黎明尾仓"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "保护布丁与输出的间距，保留余量迎接最后订单。", "duration": 130.0, "composition": ["ration_keeper", "skewer_lancer", "skewer_lancer", "dough_rat", "ration_keeper", "skewer_lancer", "skewer_lancer", "dough_rat", "dough_rat", "ration_keeper", "skewer_lancer", "skewer_lancer", "dough_rat", "skewer_lancer", "dough_rat", "ration_keeper", "skewer_lancer", "dough_rat", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "ration_keeper", "skewer_lancer", "skewer_lancer", "ration_keeper", "skewer_lancer", "ration_keeper", "ration_keeper", "skewer_lancer", "ration_keeper", "ration_keeper", "ration_keeper", "skewer_lancer", "skewer_lancer", "ration_keeper", "skewer_lancer", "skewer_lancer", "ration_keeper", "ration_keeper"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 4.40, "damage_scale": 2.64, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 33.16, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 45.52, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 59.08, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 72.64, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 85.0, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}]}

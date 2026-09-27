@@ -60,7 +60,7 @@ func verify_schedule(wave: Resource, chapter_order: int, seed_value: int) -> voi
 	rng.seed = seed_value
 	var director := WaveDirector.new()
 	director.begin(wave, rng)
-	assert(wave.spawn_rate == 1.5)
+	assert(wave.spawn_rate == 1.125)
 	var base_wave: Resource = wave.duplicate(true)
 	base_wave.spawn_rate = 1.0
 	var base_rng := RandomNumberGenerator.new()
@@ -70,7 +70,20 @@ func verify_schedule(wave: Resource, chapter_order: int, seed_value: int) -> voi
 	assert(base_rng.state == rng.state)
 	for index: int in range(director.events.size()):
 		assert(director.events[index].id == base.events[index].id and director.events[index].row == base.events[index].row)
-		assert(is_equal_approx(director.events[index].time, 5.0 + (base.events[index].time - 5.0) / 1.5))
+		assert(is_equal_approx(director.events[index].time, 5.0 + (base.events[index].time - 5.0) / 1.125))
+	var old_wave: Resource = wave.duplicate(true)
+	old_wave.spawn_rate = 1.5
+	var old_rng := RandomNumberGenerator.new()
+	old_rng.seed = seed_value
+	var old := WaveDirector.new()
+	old.begin(old_wave, old_rng)
+	assert(old_rng.state == rng.state and old.events.size() == director.events.size())
+	for index: int in range(director.events.size()):
+		assert(director.events[index].id == old.events[index].id and director.events[index].row == old.events[index].row)
+		assert(is_equal_approx(director.events[index].time - 5.0, (old.events[index].time - 5.0) * 4.0 / 3.0))
+		if index > 0:
+			assert(is_equal_approx(director.events[index].time - director.events[index-1].time, (old.events[index].time - old.events[index-1].time) * 4.0 / 3.0))
+	assert(is_equal_approx(director.duration, director.events.back().time + 10.0))
 	var random_state: int = rng.state
 	var again := WaveDirector.new()
 	rng.seed = seed_value
@@ -89,14 +102,14 @@ func verify_schedule(wave: Resource, chapter_order: int, seed_value: int) -> voi
 		if recent.size() > 3: recent.pop_front()
 		assert(recent.size() < 3 or recent[0] != recent[1] or recent[1] != recent[2])
 	if chapter_order > 1:
-		assert(is_equal_approx(director.events[1].time, 5.0 + 2.0/1.5) and is_equal_approx(director.events[2].time, 5.0 + 4.0/1.5) and is_equal_approx(director.events[3].time, 5.0 + 17.0/1.5))
-		assert(is_equal_approx(director.events[-1].time, 5.0 + (wave.stats.duration * .7 - 5.0)/1.5))
+		assert(is_equal_approx(director.events[1].time, 5.0 + 2.0/1.125) and is_equal_approx(director.events[2].time, 5.0 + 4.0/1.125) and is_equal_approx(director.events[3].time, 5.0 + 17.0/1.125))
+		assert(is_equal_approx(director.events[-1].time, 5.0 + (wave.stats.duration * .7 - 5.0)/1.125))
 		var covered: Dictionary = {}
 		for event: Dictionary in director.events.slice(0,14): covered[event.row] = true
 		assert(covered.size() == 7)
 		if wave.stats.has("boss_id"):
 			assert(director.events[-1].row == RunState.CENTER_ROW)
-			assert(is_equal_approx(director.events[-1].time-director.events[-2].time,8.0/1.5))
+			assert(is_equal_approx(director.events[-1].time-director.events[-2].time,8.0/1.125))
 		var offset: int = 0
 		var previous_batch: Array = []
 		for batch: Dictionary in wave.stats.batches:

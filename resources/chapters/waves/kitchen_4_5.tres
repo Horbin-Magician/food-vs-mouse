@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_4_5"
 title = "粉袋旁路"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "粉袋死亡才扬尘，醋瓶会提前标格，别混淆来源。", "duration": 105.0, "composition": ["vinegar_spitter", "dough_rat", "flour", "vinegar_spitter", "vinegar_spitter", "flour", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "flour", "dough_rat", "dough_rat", "vinegar_spitter", "vinegar_spitter", "dough_rat", "flour", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "vinegar_spitter", "flour", "dough_rat", "vinegar_spitter", "dough_rat", "dough_rat", "vinegar_spitter", "dough_rat", "flour", "dough_rat", "dough_rat", "dough_rat"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 3.60, "damage_scale": 2.24, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.875, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 42.95, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 55.225, "gap": 1.2, "lanes": [0, 1, 2, 2, 1, 0, 2]}, {"time": 67.5, "gap": 1.2, "lanes": [0, 1, 2, 0, 1, 2]}]}

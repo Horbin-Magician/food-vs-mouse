@@ -6,5 +6,5 @@
 script = ExtResource("1")
 id = "kitchen_3_2"
 title = "烤夹停顿"
-spawn_rate = 1.5
+spawn_rate = 1.125
 stats = {"hint": "夹钳重咬前会蓄力，恢复时正是输出窗口。", "duration": 95.0, "composition": ["tong_breaker", "gray", "gray", "tong_breaker", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "gray", "gray", "rivet_guard", "gray", "tong_breaker", "rivet_guard", "tong_breaker", "tong_breaker", "rivet_guard", "rivet_guard", "gray", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "rivet_guard", "tong_breaker", "gray", "tong_breaker", "tong_breaker"], "rows": [0, 1, 2, 3, 4, 5, 6], "hp_scale": 2.72, "damage_scale": 1.80, "balanced_lanes": true, "batches": [{"time": 5.0, "gap": 2.0, "lanes": [0, 1, 2]}, {"time": 22.0, "gap": 1.2, "lanes": [0, 1, 2, 1, 0]}, {"time": 31.325, "gap": 1.2, "lanes": [0, 1, 2, 2, 0, 1]}, {"time": 41.85, "gap": 1.2, "lanes": [0, 1, 2, 0, 2, 1, 0]}, {"time": 53.575, "gap": 1.2, "lanes": [0, 1, 2, 0, 2]}, {"time": 62.9, "gap": 1.2, "lanes": [0, 1, 2, 1]}]}

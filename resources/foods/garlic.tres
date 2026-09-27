@@ -4,4 +4,4 @@
 script = ExtResource("1")
 id = "garlic"
 title = "蒜香面包"
-stats = {"cost": 125, "cooldown": 10, "hp": 420, "damage": 4.5, "interval": 4, "reach": 0.65, "price": 4, "kind": "melee", "aura": 0.15}
+stats = {"cost": 125, "cooldown": 10, "hp": 420, "damage": 9, "interval": 4, "reach": 0.65, "price": 4, "kind": "melee", "aura": 0.15}

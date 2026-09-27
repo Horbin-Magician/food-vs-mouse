@@ -1,4 +1,4 @@
-# 美食伤害减半验证
+# 美食伤害调整验证
 
 日期：2026-09-26。环境：macOS，Godot 4.6.3.stable.official.7d41c59c4；本次工作区版本。范围：内容数值与平衡迭代；规则见 [玩法基线](../TODO.md)。
 
@@ -29,3 +29,17 @@
 - 六组回归退出码均为 0 且输出 PASS：`test_core`（72 项）、`test_builds`、`test_damage_feedback`、`test_enemy_abilities`、`test_wave_completion`、`test_heat`。使用上文命令格式，日志为 `/tmp/half2-<test>.log`。
 - Godot 导入完成，主场景无界面运行 120 帧退出码 0，无新增脚本解析或资源引用错误。仍报告 macOS 系统证书读取错误，导入另报沙盒无法保存用户目录编辑器设置；主场景退出时有 ObjectDB／1 个资源未释放提示。
 - `git diff --check` 通过。未执行原生视觉／人工交互复验、完整四十关平衡、性能或发行包导出。固定护甲不变，实际扣血未必恰好减半。
+
+## 伤害翻倍（2026-09-27）
+
+状态：已实现，专项逻辑验证通过；原生视觉与整局平衡未重验。范围：内容数值和平衡迭代，现行规则及数值见 [玩法基线](../TODO.md)。六种攻击美食基础伤害和食谱固定灼烧伤害在当前值上乘 2；吐司、布丁保持零伤害。验收使用既有构筑、伤害反馈、核心战斗及相关回归，并检查配置完整性、导入和主场景加载。
+
+实际验证环境：macOS，Godot 4.6.3.stable.official.7d41c59c4，2026-09-27 工作区。
+
+- 与本次 HEAD 逐字段比较八份 FoodDef：伤害均为原值的 2 倍，其余字段一致；零伤害保持零。食谱灼烧配置及描述同步翻倍。
+- 六组既有回归退出码为 0 并输出 PASS：`test_core`（72 项）、`test_builds`、`test_damage_feedback`、`test_enemy_abilities`、`test_wave_completion`、`test_heat`。更新构筑测试的强化／早餐伤害及灼烧后生命期望，覆盖实际弹体击杀、护甲、持续伤害、关卡与生产。
+- 命令为 Godot `--headless --path . --log-file /tmp/double-damage-<name>.log --script res://tests/test_<name>.gd -- --qa-test`。导入用 `--editor --import`，主场景用 `--quit-after 120`，均退出码 0，无脚本解析或资源引用错误。
+- 日志仍有 macOS 系统证书读取错误；导入另报沙盒无法保存用户目录编辑器设置。以上环境错误未影响本轮逻辑断言，不将运行描述为零错误。
+- `git diff --check` 通过。保留工作区原有 `project.godot` 改动。
+
+本次数值调整未更改交互或美术；未执行原生视觉／人工交互复验、完整四十关平衡、性能测试或发行包导出，不据此标记整体里程碑通过。

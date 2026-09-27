@@ -9,7 +9,7 @@
 | [testing/code_optimization.md](testing/code_optimization.md) | 帧内绘制、战斗查询索引、重复逻辑与死代码清理，五项旧断言修正及前后确定性与性能对比 | 已实现；47 项回归通过，32 小关确定性一致 |
 | [testing/chapter_enemy_edges.md](testing/chapter_enemy_edges.md) | 新鼠 37 张图集、780 帧边界碎片修复及复验 | 透明边、尺寸、4 项回归与双尺寸原生画面通过 |
 | [testing/food_attack_speed.md](testing/food_attack_speed.md) | 全部攻击美食攻速降低 50% 的配置与回归验证 | 配置及七组回归通过；整局平衡未重验 |
-| [testing/food_damage.md](testing/food_damage.md) | 全部美食及食谱灼烧两次减半的配置与回归验证 | 本轮配置及六组回归通过；整局平衡未重验 |
+| [testing/food_damage.md](testing/food_damage.md) | 全部美食及食谱灼烧的历次调整与当前翻倍验证 | 本轮配置及六组回归通过；整局平衡未重验 |
 | [design/chapter_enemy_redesign.md](design/chapter_enemy_redesign.md) | 后四关 8 新普通鼠、4 精英、4 独立首领的设定、属性、技能、背景与反制 | 玩法已接入；图集边界已修复，完整细节验收待完成 |
 | [design/chapter_encounters_v2.md](design/chapter_encounters_v2.md) | 后四关 32 小关组成、教学、选路与批次节奏 | 32 波次与排程检查通过；连续采样完成，真人平衡待验 |
 | [art/chapter_enemy_redesign.md](art/chapter_enemy_redesign.md) | 延续 F 画风的角色轮廓、概念图、技能表现与制作验收 | 全套运行图已整理；完整细节验收待完成 |

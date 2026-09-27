@@ -4,4 +4,4 @@
 script = ExtResource("1")
 id = "burn"
 title = "小火慢烤"
-stats = {"requires": "pepper", "description": "辣椒串附加每秒1.5伤害，持续3秒的灼烧", "damage": 1.5, "duration": 3, "unlock": "passed", "threshold": 4}
+stats = {"requires": "pepper", "description": "辣椒串附加每秒3伤害，持续3秒的灼烧", "damage": 3, "duration": 3, "unlock": "passed", "threshold": 4}

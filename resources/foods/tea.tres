@@ -4,4 +4,4 @@
 script = ExtResource("1")
 id = "tea"
 title = "冰柠茶"
-stats = {"cost": 125, "cooldown": 9, "hp": 160, "damage": 3, "interval": 4, "reach": 8, "price": 4, "kind": "shot", "slow": 0.25, "slow_duration": 2.5}
+stats = {"cost": 125, "cooldown": 9, "hp": 160, "damage": 6, "interval": 4, "reach": 8, "price": 4, "kind": "shot", "slow": 0.25, "slow_duration": 2.5}
